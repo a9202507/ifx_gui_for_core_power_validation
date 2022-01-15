@@ -1,0 +1,5 @@
+function gen 設定 transinet waveform
+eScope 量測後校正 function gen setting
+示波器存檔 檔名包含測試條件 Imax/Imin/Freq/datetime
+示波器 輸出 Vmax/Vmin
+import pandas 
