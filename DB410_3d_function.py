@@ -29,6 +29,16 @@ def DB410_3d_function(resource_name,
 if __name__ == "__main__":
 
     print(myvisa.get_visa_resource_list())
+    DB410_3d_function('USB0::0x0699::0x0522::C040569::INSTR',
+                      0.2,
+                      0.05,
+                      [10,20,100,200],
+                      [10,20,30,40,50],
+                      1976,
+                      1976,
+                      2,
+                      debug=True
+                      )
             
             
     
