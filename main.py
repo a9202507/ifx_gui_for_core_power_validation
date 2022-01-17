@@ -30,6 +30,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setupUi(self)
         self.pushButton_8.clicked.connect(self.create_visa_equipment)
         self.pushButton_6.clicked.connect(self.update_equipment_on_combox)
+        self.pushButton_2.clicked.connect(self.send_function_gen_command_one_time)
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
         self.actionAbout_the_GUI.triggered.connect(self.about_the_GUI)
@@ -45,15 +46,21 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         if self.debug==True:
             self.push_msg_to_GUI("==debugging mode==")
 
+    def send_function_gen_command_one_time(self):
+        function_gen=myvisa.tek_visa_functionGen(self.comboBox_2.currentText())
+        function_gen.set_duty(self.lineEdit_5.text())
+
     def create_visa_equipment(self):
         self.escope=myvisa.create_visa_equipment(self.comboBox.currentText())
-        message=self.escope.query('*.IDN?')
+        message=self.escope.query('*IDN?')
         if self.debug==True:
             self.push_msg_to_GUI(message)
         
 
     def update_equipment_on_combox(self):
         self.get_visa_resource()
+        self.comboBox.clear()
+        self.comboBox_2.clear()
         self.comboBox.addItems(self.resource_list)
         self.comboBox_2.addItems(self.resource_list)
 
