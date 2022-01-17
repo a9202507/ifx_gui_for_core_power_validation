@@ -23,6 +23,46 @@ import os
 import visa_function as myvisa
 import pandas as pd
 
+
+class DB410_3d_thread(QThread):
+    #vr3d_to_enable_abort = pyqtSignal(bool)
+    def __init__(self):
+        dc_thread.__init__(self)
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        pass
+        '''
+        fivra_3d.fivra_3d(target_voltage=myWin.fivra_3d_target_vout,
+                          start_frequency=myWin.fivra_3d_start_frequency,
+                          end_frequency=myWin.fivra_3d_end_frequency,
+                          sample_per_decade=myWin.fivra_3d_sample_per_decade,
+                          nw_current_low=myWin.fivra_3d_nw_current_low,
+                          nw_current_high=myWin.fivra_3d_nw_current_high,
+                          ne_current_low=myWin.fivra_3d_ne_current_low,
+                          ne_current_high=myWin.fivra_3d_ne_current_high,
+                          sw_current_low=myWin.fivra_3d_sw_current_low,
+                          sw_current_high=myWin.fivra_3d_sw_current_high,
+                          se_current_low=myWin.fivra_3d_se_current_low,
+                          se_current_high=myWin.fivra_3d_se_current_high,
+                          nw_slew_rate=myWin.fivra_3d_nw_slew_rate,
+                          ne_slew_rate=myWin.fivra_3d_ne_slew_rate,
+                          sw_slew_rate=myWin.fivra_3d_sw_slew_rate,
+                          se_slew_rate=myWin.fivra_3d_se_slew_rate,
+                          cooldown_delay=myWin.fivra_3d_cooldown_delay,
+                          duty_cycle_list=myWin.fivra_3d_duty_cycle_list,
+                          debug=True,
+                          )
+        '''
+
+    def stop(self):
+        self.terminate()
+
+    def stop(self):
+        self.terminate()
+
 class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def __init__(self, parent=None,debug=False):
         super(MyMainWindow, self).__init__(parent)
