@@ -49,19 +49,28 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def send_function_gen_command_one_time(self):
         function_gen=myvisa.tek_visa_functionGen(self.comboBox_2.currentText())
         function_gen.set_duty(self.lineEdit_5.text())
+        function_gen.set_freq(self.lineEdit_8.text())
+        function_gen.set_voltage_high(self.lineEdit_8.text())
+        function_gen.set_voltage_low(self.lineEdit.text())
+        function_gen.set_rise_time_ns(self.lineEdit_6.text())
+        function_gen.set_fall_time_ns(self.lineEdit_4.text())
 
     def create_visa_equipment(self):
-        self.escope=myvisa.create_visa_equipment(self.comboBox.currentText())
-        message=self.escope.query('*IDN?')
-        if self.debug==True:
-            self.push_msg_to_GUI(message)
+        if self.comboBox.currentText() != "":
+            
+            self.escope=myvisa.create_visa_equipment(self.comboBox.currentText())
+            message=self.escope.query('*IDN?')
+            if self.debug==True:
+                self.push_msg_to_GUI(message)
         
 
     def update_equipment_on_combox(self):
         self.get_visa_resource()
         self.comboBox.clear()
         self.comboBox_2.clear()
+        self.comboBox.addItem("")
         self.comboBox.addItems(self.resource_list)
+        self.comboBox_2.addItem("")
         self.comboBox_2.addItems(self.resource_list)
 
     def get_visa_resource(self):

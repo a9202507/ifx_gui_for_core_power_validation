@@ -63,8 +63,9 @@ if __name__ == '__main__':
     #escope=create_visa_equipment(devices[0])
     #print(escope.query('*IDN?'))
 
-    fungen=tek_visa_functionGen(devices[4])
+    fungen=tek_visa_functionGen(devices[2])
     fungen.on()
+    '''
     time.sleep(1)
     for freq in range(1,100):
         for duty in range(10,50,10):
@@ -72,4 +73,5 @@ if __name__ == '__main__':
             fungen.set_duty(duty)
 
             time.sleep(2)
+    '''
     fungen.off()
