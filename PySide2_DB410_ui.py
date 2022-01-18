@@ -32,7 +32,7 @@ class Ui_MainWindow(object):
         font = QFont()
         font.setPointSize(12)
         self.label_10.setFont(font)
-        self.label_10.setPixmap(QPixmap(u"../VR14_PyGUI/Gen5_VR14-beta/IFX_LOGO_RGB.jpg"))
+        self.label_10.setPixmap(QPixmap(u"./IFX_LOGO_RGB.jpg"))
         self.label_10.setScaledContents(True)
         self.label_23 = QLabel(self.centralwidget)
         self.label_23.setObjectName(u"label_23")
