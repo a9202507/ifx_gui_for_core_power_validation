@@ -77,6 +77,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.about_the_gui_text="powered by PySide2 and Python3."
         self.debug=debug
 
+        ## start-up function
+        self.update_equipment_on_combox()
+        
         ## set auto load init.json during startup
         self.path=os.path.dirname(os.path.abspath(__file__))
         self.path_file_list=list()
@@ -90,10 +93,18 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         function_gen=myvisa.tek_visa_functionGen(self.comboBox_2.currentText())
         function_gen.set_duty(self.lineEdit_5.text())
         function_gen.set_freq(self.lineEdit_8.text())
-        function_gen.set_voltage_high(self.lineEdit_8.text())
-        function_gen.set_voltage_low(self.lineEdit.text())
+
+        high_voltage_value=float(self.lineEdit_16.text())*float(self.lineEdit_17.text())/1000
+        low_voltage_value=float(self.lineEdit.text())*float(self.lineEdit_17.text())/1000
+        function_gen.set_voltage_high(str(high_voltage_value))        
+        function_gen.set_voltage_low(str(low_voltage_value))
         function_gen.set_rise_time_ns(self.lineEdit_6.text())
         function_gen.set_fall_time_ns(self.lineEdit_4.text())
+
+        if self.comboBox_3.currentText() == "on":
+            function_gen.on()
+        else:
+            function_gen.off()
 
     def create_visa_equipment(self):
         if self.comboBox.currentText() != "":
