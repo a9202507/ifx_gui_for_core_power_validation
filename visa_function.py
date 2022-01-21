@@ -1,9 +1,11 @@
 import pyvisa
 import time
+import pathlib
+from datetime import datetime
 
-rm=pyvisa.ResourceManager()
 
 def get_visa_resource_list():
+    rm=pyvisa.ResourceManager()
     device_list=rm.list_resources()
 
     return device_list
@@ -53,6 +55,33 @@ class tek_visa_functionGen(tek_visa_equipment):
 
     def get_rise_time_ns(self):
         return self.inst.query("SOURce1:PULSe:TRANsition:LEADing?")
+
+
+def save_waveform_in_inst(visaRsrcAddr,fileSaveLocationInInst,filename,timestamp_enable=True,debug=False):
+    rm = pyvisa.ResourceManager()
+    scope = rm.open_resource(visaRsrcAddr)
+    visaRsrcAddr = visaRsrcAddr
+    fileSaveLocation2 = pathlib.Path(fileSaveLocationInInst)
+    dt = datetime.now()
+    timestamp = dt.strftime("MSO56_%Y%m%d_%H%M%S.png")
+    if timestamp_enable== True:
+        filename_in_inst=filename+timestamp
+    else:
+        filename_in_inst=filename
+    
+    rm = pyvisa.ResourceManager()
+    scope = rm.open_resource(visaRsrcAddr)
+
+    
+    path_filename_in_inst="'"+str(fileSaveLocation2 / filename_in_inst)+"'"
+    scope.write('SAVE:IMAGe '+path_filename_in_inst)
+    if debug == True:
+
+        print(scope.query('*IDN?'))  # Print instrument id to console window
+
+        print('SAVE:IMAGe '+path_filename_in_inst)
+    scope.close()
+    rm.close()
         
 
 
@@ -63,7 +92,7 @@ if __name__ == '__main__':
     #escope=create_visa_equipment(devices[0])
     #print(escope.query('*IDN?'))
 
-    fungen=tek_visa_functionGen(devices[2])
+    fungen=tek_visa_functionGen(devices[1])
     fungen.on()
     '''
     time.sleep(1)
@@ -75,3 +104,4 @@ if __name__ == '__main__':
             time.sleep(2)
     '''
     fungen.off()
+    

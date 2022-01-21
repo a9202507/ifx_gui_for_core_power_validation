@@ -37,16 +37,19 @@ def save_waveform_in_inst(visaRsrcAddr,fileSaveLocationInInst,filename,timestamp
     
     rm = visa.ResourceManager()
     scope = rm.open_resource(visaRsrcAddr)
-    print(scope.query('*IDN?'))  # Print instrument id to console window
 
-    print('SAVE:IMAGe \'C:\\Temp\Temp.png\'')
+    
     path_filename_in_inst="'"+str(fileSaveLocation2 / filename_in_inst)+"'"
     scope.write('SAVE:IMAGe '+path_filename_in_inst)
-    print('SAVE:IMAGe '+path_filename_in_inst)
+    if debug == True:
+
+        print(scope.query('*IDN?'))  # Print instrument id to console window
+
+        print('SAVE:IMAGe '+path_filename_in_inst)
     scope.close()
     rm.close()
     
-
+'''
 # Replace string with your instrument's VISA Resource Address
 visaRsrcAddr = "USB0::0x0699::0x0522::C040569::INSTR"
 fileSaveLocation = r'C:\Temp\\' # Folder on your PC where to save image
@@ -110,3 +113,8 @@ print('Copy image to clipboard')
 
 scope.close()
 rm.close()
+
+
+#run function
+#save_waveform_in_inst("USB0::0x0699::0x0522::C040569::INSTR","C:/Temp","eason_update",True)
+'''

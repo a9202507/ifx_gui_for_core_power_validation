@@ -19,19 +19,29 @@ import time # std library
 import pyvisa as visa # https://pyvisa.readthedocs.io/
 
 from io import BytesIO
-import win32clipboard
+#import win32clipboard
 from PIL import Image
+import pathlib
 
 # Replace string with your instrument's VISA Resource Address
 visaRsrcAddr = "USB0::0x0699::0x0522::C040569::INSTR"
 fileSaveLocation = r'C:\Temp\\' # Folder on your PC where to save image
-
+fileSaveLocation2 = pathlib.Path("C:/Temp")
+filename_in_inst='Temp_pathlib_test.png'
 rm = visa.ResourceManager()
 scope = rm.open_resource(visaRsrcAddr)
 print(scope.query('*IDN?'))  # Print instrument id to console window
 
 # Save image to instrument's local disk
-scope.write('SAVE:IMAGe \'C:\\Temp\Temp.png\'')
+#scope.write('SAVE:IMAGe \'C:\\Temp\Temp.png\'')
+#scope.write('SAVE:IMAGe \'C:\\Temp\Temp2.png\'')
+#scope.write('SAVE:IMAGe \'C:\\Temp\Temp3.png\'')
+
+
+print('SAVE:IMAGe \'C:\\Temp\Temp.png\'')
+path_filename_in_inst="'"+str(fileSaveLocation2 / filename_in_inst)+"'"
+scope.write('SAVE:IMAGe '+path_filename_in_inst)
+print('SAVE:IMAGe '+path_filename_in_inst)
 
 # Generate a filename based on the current Date & Time
 dt = datetime.now()
@@ -66,11 +76,11 @@ image.convert("RGB").save(output, "BMP")
 data = output.getvalue()[14:]
 output.close()
 
-send_to_clipboard(win32clipboard.CF_DIB, data)
+#send_to_clipboard(win32clipboard.CF_DIB, data)
 print('Copy image to clipboard')
 
 # Image data has been transferred to PC and saved. Delete image file from instrument's hard disk.
-scope.write('FILESystem:DELEte \'C:\\Temp\Temp.png\'')
+#scope.write('FILESystem:DELEte \'C:\\Temp\Temp.png\'')
 
 scope.close()
 rm.close()
