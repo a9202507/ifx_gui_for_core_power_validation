@@ -50,84 +50,94 @@ class Ui_MainWindow(object):
         self.groupBox_3.setGeometry(QRect(20, 10, 451, 331))
         self.layoutWidget_4 = QWidget(self.groupBox_3)
         self.layoutWidget_4.setObjectName(u"layoutWidget_4")
-        self.layoutWidget_4.setGeometry(QRect(10, 30, 431, 288))
+        self.layoutWidget_4.setGeometry(QRect(10, 30, 431, 293))
         self.gridLayout_7 = QGridLayout(self.layoutWidget_4)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
         self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.lineEdit_21 = QLineEdit(self.layoutWidget_4)
-        self.lineEdit_21.setObjectName(u"lineEdit_21")
-
-        self.gridLayout_7.addWidget(self.lineEdit_21, 6, 1, 1, 1)
-
-        self.label_13 = QLabel(self.layoutWidget_4)
-        self.label_13.setObjectName(u"label_13")
-
-        self.gridLayout_7.addWidget(self.label_13, 3, 0, 1, 1)
-
-        self.label_12 = QLabel(self.layoutWidget_4)
-        self.label_12.setObjectName(u"label_12")
-
-        self.gridLayout_7.addWidget(self.label_12, 2, 0, 1, 1)
-
         self.lineEdit_14 = QLineEdit(self.layoutWidget_4)
         self.lineEdit_14.setObjectName(u"lineEdit_14")
 
         self.gridLayout_7.addWidget(self.lineEdit_14, 4, 1, 1, 1)
-
-        self.label_15 = QLabel(self.layoutWidget_4)
-        self.label_15.setObjectName(u"label_15")
-
-        self.gridLayout_7.addWidget(self.label_15, 5, 0, 1, 1)
-
-        self.lineEdit_15 = QLineEdit(self.layoutWidget_4)
-        self.lineEdit_15.setObjectName(u"lineEdit_15")
-
-        self.gridLayout_7.addWidget(self.lineEdit_15, 5, 1, 1, 1)
-
-        self.label_3 = QLabel(self.layoutWidget_4)
-        self.label_3.setObjectName(u"label_3")
-
-        self.gridLayout_7.addWidget(self.label_3, 1, 0, 1, 1)
-
-        self.label_20 = QLabel(self.layoutWidget_4)
-        self.label_20.setObjectName(u"label_20")
-
-        self.gridLayout_7.addWidget(self.label_20, 0, 0, 1, 1)
 
         self.lineEdit_3 = QLineEdit(self.layoutWidget_4)
         self.lineEdit_3.setObjectName(u"lineEdit_3")
 
         self.gridLayout_7.addWidget(self.lineEdit_3, 1, 1, 1, 1)
 
-        self.lineEdit_13 = QLineEdit(self.layoutWidget_4)
-        self.lineEdit_13.setObjectName(u"lineEdit_13")
+        self.label_12 = QLabel(self.layoutWidget_4)
+        self.label_12.setObjectName(u"label_12")
 
-        self.gridLayout_7.addWidget(self.lineEdit_13, 3, 1, 1, 1)
+        self.gridLayout_7.addWidget(self.label_12, 2, 0, 1, 1)
 
-        self.label_16 = QLabel(self.layoutWidget_4)
-        self.label_16.setObjectName(u"label_16")
+        self.label_20 = QLabel(self.layoutWidget_4)
+        self.label_20.setObjectName(u"label_20")
 
-        self.gridLayout_7.addWidget(self.label_16, 6, 0, 1, 1)
+        self.gridLayout_7.addWidget(self.label_20, 0, 0, 1, 1)
+
+        self.checkBox_3 = QCheckBox(self.layoutWidget_4)
+        self.checkBox_3.setObjectName(u"checkBox_3")
+
+        self.gridLayout_7.addWidget(self.checkBox_3, 9, 1, 1, 1)
 
         self.lineEdit_12 = QLineEdit(self.layoutWidget_4)
         self.lineEdit_12.setObjectName(u"lineEdit_12")
 
         self.gridLayout_7.addWidget(self.lineEdit_12, 2, 1, 1, 1)
 
-        self.lineEdit_18 = QLineEdit(self.layoutWidget_4)
-        self.lineEdit_18.setObjectName(u"lineEdit_18")
+        self.label_13 = QLabel(self.layoutWidget_4)
+        self.label_13.setObjectName(u"label_13")
 
-        self.gridLayout_7.addWidget(self.lineEdit_18, 0, 1, 1, 1)
+        self.gridLayout_7.addWidget(self.label_13, 3, 0, 1, 1)
+
+        self.lineEdit_15 = QLineEdit(self.layoutWidget_4)
+        self.lineEdit_15.setObjectName(u"lineEdit_15")
+
+        self.gridLayout_7.addWidget(self.lineEdit_15, 5, 1, 1, 1)
+
+        self.lineEdit_13 = QLineEdit(self.layoutWidget_4)
+        self.lineEdit_13.setObjectName(u"lineEdit_13")
+
+        self.gridLayout_7.addWidget(self.lineEdit_13, 3, 1, 1, 1)
 
         self.label_14 = QLabel(self.layoutWidget_4)
         self.label_14.setObjectName(u"label_14")
 
         self.gridLayout_7.addWidget(self.label_14, 4, 0, 1, 1)
 
-        self.checkBox_3 = QCheckBox(self.layoutWidget_4)
-        self.checkBox_3.setObjectName(u"checkBox_3")
+        self.label_16 = QLabel(self.layoutWidget_4)
+        self.label_16.setObjectName(u"label_16")
 
-        self.gridLayout_7.addWidget(self.checkBox_3, 7, 1, 1, 1)
+        self.gridLayout_7.addWidget(self.label_16, 6, 0, 1, 1)
+
+        self.lineEdit_18 = QLineEdit(self.layoutWidget_4)
+        self.lineEdit_18.setObjectName(u"lineEdit_18")
+
+        self.gridLayout_7.addWidget(self.lineEdit_18, 0, 1, 1, 1)
+
+        self.lineEdit_21 = QLineEdit(self.layoutWidget_4)
+        self.lineEdit_21.setObjectName(u"lineEdit_21")
+
+        self.gridLayout_7.addWidget(self.lineEdit_21, 6, 1, 1, 1)
+
+        self.label_15 = QLabel(self.layoutWidget_4)
+        self.label_15.setObjectName(u"label_15")
+
+        self.gridLayout_7.addWidget(self.label_15, 5, 0, 1, 1)
+
+        self.label_3 = QLabel(self.layoutWidget_4)
+        self.label_3.setObjectName(u"label_3")
+
+        self.gridLayout_7.addWidget(self.label_3, 1, 0, 1, 1)
+
+        self.label_17 = QLabel(self.layoutWidget_4)
+        self.label_17.setObjectName(u"label_17")
+
+        self.gridLayout_7.addWidget(self.label_17, 7, 0, 1, 1)
+
+        self.lineEdit_22 = QLineEdit(self.layoutWidget_4)
+        self.lineEdit_22.setObjectName(u"lineEdit_22")
+
+        self.gridLayout_7.addWidget(self.lineEdit_22, 7, 1, 1, 1)
 
         self.textEdit = QTextEdit(self.tab)
         self.textEdit.setObjectName(u"textEdit")
@@ -282,6 +292,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.checkBox_2 = QCheckBox(self.groupBox_4)
         self.checkBox_2.setObjectName(u"checkBox_2")
+        self.checkBox_2.setChecked(True)
 
         self.gridLayout_2.addWidget(self.checkBox_2, 3, 1, 1, 1)
 
@@ -293,6 +304,8 @@ class Ui_MainWindow(object):
 
         self.checkBox = QCheckBox(self.groupBox_4)
         self.checkBox.setObjectName(u"checkBox")
+        self.checkBox.setEnabled(False)
+        self.checkBox.setChecked(True)
 
         self.gridLayout_2.addWidget(self.checkBox, 2, 1, 1, 1)
 
@@ -350,21 +363,23 @@ class Ui_MainWindow(object):
         self.label_10.setText("")
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"DB410 engineering GUI", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Transient", None))
-        self.lineEdit_21.setText(QCoreApplication.translate("MainWindow", u"1", None))
-        self.label_13.setText(QCoreApplication.translate("MainWindow", u"duty list", None))
-        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Gain (mV/A)", None))
         self.lineEdit_14.setText(QCoreApplication.translate("MainWindow", u"9", None))
-        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Frequency_list (Khz)", None))
-        self.lineEdit_15.setText(QCoreApplication.translate("MainWindow", u"10,20,30,100,200,300", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Low current(A)", None))
-        self.label_20.setText(QCoreApplication.translate("MainWindow", u"High current(A)", None))
         self.lineEdit_3.setText(QCoreApplication.translate("MainWindow", u"10", None))
-        self.lineEdit_13.setText(QCoreApplication.translate("MainWindow", u"10,20,30", None))
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Delay time(Sec)", None))
-        self.lineEdit_12.setText(QCoreApplication.translate("MainWindow", u"1", None))
-        self.lineEdit_18.setText(QCoreApplication.translate("MainWindow", u"100", None))
-        self.label_14.setText(QCoreApplication.translate("MainWindow", u"slew rate(nSec)", None))
+        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Gain (mV/A)", None))
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"High current(A)", None))
         self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"3D roll up/down enable", None))
+        self.lineEdit_12.setText(QCoreApplication.translate("MainWindow", u"1", None))
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"duty list(%)", None))
+        self.lineEdit_15.setText(QCoreApplication.translate("MainWindow", u"10,20,30,100,200,300", None))
+        self.lineEdit_13.setText(QCoreApplication.translate("MainWindow", u"10,20,30", None))
+        self.label_14.setText(QCoreApplication.translate("MainWindow", u"rise/fall time(nSec)", None))
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Delay time(Sec)", None))
+        self.lineEdit_18.setText(QCoreApplication.translate("MainWindow", u"100", None))
+        self.lineEdit_21.setText(QCoreApplication.translate("MainWindow", u"1", None))
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Frequency_list (Khz)", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Low current(A)", None))
+        self.label_17.setText(QCoreApplication.translate("MainWindow", u"Cooldown time(Sec)", None))
+        self.lineEdit_22.setText(QCoreApplication.translate("MainWindow", u"1", None))
         self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"abort", None))
         self.pushButton_8.setText(QCoreApplication.translate("MainWindow", u"Start ", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"main", None))
@@ -397,7 +412,7 @@ class Ui_MainWindow(object):
         self.pushButton_7.setText(QCoreApplication.translate("MainWindow", u"Send a command", None))
         self.checkBox.setText(QCoreApplication.translate("MainWindow", u"filename include transinet condition", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"output filename", None))
-        self.lineEdit_26.setText(QCoreApplication.translate("MainWindow", u"C:\\temp\\", None))
+        self.lineEdit_26.setText(QCoreApplication.translate("MainWindow", u"C:/temp", None))
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"Save as MSO:", None))
         self.lineEdit_7.setText(QCoreApplication.translate("MainWindow", u"IFX_DB410_", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"setting", None))

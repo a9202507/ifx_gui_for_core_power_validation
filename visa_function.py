@@ -2,6 +2,7 @@ import pyvisa
 import time
 import pathlib
 from datetime import datetime
+rm=pyvisa.ResourceManager()
 
 
 def get_visa_resource_list():
@@ -56,6 +57,27 @@ class tek_visa_functionGen(tek_visa_equipment):
     def get_rise_time_ns(self):
         return self.inst.query("SOURce1:PULSe:TRANsition:LEADing?")
 
+class tek_visa_mso_escope(visa_equipment):
+    def __init__(self,visa_resource_name):
+        visa_equipment.__init__(self,visa_resource_name)
+
+    def save_waveform_in_inst(self,file_save_location_in_inst,filename,timestamp_enable=True,debug=False):
+        self.file_save_path=pathlib.Path(file_save_location_in_inst)
+        dt=datetime.now()
+        if timestamp_enable==True:
+            timestamp=dt.strftime("_%Y%m%d_%H%M%S")
+            self.filename_in_inst=filename+timestamp
+        else:
+            self.filename_in_inst=filename
+        self.filename_in_inst+= ".png"
+        self.filename_with_path_in_inst="'"+str(self.file_save_path / self.filename_in_inst)+ "'"
+        self.inst.write(('SAVE:IMAGe '+self.filename_with_path_in_inst))
+
+        if debug==True:
+            print(('SAVE:IMAGe '+self.filename_with_path_in_inst))
+                            
+        
+
 
 def save_waveform_in_inst(visaRsrcAddr,fileSaveLocationInInst,filename,timestamp_enable=True,debug=False):
     rm = pyvisa.ResourceManager()
@@ -91,17 +113,26 @@ if __name__ == '__main__':
     print(devices)
     #escope=create_visa_equipment(devices[0])
     #print(escope.query('*IDN?'))
+    fungen=tek_visa_functionGen(devices[4])
+    scope=tek_visa_mso_escope(devices[0])
+    freqs=[10,20,100,200]
+    dutys=[10,20,50]
 
-    fungen=tek_visa_functionGen(devices[1])
-    fungen.on()
-    '''
-    time.sleep(1)
-    for freq in range(1,100):
-        for duty in range(10,50,10):
-            fungen.set_freq(freq)
+
+    ## work with DPO4104
+    for freq in freqs:
+        for duty in dutys:
+        
             fungen.set_duty(duty)
-
+            fungen.set_freq(freq)
+            fungen.on()
             time.sleep(2)
-    '''
-    fungen.off()
+            scope.save_waveform_in_inst("C:/Users/Tek_Local_Admin/Desktop/Eason",f"Eason_mso56_{freq}khz_D{duty}",True,True)
+            time.sleep(5)
+            fungen.off()
+            time.sleep(2)
+
+
+    
+
     

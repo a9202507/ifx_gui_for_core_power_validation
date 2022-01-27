@@ -90,63 +90,14 @@
          <x>10</x>
          <y>30</y>
          <width>431</width>
-         <height>288</height>
+         <height>293</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="6" column="1">
-         <widget class="QLineEdit" name="lineEdit_21">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_13">
-          <property name="text">
-           <string>duty list</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string>Gain (mV/A)</string>
-          </property>
-         </widget>
-        </item>
         <item row="4" column="1">
          <widget class="QLineEdit" name="lineEdit_14">
           <property name="text">
            <string>9</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_15">
-          <property name="text">
-           <string>Frequency_list (Khz)</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QLineEdit" name="lineEdit_15">
-          <property name="text">
-           <string>10,20,30,100,200,300</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Low current(A)</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_20">
-          <property name="text">
-           <string>High current(A)</string>
           </property>
          </widget>
         </item>
@@ -157,17 +108,24 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="lineEdit_13">
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_12">
           <property name="text">
-           <string>10,20,30</string>
+           <string>Gain (mV/A)</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_16">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_20">
           <property name="text">
-           <string>Delay time(Sec)</string>
+           <string>High current(A)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QCheckBox" name="checkBox_3">
+          <property name="text">
+           <string>3D roll up/down enable</string>
           </property>
          </widget>
         </item>
@@ -178,6 +136,41 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>duty list(%)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lineEdit_15">
+          <property name="text">
+           <string>10,20,30,100,200,300</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lineEdit_13">
+          <property name="text">
+           <string>10,20,30</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>rise/fall time(nSec)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>Delay time(Sec)</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
          <widget class="QLineEdit" name="lineEdit_18">
           <property name="text">
@@ -185,17 +178,38 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_14">
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="lineEdit_21">
           <property name="text">
-           <string>slew rate(nSec)</string>
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Frequency_list (Khz)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Low current(A)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>Cooldown time(Sec)</string>
           </property>
          </widget>
         </item>
         <item row="7" column="1">
-         <widget class="QCheckBox" name="checkBox_3">
+         <widget class="QLineEdit" name="lineEdit_22">
           <property name="text">
-           <string>3D roll up/down enable</string>
+           <string>1</string>
           </property>
          </widget>
         </item>
@@ -479,6 +493,9 @@
          <property name="text">
           <string>filename include trimstamp</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="3" column="2">
@@ -493,8 +510,14 @@
        </item>
        <item row="2" column="1">
         <widget class="QCheckBox" name="checkBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>filename include transinet condition</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -508,7 +531,7 @@
        <item row="0" column="1" colspan="2">
         <widget class="QLineEdit" name="lineEdit_26">
          <property name="text">
-          <string>C:\temp\</string>
+          <string>C:/temp</string>
          </property>
         </widget>
        </item>
