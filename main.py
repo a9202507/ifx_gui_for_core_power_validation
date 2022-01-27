@@ -26,7 +26,7 @@ class DB410_3d_thread(QThread):
         DB410_3d_function.DB410_3d_function(fungen_resource_name=myWin.parameter_setting_function_gen_resource_name,
                                             scope_resource_name=myWin.parameter_setting_scope_resource_name ,
                                             folder_name_in_inst=myWin.parameter_setting_folder_in_inst,
-                                            file_name=myWin.parameter_setting_filename+str(myWin.parameter_main_high_current)+"A_"+str(myWin.parameter_main_low_current)+"A_"+f"Gain{myWin.parameter_main_gain}mVA",
+                                            file_name=myWin.parameter_setting_filename+str(myWin.parameter_main_high_current)+"A_"+str(myWin.parameter_main_low_current)+"A_"+f"Gain{myWin.parameter_main_gain}mVA_",
                                             high_voltage_v=myWin.parameter_main_high_current * myWin.parameter_main_gain / 1000,
                                             low_voltage_v=myWin.parameter_main_low_current* myWin.parameter_main_gain/1000,
                                             freq_khz_list=myWin.parameter_main_freq_list,
