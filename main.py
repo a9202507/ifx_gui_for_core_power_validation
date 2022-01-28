@@ -65,6 +65,10 @@ class DB410_3d_thread(QThread):
                     myWin.parameter_setting_function_gen_resource_name, True)
 
                 time.sleep(myWin.parameter_main_delay_time_sec)
+                myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
+                                             myWin.parameter_setting_filename,
+                                             myWin.parameter_setting_filename_include_timestamp
+                                             )
                 myWin.run_function_gen(
                     myWin.parameter_setting_function_gen_resource_name, False)
         self.DB410_process_bar.emit(100)
@@ -99,6 +103,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_6.clicked.connect(self.update_equipment_on_combox)
         self.pushButton_2.clicked.connect(
             self.send_function_gen_command_one_time)
+        self.pushButton_7.clicked.connect(
+            self.update_GUI_then_save_waveform_in_scope)
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
         self.actionAbout_the_GUI.triggered.connect(self.about_the_GUI)
@@ -121,6 +127,21 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
         if self.debug == True:
             self.push_msg_to_GUI("==debugging mode==")
+
+    def update_GUI_then_save_waveform_in_scope(self):
+        self.update_GUI()
+        self.save_waveform_in_scope(self.parameter_setting_folder_in_inst,
+                                    self.parameter_setting_filename, self.parameter_setting_filename_include_timestamp)
+
+    def save_waveform_in_scope(self, filefolder, filename, timestamp=True):
+        self.scope = myvisa.tek_visa_mso_escope(
+            self.parameter_setting_scope_resource_name)
+
+        # save waveform
+        if self.debug == True:
+            self.push_msg_to_GUI(
+                f"save waveform in main page GUI: {filefolder}, {filename}, {timestamp}")
+        self.scope.save_waveform_in_inst(filefolder, filename, timestamp)
 
     def set_process_bar(self, data):
         self.progressBar.setValue(data)
@@ -302,7 +323,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    myWin = MyMainWindow(debug=True)
+    myWin = MyMainWindow(debug=False)
 
     myWin.show()
 
