@@ -1,8 +1,9 @@
 # Rev2022.1.27 for beta release
 # a9202507@gmail.com
 
+from socket import MsgFlag
 import sys
-from PySide2.QtCore import QThread
+from PySide2.QtCore import QThread, Signal
 from PySide2.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
 import PySide2_DB410_ui
 import json
@@ -10,20 +11,26 @@ import os
 import visa_function as myvisa
 import pandas as pd
 import DB410_3d_function
+import pandas
+import time
 
 
 class DB410_3d_thread(QThread):
-    # vr3d_to_enable_abort = pyqtSignal(bool)
+    DB410_msg = Signal(str)
+    DB410_process_bar = Signal(int)
+
     def __init__(self):
         QThread.__init__(self)
+        #self.DB410_msg = Signal(str)
 
     def __del__(self):
         self.wait()
 
     def run(self):
-        pass
+        self.DB410_msg.emit("==run 3D test==")
         myWin.update_GUI()
 
+        '''
         if myWin.debug == True:
             print(
                 f"type myWin.parameter_main_high_current={myWin.parameter_main_high_current}")
@@ -44,11 +51,32 @@ class DB410_3d_thread(QThread):
                                             file_name_with_timestamp=myWin.parameter_setting_filename_include_timestamp,
                                             debug=myWin.debug,
                                             )
+                                            '''
+        freq_list_len = len(myWin.parameter_main_freq_list)
+        duty_list_len = len(myWin.parameter_main_duty_list)
+
+        for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
+            for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
+
+                self.DB410_msg.emit(f"Freq={str(freq)}, Duty={str(duty)}")
+                self.DB410_process_bar.emit(
+                    int((duty_idx+freq_idx*duty_list_len)/(freq_list_len*duty_list_len)*100))
+
+                time.sleep(myWin.parameter_main_delay_time_sec)
+        self.DB410_process_bar.emit(100)
+        '''
+        for i in range(1, 100):
+            self.DB410_msg.emit(str(i))
+
+            self.DB410_process_bar.emit(int(i/3))
+            time.sleep(0.1)
+        '''
+        self.DB410_msg.emit("==3D test finish==")
 
     def stop(self):
-        self.terminate()
-
-    def stop(self):
+        self.DB410_msg.emit("==3D test stop==")
+        self.DB410_process_bar.emit(0)
+        # todo
         self.terminate()
 
 
@@ -84,19 +112,24 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
         # initial thread
         self.function_gen_3d = DB410_3d_thread()
+        self.function_gen_3d.DB410_msg.connect(self.push_msg_to_GUI)
+        self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         if self.debug == True:
             self.push_msg_to_GUI("==debugging mode==")
 
+    def set_process_bar(self, data):
+        self.progressBar.setValue(data)
+
     def run_function_gen_3d_thread(self):
-        self.push_msg_to_GUI("run function gen 3d")
+        #self.push_msg_to_GUI("run function gen 3d")
         self.update_GUI()
         self.function_gen_3d.start()
         # self.myprogpressbar.start()
 
     def stop_function_gen_3d_thread(self):
         self.function_gen_3d.stop()
-        self.push_msg_to_GUI("stop the 3d test")
+        #self.push_msg_to_GUI("stop the 3d test")
 
     def send_function_gen_command_one_time(self):
         function_gen = myvisa.tek_visa_functionGen(
