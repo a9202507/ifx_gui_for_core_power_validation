@@ -1,13 +1,13 @@
 {
-    "parameter_main_high_current": "33",
-    "parameter_main_low_current": "10",
-    "parameter_main_gain": "1",
+    "parameter_main_high_current": 33.0,
+    "parameter_main_low_current": 10.0,
+    "parameter_main_gain": 1.0,
     "parameter_main_duty_list": [
         10,
         20,
         30
     ],
-    "parameter_main_slew_nsec": "9",
+    "parameter_main_rise_fall_time_nsec": 9.0,
     "parameter_main_freq_list": [
         10,
         20,
@@ -16,6 +16,13 @@
         200,
         300
     ],
-    "parameter_main_delay_time_sec": "1",
-    "roll_up_down_enable": false
+    "parameter_main_delay_time_sec": 1.0,
+    "parameter_main_roll_up_down_enable": false,
+    "parameter_main_cooldown_time_sec": 3.0,
+    "parameter_setting_scope_resource_name": "",
+    "parameter_setting_function_gen_resource_name": "",
+    "parameter_setting_folder_in_inst": "D:/2800",
+    "parameter_setting_filename": "IFX_DB410_RC1",
+    "parameter_setting_filename_include_timestamp": true,
+    "parameter_setting_filename_include_transient": true
 }
