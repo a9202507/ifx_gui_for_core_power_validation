@@ -61,8 +61,12 @@ class DB410_3d_thread(QThread):
                 self.DB410_msg.emit(f"Freq={str(freq)}, Duty={str(duty)}")
                 self.DB410_process_bar.emit(
                     int((duty_idx+freq_idx*duty_list_len)/(freq_list_len*duty_list_len)*100))
+                myWin.run_function_gen(
+                    myWin.parameter_setting_function_gen_resource_name, True)
 
                 time.sleep(myWin.parameter_main_delay_time_sec)
+                myWin.run_function_gen(
+                    myWin.parameter_setting_function_gen_resource_name, False)
         self.DB410_process_bar.emit(100)
         '''
         for i in range(1, 100):
@@ -87,7 +91,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setupUi(self)
 
         # set windowTitle
-        self.setWindowTitle("DB410 Rev.2022.01.27")
+        self.setWindowTitle("DB410 Rev.2022.01.28 Beta")
 
         # self.pushButton_8.clicked.connect(self.create_visa_equipment)
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
@@ -131,25 +135,34 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.stop()
         #self.push_msg_to_GUI("stop the 3d test")
 
-    def send_function_gen_command_one_time(self):
-        function_gen = myvisa.tek_visa_functionGen(
+    def run_function_gen(self, function_gen_resource_name, on_off):
+        self.function_gen = myvisa.tek_visa_functionGen(
             self.comboBox_2.currentText())
-        function_gen.set_duty(self.lineEdit_5.text())
-        function_gen.set_freq(self.lineEdit_8.text())
+
+        if on_off == True:
+            self.function_gen.on()
+        else:
+            self.function_gen.off()
+
+    def send_function_gen_command_one_time(self):
+        self.function_gen = myvisa.tek_visa_functionGen(
+            self.comboBox_2.currentText())
+        self.function_gen.set_duty(self.lineEdit_5.text())
+        self.function_gen.set_freq(self.lineEdit_8.text())
 
         high_voltage_value = float(
             self.lineEdit_16.text())*float(self.lineEdit_17.text())/1000
         low_voltage_value = float(self.lineEdit.text()) * \
             float(self.lineEdit_17.text())/1000
-        function_gen.set_voltage_high(str(high_voltage_value))
-        function_gen.set_voltage_low(str(low_voltage_value))
-        function_gen.set_rise_time_ns(self.lineEdit_6.text())
-        function_gen.set_fall_time_ns(self.lineEdit_4.text())
+        self.function_gen.set_voltage_high(str(high_voltage_value))
+        self.function_gen.set_voltage_low(str(low_voltage_value))
+        self.function_gen.set_rise_time_ns(self.lineEdit_6.text())
+        self.function_gen.set_fall_time_ns(self.lineEdit_4.text())
 
         if self.comboBox_3.currentText() == "on":
-            function_gen.on()
+            self.function_gen.on()
         else:
-            function_gen.off()
+            self.function_gen.off()
 
     def create_visa_equipment(self):
         if self.comboBox.currentText() != "":
