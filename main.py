@@ -23,6 +23,10 @@ class DB410_3d_thread(QThread):
     def run(self):
         pass
         myWin.update_GUI()
+
+        if myWin.debug == True:
+            print(
+                f"type myWin.parameter_main_high_current={myWin.parameter_main_high_current}")
         DB410_3d_function.DB410_3d_function(fungen_resource_name=myWin.parameter_setting_function_gen_resource_name,
                                             scope_resource_name=myWin.parameter_setting_scope_resource_name,
                                             folder_name_in_inst=myWin.parameter_setting_folder_in_inst,
@@ -33,8 +37,8 @@ class DB410_3d_thread(QThread):
                                             low_voltage_v=myWin.parameter_main_low_current * myWin.parameter_main_gain/1000,
                                             freq_khz_list=myWin.parameter_main_freq_list,
                                             duty_list=myWin.parameter_main_duty_list,
-                                            rise_time_ns=myWin.parameter_main_rise_fall_nsec,
-                                            fall_time_ns=myWin.parameter_main_rise_fall_nsec,
+                                            rise_time_ns=myWin.parameter_main_rise_fall_time_nsec,
+                                            fall_time_ns=myWin.parameter_main_rise_fall_time_nsec,
                                             delay_time_sec=myWin.parameter_main_delay_time_sec,
                                             cool_down_time_sec=myWin.parameter_main_cooldown_time_sec,
                                             file_name_with_timestamp=myWin.parameter_setting_filename_include_timestamp,
