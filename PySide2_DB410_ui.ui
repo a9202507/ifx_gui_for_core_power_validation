@@ -32,7 +32,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../VR14_PyGUI/Gen5_VR14-beta/IFX_LOGO_RGB.jpg</pixmap>
+     <pixmap>../../../../Users/Echen3/.designer/VR14_PyGUI/Gen5_VR14-beta/IFX_LOGO_RGB.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -396,12 +396,12 @@
          <widget class="QComboBox" name="comboBox_3">
           <item>
            <property name="text">
-            <string>on</string>
+            <string>off</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>off</string>
+            <string>on</string>
            </property>
           </item>
          </widget>

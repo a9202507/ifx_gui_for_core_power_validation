@@ -61,16 +61,15 @@ class DB410_3d_thread(QThread):
                 self.DB410_msg.emit(f"Freq={str(freq)}, Duty={str(duty)}")
                 self.DB410_process_bar.emit(
                     int((duty_idx+freq_idx*duty_list_len)/(freq_list_len*duty_list_len)*100))
-                myWin.run_function_gen(
-                    myWin.parameter_setting_function_gen_resource_name, True)
+
+                myWin.send_function_gen_command_one_time(freq, duty, True)
 
                 time.sleep(myWin.parameter_main_delay_time_sec)
                 myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
                                              myWin.parameter_setting_filename,
                                              myWin.parameter_setting_filename_include_timestamp
                                              )
-                myWin.run_function_gen(
-                    myWin.parameter_setting_function_gen_resource_name, False)
+                myWin.send_function_gen_command_one_time(freq, duty, False)
         self.DB410_process_bar.emit(100)
         '''
         for i in range(1, 100):
@@ -95,14 +94,14 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setupUi(self)
 
         # set windowTitle
-        self.setWindowTitle("DB410 Rev.2022.01.28 Beta")
+        self.setWindowTitle("DB410 Rev.2022.01.30 Beta")
 
         # self.pushButton_8.clicked.connect(self.create_visa_equipment)
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
         self.pushButton_4.clicked.connect(self.stop_function_gen_3d_thread)
         self.pushButton_6.clicked.connect(self.update_equipment_on_combox)
         self.pushButton_2.clicked.connect(
-            self.send_function_gen_command_one_time)
+            self.update_GUI_then_send_function_gen)
         self.pushButton_7.clicked.connect(
             self.update_GUI_then_save_waveform_in_scope)
         self.actionLoad_config.triggered.connect(self.load_config)
@@ -156,20 +155,33 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.stop()
         #self.push_msg_to_GUI("stop the 3d test")
 
-    def run_function_gen(self, function_gen_resource_name, on_off):
+    def run_function_gen(self, function_gen_resource_name, high_voltage, low_voltage, freq, duty, rise_time, fall_time, on_off=False):
         self.function_gen = myvisa.tek_visa_functionGen(
             self.comboBox_2.currentText())
+        #self.function_gen.set_voltage_high = high_voltage
+        #self.function_gen.set_voltage_low = low_voltage
+        self.function_gen.set_freq = str(freq)
+        self.function_gen.set_duty = str(duty)
+        self.function_gen.set_rise_time_ns = str(rise_time)
+        self.function_gen.set_fall_time_ns = str(fall_time)
+        print(
+            f"run_function_gen freq{freq}duty{duty}rise{rise_time}fala{fall_time}")
 
         if on_off == True:
             self.function_gen.on()
         else:
             self.function_gen.off()
 
-    def send_function_gen_command_one_time(self):
+    def update_GUI_then_send_function_gen(self):
+        self.update_GUI()
+        self.send_function_gen_command_one_time(
+            self.lineEdit_8.text(), self.lineEdit_5.text(), self.comboBox_3.currentIndex())
+
+    def send_function_gen_command_one_time(self, freq, duty, on_off=False):
         self.function_gen = myvisa.tek_visa_functionGen(
             self.comboBox_2.currentText())
-        self.function_gen.set_duty(self.lineEdit_5.text())
-        self.function_gen.set_freq(self.lineEdit_8.text())
+        self.function_gen.set_duty(duty)
+        self.function_gen.set_freq(freq)
 
         high_voltage_value = float(
             self.lineEdit_16.text())*float(self.lineEdit_17.text())/1000
@@ -180,7 +192,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen.set_rise_time_ns(self.lineEdit_6.text())
         self.function_gen.set_fall_time_ns(self.lineEdit_4.text())
 
-        if self.comboBox_3.currentText() == "on":
+        if on_off == True:
             self.function_gen.on()
         else:
             self.function_gen.off()
@@ -323,7 +335,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    myWin = MyMainWindow(debug=False)
+    myWin = MyMainWindow(debug=True)
 
     myWin.show()
 

@@ -395,8 +395,8 @@ class Ui_MainWindow(object):
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"duct (%)", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"On/Off", None))
         self.lineEdit.setText(QCoreApplication.translate("MainWindow", u"10", None))
-        self.comboBox_3.setItemText(0, QCoreApplication.translate("MainWindow", u"on", None))
-        self.comboBox_3.setItemText(1, QCoreApplication.translate("MainWindow", u"off", None))
+        self.comboBox_3.setItemText(0, QCoreApplication.translate("MainWindow", u"off", None))
+        self.comboBox_3.setItemText(1, QCoreApplication.translate("MainWindow", u"on", None))
 
         self.lineEdit_8.setText(QCoreApplication.translate("MainWindow", u"10", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Low current(A)", None))
