@@ -90,7 +90,7 @@ class DB410_3d_thread(QThread):
 class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def __init__(self, parent=None, debug=False):
         super(MyMainWindow, self).__init__(parent)
-        self.setFixedSize(516, 900)
+        self.setFixedSize(730, 900)
         self.setupUi(self)
 
         # set windowTitle
@@ -280,15 +280,15 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             json_data = json.load(j)
             if self.debug == True:
                 self.push_msg_to_GUI(str(json_data))
-            self.lineEdit_18.setText(
-                str(json_data["parameter_main_high_current"]))
-            self.lineEdit_3.setText(
-                str(json_data["parameter_main_low_current"]))
-            self.lineEdit_12.setText(str(json_data["parameter_main_gain"]))
+            # self.lineEdit_18.setText(
+            # str(json_data["parameter_main_high_current"]))
+            # self.lineEdit_3.setText(
+            # str(json_data["parameter_main_low_current"]))
+            # self.lineEdit_12.setText(str(json_data["parameter_main_gain"]))
             self.lineEdit_13.setText(
                 str(json_data["parameter_main_duty_list"])[1:-1])
-            self.lineEdit_14.setText(str(
-                json_data["parameter_main_rise_fall_time_nsec"]))
+            # self.lineEdit_14.setText(str(
+            # json_data["parameter_main_rise_fall_time_nsec"]))
             self.lineEdit_15.setText(
                 str(json_data["parameter_main_freq_list"])[1:-1])
             self.lineEdit_21.setText(str(
@@ -310,13 +310,13 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def update_GUI(self):
         # get GUI import
         # main page
-        self.parameter_main_high_current = float(self.lineEdit_18.text())
-        self.parameter_main_low_current = float(self.lineEdit_3.text())
-        self.parameter_main_gain = float(self.lineEdit_12.text())
+        #self.parameter_main_high_current = float(self.lineEdit_18.text())
+        #self.parameter_main_low_current = float(self.lineEdit_3.text())
+        #self.parameter_main_gain = float(self.lineEdit_12.text())
         self.parameter_main_duty_list = eval(
             "["+str(self.lineEdit_13.text())+"]")
-        self.parameter_main_rise_fall_time_nsec = float(
-            self.lineEdit_14.text())
+        # self.parameter_main_rise_fall_time_nsec = float(
+        #    self.lineEdit_14.text())
         self.parameter_main_freq_list = eval(
             "["+str(self.lineEdit_15.text())+"]")
         self.parameter_main_delay_time_sec = float(self.lineEdit_21.text())
