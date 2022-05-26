@@ -53,7 +53,7 @@
      </font>
     </property>
     <property name="text">
-     <string>DB410 engineering GUI</string>
+     <string>LoadSlammer GUI</string>
     </property>
    </widget>
    <widget class="QTabWidget" name="tabWidget">
@@ -211,48 +211,6 @@
        <string>Function Generator setting</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_18">
-         <property name="text">
-          <string>High current(A)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_16">
-         <property name="text">
-          <string>20</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Low current(A)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit">
-         <property name="text">
-          <string>10</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>Gain mV/A</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_17">
-         <property name="text">
-          <string>10</string>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_6">
          <property name="text">
@@ -260,45 +218,10 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit_6">
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_9">
          <property name="text">
-          <string>765</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>fall time(nSec)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit_4">
-         <property name="text">
-          <string>10</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>duct (%)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="lineEdit_5">
-         <property name="text">
-          <string>9</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Frequency(Khz)</string>
+          <string>On/Off</string>
          </property>
         </widget>
        </item>
@@ -309,10 +232,41 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_9">
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEdit_16">
          <property name="text">
-          <string>On/Off</string>
+          <string>20</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="lineEdit_5">
+         <property name="text">
+          <string>9</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="text">
+          <string>10</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Low current(A)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0" colspan="2">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>send command to function generator one time</string>
          </property>
         </widget>
        </item>
@@ -330,13 +284,79 @@
          </item>
         </widget>
        </item>
-       <item row="8" column="0" colspan="2">
-        <widget class="QPushButton" name="pushButton_2">
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="lineEdit_4">
+         <property name="text">
+          <string>10</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="lineEdit_17">
+         <property name="text">
+          <string>10</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_18">
+         <property name="text">
+          <string>High current(A)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Gain mV/A</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Frequency(Khz)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="lineEdit_6">
+         <property name="text">
+          <string>765</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>fall time(nSec)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>duct (%)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QPushButton" name="pushButton_3">
          <property name="enabled">
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>send command to function generator one time</string>
+          <string>On</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QPushButton" name="pushButton_5">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Off</string>
          </property>
         </widget>
        </item>
@@ -346,9 +366,9 @@
       <property name="geometry">
        <rect>
         <x>380</x>
-        <y>40</y>
+        <y>20</y>
         <width>301</width>
-        <height>571</height>
+        <height>591</height>
        </rect>
       </property>
      </widget>
@@ -362,7 +382,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>461</width>
+        <width>471</width>
         <height>141</height>
        </rect>
       </property>
@@ -406,36 +426,43 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>489</y>
-        <width>461</width>
-        <height>181</height>
+        <y>170</y>
+        <width>473</width>
+        <height>174</height>
        </rect>
       </property>
       <property name="title">
        <string>Misc</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="3" column="1">
-        <widget class="QCheckBox" name="checkBox_2">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="checkBox_4">
          <property name="text">
-          <string>filename include trimstamp</string>
+          <string>Save as MSO</string>
          </property>
          <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="pushButton_7">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="checkBox_5">
          <property name="text">
-          <string>Send a command</string>
+          <string>Save as PC</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>output filename</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
         <widget class="QCheckBox" name="checkBox">
          <property name="enabled">
           <bool>false</bool>
@@ -448,10 +475,30 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_8">
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="checkBox_2">
          <property name="text">
-          <string>output filename</string>
+          <string>filename include trimstamp</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Save waveform once</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QLineEdit" name="lineEdit_27">
+         <property name="text">
+          <string>C:/temp</string>
          </property>
         </widget>
        </item>
@@ -462,17 +509,55 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_21">
-         <property name="text">
-          <string>Save as MSO:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
+       <item row="2" column="1" colspan="2">
         <widget class="QLineEdit" name="lineEdit_7">
          <property name="text">
           <string>IFX_DB410_</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>10</y>
+        <width>181</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>test only</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_9">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>pushButton_9</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_10">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>pushButton_10</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_11">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>pushButton_11</string>
          </property>
         </widget>
        </item>
@@ -487,7 +572,7 @@
      <x>0</x>
      <y>0</y>
      <width>723</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuabout">
