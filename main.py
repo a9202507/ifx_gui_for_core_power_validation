@@ -1,6 +1,7 @@
 # Rev2022.1.27 for beta release
 # a9202507@gmail.com
 
+from cgitb import enable
 from socket import MsgFlag
 import sys
 from PySide2.QtCore import QThread, Signal
@@ -90,18 +91,17 @@ class DB410_3d_thread(QThread):
 class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def __init__(self, parent=None, debug=False):
         super(MyMainWindow, self).__init__(parent)
-        self.setFixedSize(730, 900)
+        self.setFixedSize(730, 850)
         self.setupUi(self)
 
         # set windowTitle
-        self.setWindowTitle("DB410 Rev.2022.01.30 Beta")
+        self.setWindowTitle("DB410 Rev.2022.05.30 Beta")
 
         # self.pushButton_8.clicked.connect(self.create_visa_equipment)
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
         self.pushButton_4.clicked.connect(self.stop_function_gen_3d_thread)
         self.pushButton_6.clicked.connect(self.update_equipment_on_combox)
-        self.pushButton_2.clicked.connect(
-            self.update_GUI_then_send_function_gen)
+
         self.pushButton_7.clicked.connect(
             self.update_GUI_then_save_waveform_in_scope)
         self.actionLoad_config.triggered.connect(self.load_config)
@@ -109,6 +109,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.actionAbout_the_GUI.triggered.connect(self.about_the_GUI)
         self.about_the_gui_text = "powered by PySide2 and Python3."
         self.debug = debug
+        # set off_RadioButton is checked.
+        self.radioButton_2.setChecked(True)
 
         # start-up function
         self.update_equipment_on_combox()
@@ -118,6 +120,12 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.path_file_list = list()
         self.path_file_list.append(self.path+"\init.json")
         self.load_config_from_filename(self.path_file_list)
+
+        # functionGen
+        self.radioButton.toggled.connect(
+            self.update_GUI_then_send_to_function_gen_on)
+        self.radioButton_2.toggled.connect(
+            self.update_GUI_then_send_to_function_gen_off)
 
         # initial thread
         self.function_gen_3d = DB410_3d_thread()
@@ -176,6 +184,17 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.update_GUI()
         self.send_function_gen_command_one_time(
             self.lineEdit_8.text(), self.lineEdit_5.text(), self.comboBox_3.currentIndex())
+
+    def update_GUI_then_send_to_function_gen_on(self):
+        self.update_GUI_then_send_to_function_gen(function_output_enable=True)
+
+    def update_GUI_then_send_to_function_gen_off(self):
+        self.update_GUI_then_send_to_function_gen(function_output_enable=False)
+
+    def update_GUI_then_send_to_function_gen(self, function_output_enable):
+        self.update_GUI()
+        self.send_function_gen_command_one_time(self.lineEdit_8.text(
+        ), self.lineEdit_5.text(), function_output_enable)
 
     def send_function_gen_command_one_time(self, freq, duty, on_off=False):
         self.function_gen = myvisa.tek_visa_functionGen(
