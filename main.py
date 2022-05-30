@@ -71,6 +71,7 @@ class DB410_3d_thread(QThread):
                                              myWin.parameter_setting_filename_include_timestamp
                                              )
                 myWin.send_function_gen_command_one_time(freq, duty, False)
+                time.sleep(myWin.parameter_main_cooldown_time_sec)
         self.DB410_process_bar.emit(100)
         '''
         for i in range(1, 100):
