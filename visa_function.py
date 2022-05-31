@@ -100,8 +100,10 @@ class tek_visa_mso_escope(visa_equipment):
     def set_channel_measure_items(self):
         pass
 
-    def get_measurement_value(self):
-        pass
+    def get_measurement_value(self,item_number="1",measure_item_type="max"):
+        measure_type_dict={"max":"MAXIMUM","min":"MINIMUM","mean":"MEAN"}
+        result=self.inst.query("MEASUrement:MEAS"+item_number+":"+measure_type_dict[measure_item_type]+"?")
+        return result
 
     def set_channel_timescale(self):
         pass
@@ -139,8 +141,10 @@ if __name__ == '__main__':
     print(devices)
     # escope=create_visa_equipment(devices[0])
     # print(escope.query('*IDN?'))
-    fungen = tek_visa_functionGen(devices[4])
+    #fungen = tek_visa_functionGen(devices[4])
     scope = tek_visa_mso_escope(devices[0])
+
+    '''
     freqs = [10, 20, 100, 200]
     dutys = [10, 20, 50]
 
@@ -157,3 +161,11 @@ if __name__ == '__main__':
             time.sleep(5)
             fungen.off()
             time.sleep(2)
+            
+
+    
+>>> scope.inst.query("MEASUrement:MEAS1:MAXIMUM?")
+'550.0000E-3\n'
+>>> scope.inst.query("MEASUrement:MEAS1:MEAN?")
+
+'''

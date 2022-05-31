@@ -65,12 +65,18 @@ class DB410_3d_thread(QThread):
 
                 myWin.send_function_gen_command_one_time(freq, duty, True)
 
+                # for transinet duration time.
                 time.sleep(myWin.parameter_main_delay_time_sec)
+
                 myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
                                              myWin.parameter_setting_filename,
                                              myWin.parameter_setting_filename_include_timestamp
                                              )
+                # for save wavefrom delay time
+                time.sleep(myWin.parameter_main_delay_time_sec)
                 myWin.send_function_gen_command_one_time(freq, duty, False)
+
+                # for transient off duration time
                 time.sleep(myWin.parameter_main_cooldown_time_sec)
         self.DB410_process_bar.emit(100)
         '''
