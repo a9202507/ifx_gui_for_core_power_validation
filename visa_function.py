@@ -5,9 +5,15 @@ from datetime import datetime
 rm = pyvisa.ResourceManager()
 
 
-def get_visa_resource_list():
+def get_visa_resource_list(remove_ASRL_devices=False):
     rm = pyvisa.ResourceManager()
     device_list = rm.list_resources()
+
+    if remove_ASRL_devices == True:
+        filtered = filter(lambda device: "ASRL" not in device, device_list)
+        device_list = list(filtered)
+    else:
+        pass
 
     return device_list
 
@@ -22,7 +28,6 @@ class visa_equipment():
     def __init__(self, visa_resource_name):
         self.visa_resource_name = visa_resource_name
         self.inst = pyvisa.ResourceManager().open_resource(self.visa_resource_name)
-        
 
     def write(self, visa_str=""):
         self.inst.write(visa_str)
@@ -31,8 +36,9 @@ class visa_equipment():
         self.inst.query(visa_str)
 
     def get_equipment_name(self):
-        self.equipment_name=self.inst.query("*IDN?")
+        self.equipment_name = self.inst.query("*IDN?")
         return self.equipment_name
+
 
 class tek_visa_equipment(visa_equipment):
     def __init__(self, visa_resource_name):
@@ -104,9 +110,13 @@ class tek_visa_mso_escope(visa_equipment):
     def set_channel_measure_items(self):
         pass
 
-    def get_measurement_value(self,item_number="1",measure_item_type="max"):
-        measure_type_dict={"max":"MAXIMUM","min":"MINIMUM","mean":"MEAN"}
-        result=self.inst.query("MEASUrement:MEAS"+item_number+":"+measure_type_dict[measure_item_type]+"?")
+    def get_measurement_value(self, item_number="1", measure_item_type="max"):
+        measure_type_dict = {"max": "MAXIMUM",
+                             "min": "MINIMUM",
+                             "mean": "MEAN",
+                             "value": "value", }
+        result = self.inst.query(
+            "MEASUrement:MEAS"+str(item_number)+":"+measure_type_dict[measure_item_type]+"?")
         return result
 
     def set_channel_timescale(self):

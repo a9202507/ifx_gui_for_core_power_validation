@@ -74,6 +74,8 @@ class DB410_3d_thread(QThread):
                                              )
                 # for save wavefrom delay time
                 time.sleep(myWin.parameter_main_delay_time_sec)
+                self.DB410_msg.emit(
+                    myWin.get_scope_meansurement_value(1, "mean"))
                 myWin.send_function_gen_command_one_time(freq, duty, False)
 
                 # for transient off duration time
@@ -160,6 +162,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.push_msg_to_GUI(
                 f"save waveform in main page GUI: {filefolder}, {filename}, {timestamp}")
         self.scope.save_waveform_in_inst(filefolder, filename, timestamp)
+
+    def get_scope_meansurement_value(self, item_number=1, measure_item_type="max"):
+        result = self.scope.get_measurement_value(
+            item_number=item_number, measure_item_type=measure_item_type)
+        return result
 
     def set_process_bar(self, data):
         self.progressBar.setValue(data)
@@ -255,7 +262,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.comboBox_2.addItems(self.resource_list)
 
     def get_visa_resource(self):
-        self.resource_list = myvisa.get_visa_resource_list()
+
+        self.resource_list = myvisa.get_visa_resource_list(
+            not self.debug)
         if self.debug == True:
             self.push_msg_to_GUI(self.resource_list)
 
@@ -371,16 +380,18 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.parameter_setting_filename_include_transient = self.checkBox.isChecked()
 
     def update_function_gen_name(self):
-        self.function_gen = myvisa.tek_visa_functionGen(
-            self.comboBox_2.currentText())
-        device_name = self.function_gen.get_equipment_name()
-        self.lineEdit_29.setText(device_name)
+        if self.comboBox_2.currentText() != "":
+            self.function_gen = myvisa.tek_visa_functionGen(
+                self.comboBox_2.currentText())
+            device_name = self.function_gen.get_equipment_name()
+            self.lineEdit_29.setText(device_name)
 
     def update_escope_name(self):
-        self.function_gen = myvisa.tek_visa_functionGen(
-            self.comboBox.currentText())
-        device_name = self.function_gen.get_equipment_name()
-        self.lineEdit_28.setText(device_name)
+        if self.comboBox.currentText() != "":
+            self.function_gen = myvisa.tek_visa_functionGen(
+                self.comboBox.currentText())
+            device_name = self.function_gen.get_equipment_name()
+            self.lineEdit_28.setText(device_name)
 
 
 if __name__ == "__main__":
