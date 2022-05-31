@@ -102,12 +102,16 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setupUi(self)
 
         # set windowTitle
-        self.setWindowTitle("DB410 Rev.2022.05.30 Beta")
+        self.setWindowTitle("DB410 Rev.2022.05.31 Beta")
 
         # self.pushButton_8.clicked.connect(self.create_visa_equipment)
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
         self.pushButton_4.clicked.connect(self.stop_function_gen_3d_thread)
         self.pushButton_6.clicked.connect(self.update_equipment_on_combox)
+        self.comboBox_2.currentIndexChanged.connect(
+            self.update_function_gen_name)
+        self.comboBox.currentIndexChanged.connect(
+            self.update_escope_name)
 
         self.pushButton_7.clicked.connect(
             self.update_GUI_then_save_waveform_in_scope)
@@ -193,10 +197,17 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.lineEdit_8.text(), self.lineEdit_5.text(), self.comboBox_3.currentIndex())
 
     def update_GUI_then_send_to_function_gen_on(self):
-        self.update_GUI_then_send_to_function_gen(function_output_enable=True)
+        if self.comboBox_2.currentText() == "":
+            QMessageBox.about(
+                self, "error", "please select fucntion get on Setting page first")
+        else:
+            self.update_GUI_then_send_to_function_gen(
+                function_output_enable=True)
 
     def update_GUI_then_send_to_function_gen_off(self):
-        self.update_GUI_then_send_to_function_gen(function_output_enable=False)
+        if self.comboBox_2.currentText() != "":
+            self.update_GUI_then_send_to_function_gen(
+                function_output_enable=False)
 
     def update_GUI_then_send_to_function_gen(self, function_output_enable):
         self.update_GUI()
@@ -235,7 +246,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def update_equipment_on_combox(self):
         self.get_visa_resource()
         self.comboBox.clear()
+        self.lineEdit_28.clear()
         self.comboBox_2.clear()
+        self.lineEdit_29.clear()
         self.comboBox.addItem("")
         self.comboBox.addItems(self.resource_list)
         self.comboBox_2.addItem("")
@@ -356,6 +369,18 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.parameter_setting_filename = self.lineEdit_7.text()
         self.parameter_setting_filename_include_timestamp = self.checkBox_2.isChecked()
         self.parameter_setting_filename_include_transient = self.checkBox.isChecked()
+
+    def update_function_gen_name(self):
+        self.function_gen = myvisa.tek_visa_functionGen(
+            self.comboBox_2.currentText())
+        device_name = self.function_gen.get_equipment_name()
+        self.lineEdit_29.setText(device_name)
+
+    def update_escope_name(self):
+        self.function_gen = myvisa.tek_visa_functionGen(
+            self.comboBox.currentText())
+        device_name = self.function_gen.get_equipment_name()
+        self.lineEdit_28.setText(device_name)
 
 
 if __name__ == "__main__":

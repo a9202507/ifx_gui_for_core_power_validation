@@ -116,7 +116,7 @@
        <item row="2" column="0">
         <widget class="QLabel" name="label_16">
          <property name="text">
-          <string>Delay time(Sec)</string>
+          <string>Ton duration time(Sec)</string>
          </property>
         </widget>
        </item>
@@ -124,13 +124,6 @@
         <widget class="QLineEdit" name="lineEdit_21">
          <property name="text">
           <string>1</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_17">
-         <property name="text">
-          <string>Cooldown time(Sec)</string>
          </property>
         </widget>
        </item>
@@ -148,6 +141,13 @@
          </property>
          <property name="text">
           <string>3D roll up/down enable</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>Toff duration time(Sec)</string>
          </property>
         </widget>
        </item>
@@ -362,42 +362,62 @@
         <x>10</x>
         <y>10</y>
         <width>471</width>
-        <height>141</height>
+        <height>176</height>
        </rect>
       </property>
       <property name="title">
-       <string>equipments setting</string>
+       <string>Equipments setting</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="label_19">
          <property name="text">
-          <string>Escope </string>
+          <string>Escope</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Function Generator</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
+       <item row="4" column="2">
         <widget class="QPushButton" name="pushButton_6">
          <property name="enabled">
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>re-flash</string>
+          <string>re-scan equipments</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="3">
+        <widget class="QLineEdit" name="lineEdit_28">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
        <item row="0" column="1" colspan="2">
         <widget class="QComboBox" name="comboBox"/>
        </item>
-       <item row="1" column="1" colspan="2">
+       <item row="2" column="1" colspan="2">
         <widget class="QComboBox" name="comboBox_2"/>
+       </item>
+       <item row="3" column="0" colspan="3">
+        <widget class="QLineEdit" name="lineEdit_29">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -405,7 +425,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>170</y>
+        <y>200</y>
         <width>473</width>
         <height>174</height>
        </rect>

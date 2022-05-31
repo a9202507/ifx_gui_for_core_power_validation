@@ -80,11 +80,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.lineEdit_21, 2, 1, 1, 1)
 
-        self.label_17 = QLabel(self.groupBox_3)
-        self.label_17.setObjectName(u"label_17")
-
-        self.gridLayout_3.addWidget(self.label_17, 3, 0, 1, 1)
-
         self.lineEdit_22 = QLineEdit(self.groupBox_3)
         self.lineEdit_22.setObjectName(u"lineEdit_22")
 
@@ -95,6 +90,11 @@ class Ui_MainWindow(object):
         self.checkBox_3.setEnabled(False)
 
         self.gridLayout_3.addWidget(self.checkBox_3, 4, 1, 1, 1)
+
+        self.label_17 = QLabel(self.groupBox_3)
+        self.label_17.setObjectName(u"label_17")
+
+        self.gridLayout_3.addWidget(self.label_17, 3, 0, 1, 1)
 
         self.pushButton_4 = QPushButton(self.tab)
         self.pushButton_4.setObjectName(u"pushButton_4")
@@ -213,7 +213,7 @@ class Ui_MainWindow(object):
         self.tab_2.setObjectName(u"tab_2")
         self.groupBox_2 = QGroupBox(self.tab_2)
         self.groupBox_2.setObjectName(u"groupBox_2")
-        self.groupBox_2.setGeometry(QRect(10, 10, 471, 141))
+        self.groupBox_2.setGeometry(QRect(10, 10, 471, 176))
         self.gridLayout = QGridLayout(self.groupBox_2)
         self.gridLayout.setObjectName(u"gridLayout")
         self.label_19 = QLabel(self.groupBox_2)
@@ -224,13 +224,19 @@ class Ui_MainWindow(object):
         self.label_2 = QLabel(self.groupBox_2)
         self.label_2.setObjectName(u"label_2")
 
-        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
 
         self.pushButton_6 = QPushButton(self.groupBox_2)
         self.pushButton_6.setObjectName(u"pushButton_6")
         self.pushButton_6.setEnabled(True)
 
-        self.gridLayout.addWidget(self.pushButton_6, 2, 2, 1, 1)
+        self.gridLayout.addWidget(self.pushButton_6, 4, 2, 1, 1)
+
+        self.lineEdit_28 = QLineEdit(self.groupBox_2)
+        self.lineEdit_28.setObjectName(u"lineEdit_28")
+        self.lineEdit_28.setEnabled(False)
+
+        self.gridLayout.addWidget(self.lineEdit_28, 1, 0, 1, 3)
 
         self.comboBox = QComboBox(self.groupBox_2)
         self.comboBox.setObjectName(u"comboBox")
@@ -240,11 +246,17 @@ class Ui_MainWindow(object):
         self.comboBox_2 = QComboBox(self.groupBox_2)
         self.comboBox_2.setObjectName(u"comboBox_2")
 
-        self.gridLayout.addWidget(self.comboBox_2, 1, 1, 1, 2)
+        self.gridLayout.addWidget(self.comboBox_2, 2, 1, 1, 2)
+
+        self.lineEdit_29 = QLineEdit(self.groupBox_2)
+        self.lineEdit_29.setObjectName(u"lineEdit_29")
+        self.lineEdit_29.setEnabled(False)
+
+        self.gridLayout.addWidget(self.lineEdit_29, 3, 0, 1, 3)
 
         self.groupBox_4 = QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(u"groupBox_4")
-        self.groupBox_4.setGeometry(QRect(10, 170, 473, 174))
+        self.groupBox_4.setGeometry(QRect(10, 200, 473, 174))
         self.gridLayout_2 = QGridLayout(self.groupBox_4)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.checkBox_4 = QCheckBox(self.groupBox_4)
@@ -359,11 +371,11 @@ class Ui_MainWindow(object):
         self.lineEdit_13.setText(QCoreApplication.translate("MainWindow", u"10,20,30", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"Frequency_list (Khz)", None))
         self.lineEdit_15.setText(QCoreApplication.translate("MainWindow", u"10,20,30,100,200,300", None))
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Delay time(Sec)", None))
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Ton duration time(Sec)", None))
         self.lineEdit_21.setText(QCoreApplication.translate("MainWindow", u"1", None))
-        self.label_17.setText(QCoreApplication.translate("MainWindow", u"Cooldown time(Sec)", None))
         self.lineEdit_22.setText(QCoreApplication.translate("MainWindow", u"1", None))
         self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"3D roll up/down enable", None))
+        self.label_17.setText(QCoreApplication.translate("MainWindow", u"Toff duration time(Sec)", None))
         self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"abort", None))
         self.pushButton_8.setText(QCoreApplication.translate("MainWindow", u"Start ", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Function Generator setting", None))
@@ -386,10 +398,12 @@ class Ui_MainWindow(object):
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"fall time(nSec)", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"Toggle", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"main", None))
-        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"equipments setting", None))
-        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Escope ", None))
+        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Equipments setting", None))
+        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Escope", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Function Generator", None))
-        self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"re-flash", None))
+        self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"re-scan equipments", None))
+        self.lineEdit_28.setText("")
+        self.lineEdit_29.setText("")
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Misc", None))
         self.checkBox_4.setText(QCoreApplication.translate("MainWindow", u"Save as MSO", None))
         self.checkBox_5.setText(QCoreApplication.translate("MainWindow", u"Save as PC", None))
