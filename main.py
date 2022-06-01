@@ -30,6 +30,7 @@ class DB410_3d_thread(QThread):
     def run(self):
         self.DB410_msg.emit("==run 3D test==")
         myWin.update_GUI()
+        myWin.save_waveform_in_scope("", "", False)
 
         '''
         if myWin.debug == True:
@@ -63,6 +64,7 @@ class DB410_3d_thread(QThread):
                 self.DB410_process_bar.emit(
                     int((duty_idx+freq_idx*duty_list_len)/(freq_list_len*duty_list_len)*100))
 
+                # scope horizontal scale
                 myWin.set_horizontal_scale_in_scope(str(1/(freq*1000)))
 
                 myWin.send_function_gen_command_one_time(freq, duty, True)
@@ -82,7 +84,8 @@ class DB410_3d_thread(QThread):
                 # for save wavefrom delay time
                 time.sleep(myWin.parameter_main_delay_time_sec)
                 self.DB410_msg.emit(
-                    myWin.get_scope_meansurement_value(1, "mean"))
+                    "item1 mean vlaue: "+myWin.get_scope_meansurement_value(1, "value"))
+                time.sleep(0.2)
                 myWin.send_function_gen_command_one_time(freq, duty, False)
 
                 # for transient off duration time
@@ -114,6 +117,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
         self.pushButton_4.clicked.connect(self.stop_function_gen_3d_thread)
         self.pushButton_6.clicked.connect(self.update_equipment_on_combox)
+        self.pushButton_5.clicked.connect(self.clear_message_box)
         self.comboBox_2.currentIndexChanged.connect(
             self.update_function_gen_name)
         self.comboBox.currentIndexChanged.connect(
@@ -152,7 +156,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        Window_title = "DB410 Rev.2022.05.31 Beta"
+        Window_title = "IFX loadSlammer GUI Rev.2022.06.01 Beta"
 
         if self.debug == True:
             self.setWindowTitle(Window_title+"_Debug mode")
@@ -318,7 +322,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def load_config(self):
 
         self.get_filename()
-        print(self.filenames[0])
+        # print(self.filenames[0])
         self.load_config_from_filename(self.filenames)
 
     def get_filename(self):
@@ -406,6 +410,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def set_horizontal_scale_in_scope(self, scale_value="1e-6"):
         self.scope.set_horizontal_scale(scale_value)
+
+    def clear_message_box(self):
+        self.textEdit.clear()
 
 
 if __name__ == "__main__":

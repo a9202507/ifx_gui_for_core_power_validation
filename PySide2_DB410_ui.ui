@@ -153,22 +153,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>560</y>
-        <width>121</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>abort</string>
-      </property>
-     </widget>
      <widget class="QProgressBar" name="progressBar">
       <property name="geometry">
        <rect>
@@ -180,22 +164,6 @@
       </property>
       <property name="value">
        <number>24</number>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_8">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>560</y>
-        <width>301</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Start </string>
       </property>
      </widget>
      <widget class="QGroupBox" name="groupBox">
@@ -350,6 +318,51 @@
         <height>521</height>
        </rect>
       </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_7">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>553</y>
+        <width>661</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButton_5">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Clear log</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>abort 3D test</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="pushButton_8">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Start 3D  test</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
