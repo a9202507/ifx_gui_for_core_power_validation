@@ -1,26 +1,34 @@
 {
-    "parameter_main_high_current": 33.0,
+    "parameter_main_high_current": 30.0,
     "parameter_main_low_current": 10.0,
-    "parameter_main_gain": 1.0,
+    "parameter_main_gain": 5.0,
+    "parameter_main_rise_time_nsec": 1200.0,
+    "parameter_main_fall_time_nsec": 1200.0,
+    "parameter_main_duty": 40.0,
+    "parameter_main_frequency": 1.0,
     "parameter_main_duty_list": [
         10,
         20,
-        30
+        30,
+        40,
+        50
     ],
-    "parameter_main_rise_fall_time_nsec": 9.0,
     "parameter_main_freq_list": [
+        1,
         10,
         20,
         30,
+        50,
         100,
         200,
-        300
+        300,
+        500
     ],
-    "parameter_main_delay_time_sec": 1.0,
+    "parameter_main_ton_duration_time_sec": 5.0,
+    "parameter_main_toff_duration_time_sec": 3.0,
     "parameter_main_roll_up_down_enable": false,
-    "parameter_main_cooldown_time_sec": 3.0,
-    "parameter_setting_scope_resource_name": "",
-    "parameter_setting_function_gen_resource_name": "",
+    "parameter_setting_scope_resource_name": "USB0::0x0699::0x0401::C020907::INSTR",
+    "parameter_setting_function_gen_resource_name": "USB0::0x0699::0x034B::C010363::INSTR",
     "parameter_setting_folder_in_inst": "E:/20220531",
     "parameter_setting_filename": "IFX_",
     "parameter_setting_filename_include_timestamp": true,

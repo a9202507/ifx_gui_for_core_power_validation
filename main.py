@@ -1,8 +1,10 @@
-# Rev2022.1.27 for beta release
+# Rev2022.06.01 for beta release
 # a9202507@gmail.com
 
+'''
 from cgitb import enable
 from socket import MsgFlag
+'''
 import sys
 from PySide2.QtCore import QThread, Signal
 from PySide2.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
@@ -70,7 +72,7 @@ class DB410_3d_thread(QThread):
                 myWin.send_function_gen_command_one_time(freq, duty, True)
 
                 # for transinet duration time.
-                time.sleep(myWin.parameter_main_delay_time_sec)
+                time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
                 myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
                                              myWin.parameter_setting_filename + "_" +
@@ -82,14 +84,14 @@ class DB410_3d_thread(QThread):
                                              myWin.parameter_setting_filename_include_timestamp
                                              )
                 # for save wavefrom delay time
-                time.sleep(myWin.parameter_main_delay_time_sec)
+                time.sleep(myWin.parameter_main_ton_duration_time_sec)
                 self.DB410_msg.emit(
                     "item1 mean vlaue: "+myWin.get_scope_meansurement_value(1, "value"))
                 time.sleep(0.2)
                 myWin.send_function_gen_command_one_time(freq, duty, False)
 
                 # for transient off duration time
-                time.sleep(myWin.parameter_main_cooldown_time_sec)
+                time.sleep(myWin.parameter_main_toff_duration_time_sec)
         self.DB410_process_bar.emit(100)
         '''
         for i in range(1, 100):
@@ -295,12 +297,17 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.parameter_dict = {"parameter_main_high_current": self.parameter_main_high_current,
                                "parameter_main_low_current": self.parameter_main_low_current,
                                "parameter_main_gain": self.parameter_main_gain,
+                               "parameter_main_rise_time_nsec": self.parameter_main_rise_time_nsec,
+                               "parameter_main_fall_time_nsec": self.parameter_main_fall_time_nsec,
+                               "parameter_main_duty": self.parameter_main_duty,
+                               "parameter_main_frequency": self.parameter_main_frequency,
+                               # ===========================================================
                                "parameter_main_duty_list": self.parameter_main_duty_list,
-                               "parameter_main_rise_fall_time_nsec": self.parameter_main_rise_fall_time_nsec,
                                "parameter_main_freq_list": self.parameter_main_freq_list,
-                               "parameter_main_delay_time_sec": self.parameter_main_delay_time_sec,
+                               "parameter_main_ton_duration_time_sec": self.parameter_main_ton_duration_time_sec,
+                               "parameter_main_toff_duration_time_sec": self.parameter_main_toff_duration_time_sec,
                                "parameter_main_roll_up_down_enable": self.parameter_main_roll_up_down_enable,
-                               "parameter_main_cooldown_time_sec": self.parameter_main_cooldown_time_sec,
+                               # ===========================================================
                                "parameter_setting_scope_resource_name": self.parameter_setting_scope_resource_name,
                                "parameter_setting_function_gen_resource_name": self.parameter_setting_function_gen_resource_name,
                                "parameter_setting_folder_in_inst": self.parameter_setting_folder_in_inst,
@@ -343,23 +350,29 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             json_data = json.load(j)
             if self.debug == True:
                 self.push_msg_to_GUI(str(json_data))
-            # self.lineEdit_18.setText(
-            # str(json_data["parameter_main_high_current"]))
-            # self.lineEdit_3.setText(
-            # str(json_data["parameter_main_low_current"]))
-            # self.lineEdit_12.setText(str(json_data["parameter_main_gain"]))
+
+            self.lineEdit_16.setText(
+                str(json_data["parameter_main_high_current"]))
+            self.lineEdit.setText(str(json_data["parameter_main_low_current"]))
+            self.lineEdit_17.setText(str(json_data["parameter_main_gain"]))
+            self.lineEdit_6.setText(str(
+                json_data["parameter_main_rise_time_nsec"]))
+            self.lineEdit_4.setText(str(
+                json_data["parameter_main_fall_time_nsec"]))
+            self.lineEdit_5.setText(str(json_data["parameter_main_duty"]))
+            self.lineEdit_8.setText(str(json_data["parameter_main_frequency"]))
+            # =============================
             self.lineEdit_13.setText(
                 str(json_data["parameter_main_duty_list"])[1:-1])
-            # self.lineEdit_14.setText(str(
-            # json_data["parameter_main_rise_fall_time_nsec"]))
             self.lineEdit_15.setText(
                 str(json_data["parameter_main_freq_list"])[1:-1])
             self.lineEdit_21.setText(str(
-                json_data["parameter_main_delay_time_sec"]))
+                json_data["parameter_main_ton_duration_time_sec"]))
+            self.lineEdit_22.setText(str(
+                json_data["parameter_main_toff_duration_time_sec"]))
             self.checkBox_3.setChecked(
                 json_data["parameter_main_roll_up_down_enable"])
-            self.lineEdit_22.setText(str(
-                json_data["parameter_main_cooldown_time_sec"]))
+            # ==================================
             self.lineEdit_26.setText(
                 json_data["parameter_setting_folder_in_inst"])
             self.lineEdit_7.setText(
@@ -376,14 +389,21 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.parameter_main_high_current = float(self.lineEdit_16.text())
         self.parameter_main_low_current = float(self.lineEdit.text())
         self.parameter_main_gain = float(self.lineEdit_17.text())
+        self.parameter_main_rise_time_nsec = float(self.lineEdit_6.text())
+        self.parameter_main_fall_time_nsec = float(self.lineEdit_4.text())
+        self.parameter_main_duty = float(self.lineEdit_5.text())
+        self.parameter_main_frequency = float(self.lineEdit_8.text())
+
+        # ======
         self.parameter_main_duty_list = eval(
             "["+str(self.lineEdit_13.text())+"]")
-        # self.parameter_main_rise_fall_time_nsec = float(
-        #    self.lineEdit_14.text())
+
         self.parameter_main_freq_list = eval(
             "["+str(self.lineEdit_15.text())+"]")
-        self.parameter_main_delay_time_sec = float(self.lineEdit_21.text())
-        self.parameter_main_cooldown_time_sec = float(self.lineEdit_22.text())
+        self.parameter_main_ton_duration_time_sec = float(
+            self.lineEdit_21.text())
+        self.parameter_main_toff_duration_time_sec = float(
+            self.lineEdit_22.text())
         self.parameter_main_roll_up_down_enable = self.checkBox_3.isChecked()
 
         # setting page
