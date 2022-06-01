@@ -22,7 +22,7 @@ class DB410_3d_thread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
-        #self.DB410_msg = Signal(str)
+        # self.DB410_msg = Signal(str)
 
     def __del__(self):
         self.wait()
@@ -63,13 +63,20 @@ class DB410_3d_thread(QThread):
                 self.DB410_process_bar.emit(
                     int((duty_idx+freq_idx*duty_list_len)/(freq_list_len*duty_list_len)*100))
 
+                myWin.set_horizontal_scale_in_scope(str(1/(freq*1000)))
+
                 myWin.send_function_gen_command_one_time(freq, duty, True)
 
                 # for transinet duration time.
                 time.sleep(myWin.parameter_main_delay_time_sec)
 
                 myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
-                                             myWin.parameter_setting_filename,
+                                             myWin.parameter_setting_filename + "_" +
+                                             str(myWin.parameter_main_high_current)+"A_" +
+                                             str(myWin.parameter_main_low_current)+"A_" + "Gain" +
+                                             str(myWin.parameter_main_gain) + "mVa" +
+                                             "_"+str(freq)+"Khz" +
+                                             "_D"+str(duty),
                                              myWin.parameter_setting_filename_include_timestamp
                                              )
                 # for save wavefrom delay time
@@ -103,9 +110,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setFixedSize(730, 850)
         self.setupUi(self)
 
-        # set windowTitle
-        self.setWindowTitle("DB410 Rev.2022.05.31 Beta")
-
         # self.pushButton_8.clicked.connect(self.create_visa_equipment)
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
         self.pushButton_4.clicked.connect(self.stop_function_gen_3d_thread)
@@ -124,6 +128,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.debug = debug
         # set off_RadioButton is checked.
         self.radioButton_2.setChecked(True)
+
+        #
 
         # start-up function
         self.update_equipment_on_combox()
@@ -145,8 +151,13 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_msg.connect(self.push_msg_to_GUI)
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
+        # set windowTitle
+        Window_title = "DB410 Rev.2022.05.31 Beta"
+
         if self.debug == True:
-            self.push_msg_to_GUI("==debugging mode==")
+            self.setWindowTitle(Window_title+"_Debug mode")
+        else:
+            self.setWindowTitle(Window_title)
 
     def update_GUI_then_save_waveform_in_scope(self):
         self.update_GUI()
@@ -172,20 +183,20 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.progressBar.setValue(data)
 
     def run_function_gen_3d_thread(self):
-        #self.push_msg_to_GUI("run function gen 3d")
+        # self.push_msg_to_GUI("run function gen 3d")
         self.update_GUI()
         self.function_gen_3d.start()
         # self.myprogpressbar.start()
 
     def stop_function_gen_3d_thread(self):
         self.function_gen_3d.stop()
-        #self.push_msg_to_GUI("stop the 3d test")
+        # self.push_msg_to_GUI("stop the 3d test")
 
     def run_function_gen(self, function_gen_resource_name, high_voltage, low_voltage, freq, duty, rise_time, fall_time, on_off=False):
         self.function_gen = myvisa.tek_visa_functionGen(
             self.comboBox_2.currentText())
-        #self.function_gen.set_voltage_high = high_voltage
-        #self.function_gen.set_voltage_low = low_voltage
+        # self.function_gen.set_voltage_high = high_voltage
+        # self.function_gen.set_voltage_low = low_voltage
         self.function_gen.set_freq = str(freq)
         self.function_gen.set_duty = str(duty)
         self.function_gen.set_rise_time_ns = str(rise_time)
@@ -358,9 +369,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def update_GUI(self):
         # get GUI import
         # main page
-        #self.parameter_main_high_current = float(self.lineEdit_18.text())
-        #self.parameter_main_low_current = float(self.lineEdit_3.text())
-        #self.parameter_main_gain = float(self.lineEdit_12.text())
+        self.parameter_main_high_current = float(self.lineEdit_16.text())
+        self.parameter_main_low_current = float(self.lineEdit.text())
+        self.parameter_main_gain = float(self.lineEdit_17.text())
         self.parameter_main_duty_list = eval(
             "["+str(self.lineEdit_13.text())+"]")
         # self.parameter_main_rise_fall_time_nsec = float(
@@ -393,11 +404,14 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             device_name = self.function_gen.get_equipment_name()
             self.lineEdit_28.setText(device_name)
 
+    def set_horizontal_scale_in_scope(self, scale_value="1e-6"):
+        self.scope.set_horizontal_scale(scale_value)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    myWin = MyMainWindow(debug=True)
+    myWin = MyMainWindow(debug=False)
 
     myWin.show()
 
