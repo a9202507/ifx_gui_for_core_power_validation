@@ -1,10 +1,6 @@
 # Rev2022.06.01 for beta release
 # a9202507@gmail.com
 
-'''
-from cgitb import enable
-from socket import MsgFlag
-'''
 import sys
 from PySide2.QtCore import QThread, Signal
 from PySide2.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
@@ -24,6 +20,7 @@ class DB410_3d_thread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
+
         # self.DB410_msg = Signal(str)
 
     def __del__(self):
@@ -34,28 +31,6 @@ class DB410_3d_thread(QThread):
         myWin.update_GUI()
         myWin.save_waveform_in_scope("", "", False)
 
-        '''
-        if myWin.debug == True:
-            print(
-                f"type myWin.parameter_main_high_current={myWin.parameter_main_high_current}")
-        DB410_3d_function.DB410_3d_function(fungen_resource_name=myWin.parameter_setting_function_gen_resource_name,
-                                            scope_resource_name=myWin.parameter_setting_scope_resource_name,
-                                            folder_name_in_inst=myWin.parameter_setting_folder_in_inst,
-                                            file_name=myWin.parameter_setting_filename+str(myWin.parameter_main_high_current)+"A_"+str(
-                                                myWin.parameter_main_low_current)+"A_"+f"Gain{myWin.parameter_main_gain}mVA_",
-                                            high_voltage_v=myWin.parameter_main_high_current *
-                                            myWin.parameter_main_gain / 1000,
-                                            low_voltage_v=myWin.parameter_main_low_current * myWin.parameter_main_gain/1000,
-                                            freq_khz_list=myWin.parameter_main_freq_list,
-                                            duty_list=myWin.parameter_main_duty_list,
-                                            rise_time_ns=myWin.parameter_main_rise_fall_time_nsec,
-                                            fall_time_ns=myWin.parameter_main_rise_fall_time_nsec,
-                                            delay_time_sec=myWin.parameter_main_delay_time_sec,
-                                            cool_down_time_sec=myWin.parameter_main_cooldown_time_sec,
-                                            file_name_with_timestamp=myWin.parameter_setting_filename_include_timestamp,
-                                            debug=myWin.debug,
-                                            )
-                                            '''
         freq_list_len = len(myWin.parameter_main_freq_list)
         duty_list_len = len(myWin.parameter_main_duty_list)
 
@@ -85,21 +60,23 @@ class DB410_3d_thread(QThread):
                                              )
                 # for save wavefrom delay time
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
-                self.DB410_msg.emit(
-                    "item1 mean vlaue: "+myWin.get_scope_meansurement_value(1, "value"))
-                time.sleep(0.2)
+
+                if myWin.debug == True:
+                    for i in range(1, 5):
+                        self.DB410_msg.emit(
+                            f"item{i} mean vlaue: "+myWin.get_scope_meansurement_value(i, "value"))
+                        time.sleep(0.2)
+
+                        # self.DB410_msg.emit(
+                        #    "item2 mean vlaue: "+myWin.get_scope_meansurement_value(2, "value"))
+                        # time.sleep(0.2)
+
                 myWin.send_function_gen_command_one_time(freq, duty, False)
 
                 # for transient off duration time
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
         self.DB410_process_bar.emit(100)
-        '''
-        for i in range(1, 100):
-            self.DB410_msg.emit(str(i))
 
-            self.DB410_process_bar.emit(int(i/3))
-            time.sleep(0.1)
-        '''
         self.DB410_msg.emit("==3D test finish==")
 
     def stop(self):
@@ -288,7 +265,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def push_msg_to_GUI(self, msg=""):
         if True:
             self.textEdit.append(str(msg))
-            self.textEdit.append("")
+            # self.textEdit.append("")
         else:
             pass
 
@@ -438,7 +415,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    myWin = MyMainWindow(debug=False)
+    myWin = MyMainWindow(debug=True)
 
     myWin.show()
 
