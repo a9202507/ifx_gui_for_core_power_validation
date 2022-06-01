@@ -119,8 +119,16 @@ class tek_visa_mso_escope(visa_equipment):
             "MEASUrement:MEAS"+str(item_number)+":"+measure_type_dict[measure_item_type]+"?")
         return result
 
-    def set_channel_timescale(self):
-        pass
+    def set_horizontal_scale(self,scale="2e-6"):
+        self.inst.write("HORIZONTAL:SCAlE "+scale)
+
+    def set_trigger_level(self,trigger_level="1.0"):
+        self.inst.write("TRIGger:A:level "+trigger_level)
+    def set_trigger_channel(self,channel="CH1"):
+        self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
+        
+        
+        
 
 
 def save_waveform_in_inst(visaRsrcAddr, fileSaveLocationInInst, filename, timestamp_enable=True, debug=False):
