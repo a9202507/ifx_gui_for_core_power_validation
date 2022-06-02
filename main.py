@@ -33,7 +33,8 @@ class DB410_3d_thread(QThread):
 
         freq_list_len = len(myWin.parameter_main_freq_list)
         duty_list_len = len(myWin.parameter_main_duty_list)
-
+        measure_result_dict = dict()
+        df = pd.DataFrame()
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
 
@@ -61,21 +62,25 @@ class DB410_3d_thread(QThread):
                 # for save wavefrom delay time
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
+                measure_result_dict['item1'] = float(freq)
+                measure_result_dict['item2'] = float(duty)
+                measure_result_dict['item3'] = float(myWin.get_scope_meansurement_value(
+                    3, "value"))
+                measure_result_dict['item4'] = float(myWin.get_scope_meansurement_value(
+                    4, "value"))
+                df = df.append(measure_result_dict, ignore_index=True)
                 if myWin.debug == True:
-                    for i in range(1, 5):
-                        self.DB410_msg.emit(
-                            f"item{i} mean vlaue: "+myWin.get_scope_meansurement_value(i, "value"))
-                        time.sleep(0.2)
-
-                        # self.DB410_msg.emit(
-                        #    "item2 mean vlaue: "+myWin.get_scope_meansurement_value(2, "value"))
-                        # time.sleep(0.2)
+                    self.DB410_msg.emit(str(measure_result_dict))
+                    print(f"df={df}")
+                time.sleep(0.2)
 
                 myWin.send_function_gen_command_one_time(freq, duty, False)
 
                 # for transient off duration time
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
         self.DB410_process_bar.emit(100)
+        df.to_excel(
+            f"{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}.xls")
 
         self.DB410_msg.emit("==3D test finish==")
 
