@@ -1,4 +1,4 @@
-# Rev2022.06.01 for beta release
+# Rev2022.06.02 for beta release
 # a9202507@gmail.com
 
 import sys
@@ -12,6 +12,8 @@ import pandas as pd
 import DB410_3d_function
 import pandas
 import time
+import pandas_report
+import datetime
 
 
 class DB410_3d_thread(QThread):
@@ -80,7 +82,7 @@ class DB410_3d_thread(QThread):
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
         self.DB410_process_bar.emit(100)
         df.to_excel(
-            f"{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}.xls")
+            f"{myWin.lineEdit_7.text()}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report_{datetime.datetime.now().strftime('%Y_%m%d_%H%M')}.xls")
 
         self.DB410_msg.emit("==3D test finish==")
 
@@ -106,6 +108,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.update_function_gen_name)
         self.comboBox.currentIndexChanged.connect(
             self.update_escope_name)
+        self.pushButton_9.clicked.connect(self.open_3d_report)
 
         self.pushButton_7.clicked.connect(
             self.update_GUI_then_save_waveform_in_scope)
@@ -140,7 +143,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        Window_title = "IFX loadSlammer GUI Rev.2022.06.01 Beta"
+        Window_title = "IFX loadSlammer GUI Rev.2022.06.02 Beta"
 
         if self.debug == True:
             self.setWindowTitle(Window_title+"_Debug mode")
@@ -415,6 +418,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def clear_message_box(self):
         self.textEdit.clear()
+
+    def open_3d_report(self):
+        self.get_filename()
+        print(self.filenames[0])
+        pandas_report.plt_vmax(self.filenames[0])
 
 
 if __name__ == "__main__":
