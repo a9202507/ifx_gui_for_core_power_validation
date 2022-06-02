@@ -159,6 +159,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.scope = myvisa.tek_visa_mso_escope(
             self.parameter_setting_scope_resource_name)
 
+        # set waveform dirctory in scope
+        self.scope.set_waveform_directory_in_scope(self.lineEdit_26.text())
+
         # save waveform
         if self.debug == True:
             self.push_msg_to_GUI(

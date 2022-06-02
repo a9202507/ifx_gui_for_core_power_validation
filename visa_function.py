@@ -107,6 +107,13 @@ class tek_visa_mso_escope(visa_equipment):
     def save_wavefrom_back_to_pc(self):
         pass
 
+    def set_waveform_directory_in_scope(self,directory="E:/20220530"):
+        self.inst.write(f"FILESystem:CWD '{directory}'")
+
+    def get_waveform_directory_in_scope(self):
+        directory=self.inst.query(f"FILESystem:CWD?")
+        return directory
+    
     def set_channel_measure_items(self):
         pass
 
