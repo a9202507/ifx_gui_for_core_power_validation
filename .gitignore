@@ -130,3 +130,6 @@ dmypy.json
 
 # powerpoint
 *.pptx
+
+# excel
+*.xls
