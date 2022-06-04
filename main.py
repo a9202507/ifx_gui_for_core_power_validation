@@ -52,15 +52,16 @@ class DB410_3d_thread(QThread):
                 # for transinet duration time.
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
+                filename = myWin.parameter_setting_filename+"_"+str(myWin.parameter_main_high_current)+"A_"+str(
+                    myWin.parameter_main_low_current)+"A_"+"Gain"+str(myWin.parameter_main_gain)+"mVa"+"_"+str(freq)+"Khz"+"_D"+str(duty)
+
                 myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
-                                             myWin.parameter_setting_filename + "_" +
-                                             str(myWin.parameter_main_high_current)+"A_" +
-                                             str(myWin.parameter_main_low_current)+"A_" + "Gain" +
-                                             str(myWin.parameter_main_gain) + "mVa" +
-                                             "_"+str(freq)+"Khz" +
-                                             "_D"+str(duty),
+                                             filename,
                                              myWin.parameter_setting_filename_include_timestamp
                                              )
+                if myWin.checkBox_5.isChecked:
+                    print("save_file_to_PC")
+                myWin.save_wavefrom_from_scope_to_pc(filename)
                 # for save wavefrom delay time
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
@@ -167,6 +168,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.push_msg_to_GUI(
                 f"save waveform in main page GUI: {filefolder}, {filename}, {timestamp}")
         self.scope.save_waveform_in_inst(filefolder, filename, timestamp)
+
+    def save_wavefrom_from_scope_to_pc(self, filename, timestamp=True):
+        local_fildfolder = self.lineEdit_26.text()
+        self.scope.save_waveform_back_to_pc(
+            local_fildfolder, filename+".png", True)
 
     def get_scope_meansurement_value(self, item_number=1, measure_item_type="max"):
         result = self.scope.get_measurement_value(

@@ -104,9 +104,17 @@ class tek_visa_mso_escope(visa_equipment):
             print(('SAVE:IMAGe '+self.filename_with_path_in_inst))
 
     # TODO:
-    def save_wavefrom_back_to_pc(self):
-        pass
+    def save_waveform_back_to_pc(self,directory,filename,debug=False):
 
+        direct_filename=directory+"/"+filename
+        if debug==True:
+            print(f'{direct_filename}')
+        self.inst.write(f"FileSystem:READFile '{direct_filename}'")
+        imgData=self.inst.read_raw(1024*1024)
+        file = open(filename,"wb")
+        file.write(imgData)
+        file.close()
+        return None
     def set_waveform_directory_in_scope(self,directory="E:/20220530"):
         self.inst.write(f"FILESystem:CWD '{directory}'")
 
@@ -172,6 +180,9 @@ if __name__ == '__main__':
     # print(escope.query('*IDN?'))
     #fungen = tek_visa_functionGen(devices[4])
     scope = tek_visa_mso_escope(devices[0])
+
+    scope.save_waveform_in_inst("E:/20220530","12345",False,True)
+    scope.save_waveform_back_to_pc("E:/20220530","12345.png",True)
 
     '''
     freqs = [10, 20, 100, 200]
