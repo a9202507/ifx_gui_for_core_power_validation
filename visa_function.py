@@ -28,12 +28,13 @@ class visa_equipment():
     def __init__(self, visa_resource_name):
         self.visa_resource_name = visa_resource_name
         self.inst = pyvisa.ResourceManager().open_resource(self.visa_resource_name)
-
+    '''
     def write(self, visa_str=""):
         self.inst.write(visa_str)
 
     def query(self, visa_str=""):
         self.inst.query(visa_str)
+    '''
 
     def get_equipment_name(self):
         self.equipment_name = self.inst.query("*IDN?")

@@ -31,7 +31,7 @@ class DB410_3d_thread(QThread):
     def run(self):
         self.DB410_msg.emit("==run 3D test==")
         myWin.update_GUI()
-        myWin.save_waveform_in_scope("", "", False)
+        myWin.init_scope()
 
         freq_list_len = len(myWin.parameter_main_freq_list)
         duty_list_len = len(myWin.parameter_main_duty_list)
@@ -52,7 +52,7 @@ class DB410_3d_thread(QThread):
                 # for transinet duration time.
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
-                filename = myWin.parameter_setting_filename+"_"+str(myWin.parameter_main_high_current)+"A_"+str(
+                filename = myWin.parameter_setting_filename+str(myWin.parameter_main_high_current)+"A_"+str(
                     myWin.parameter_main_low_current)+"A_"+"Gain"+str(myWin.parameter_main_gain)+"mVa"+"_"+str(freq)+"Khz"+"_D"+str(duty)
 
                 myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
@@ -109,7 +109,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.update_function_gen_name)
         self.comboBox.currentIndexChanged.connect(
             self.update_escope_name)
-        self.pushButton_9.clicked.connect(self.open_3d_report)
+        self.pushButton_9.clicked.connect(self.open_3d_report_max)
+        self.pushButton_10.clicked.connect(self.open_3d_report_min)
 
         self.pushButton_7.clicked.connect(
             self.update_GUI_then_save_waveform_in_scope)
@@ -156,23 +157,34 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.save_waveform_in_scope(self.parameter_setting_folder_in_inst,
                                     self.parameter_setting_filename, self.parameter_setting_filename_include_timestamp)
 
-    def save_waveform_in_scope(self, filefolder, filename, timestamp=True):
+    def init_scope(self):
         self.scope = myvisa.tek_visa_mso_escope(
             self.parameter_setting_scope_resource_name)
+
+    def save_waveform_in_scope(self, filefolder, filename, timestamp=True):
+        self.init_scope()
 
         # set waveform dirctory in scope
         self.scope.set_waveform_directory_in_scope(self.lineEdit_26.text())
 
+        if timestamp == True:
+            dt = datetime.datetime.now()
+            timestamp_str = dt.strftime("_%Y%m%d_%H%M%S")
+            self.waveform_file = filename+timestamp_str
+        else:
+            self.waveform_file = filename
+
         # save waveform
         if self.debug == True:
             self.push_msg_to_GUI(
-                f"save waveform in main page GUI: {filefolder}, {filename}, {timestamp}")
-        self.scope.save_waveform_in_inst(filefolder, filename, timestamp)
+                f"save waveform as: {filefolder}, {self.waveform_file}")
+
+        self.scope.save_waveform_in_inst(filefolder, self.waveform_file, False)
 
     def save_wavefrom_from_scope_to_pc(self, filename, timestamp=True):
         local_fildfolder = self.lineEdit_26.text()
         self.scope.save_waveform_back_to_pc(
-            local_fildfolder, filename+".png", "./report/", True)
+            local_fildfolder, self.waveform_file+".png", "./report/", True)
 
     def get_scope_meansurement_value(self, item_number=1, measure_item_type="max"):
         result = self.scope.get_measurement_value(
@@ -329,7 +341,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def get_filename(self):
         try:
             dlg = QFileDialog(self, 'Open File', '.',
-                              'JSON Files (*.json);;All Files (*)')
+                              'JSON Files (*.json);;XLS Files (*.xls);;All Files (*)')
             if dlg.exec_():
                 self.filenames = dlg.selectedFiles()
                 if self.debug == True:
@@ -428,10 +440,15 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def clear_message_box(self):
         self.textEdit.clear()
 
-    def open_3d_report(self):
+    def open_3d_report_max(self):
         self.get_filename()
         print(self.filenames[0])
         pandas_report.plt_vmax(self.filenames[0])
+
+    def open_3d_report_min(self):
+        self.get_filename()
+        print(self.filenames[0])
+        pandas_report.plt_vmin(self.filenames[0])
 
 
 if __name__ == "__main__":
