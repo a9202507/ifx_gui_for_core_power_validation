@@ -60,7 +60,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
+      <y>80</y>
       <width>701</width>
       <height>711</height>
      </rect>
@@ -439,96 +439,195 @@
        <rect>
         <x>10</x>
         <y>200</y>
-        <width>473</width>
-        <height>174</height>
+        <width>471</width>
+        <height>226</height>
        </rect>
       </property>
       <property name="title">
        <string>Misc</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="checkBox_4">
-         <property name="text">
-          <string>Save as MSO</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QCheckBox" name="checkBox_5">
-         <property name="text">
-          <string>Save as PC</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>output filename</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QCheckBox" name="checkBox">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>filename include transinet condition</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QCheckBox" name="checkBox_2">
-         <property name="text">
-          <string>filename include trimstamp</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QPushButton" name="pushButton_7">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Save waveform once</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QLineEdit" name="lineEdit_27">
-         <property name="text">
-          <string>C:/temp</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" colspan="2">
-        <widget class="QLineEdit" name="lineEdit_26">
-         <property name="text">
-          <string>C:/temp</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1" colspan="2">
-        <widget class="QLineEdit" name="lineEdit_7">
-         <property name="text">
-          <string>IFX_DB410_</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QCheckBox" name="checkBox_4">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>110</y>
+         <width>103</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Save as MSO</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkBox_5">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>136</y>
+         <width>91</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Save as PC</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_8">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>82</y>
+         <width>112</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Wavefrom filename</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>162</y>
+         <width>213</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>filename with transinet condition</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkBox_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>192</y>
+         <width>182</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>filename include trimstamp</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_7">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>319</x>
+         <y>188</y>
+         <width>141</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Save waveform once</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_27">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>159</x>
+         <y>54</y>
+         <width>301</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>./report</string>
+       </property>
+       <property name="cursorPosition">
+        <number>8</number>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_26">
+       <property name="geometry">
+        <rect>
+         <x>159</x>
+         <y>26</y>
+         <width>301</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>C:/temp</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_7">
+       <property name="geometry">
+        <rect>
+         <x>159</x>
+         <y>82</y>
+         <width>301</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>IFX_DB410_</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_9">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>26</y>
+         <width>141</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Output folder in scope</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_14">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>54</y>
+         <width>141</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Output folder in PC</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_5">
       <property name="geometry">
@@ -540,7 +639,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>test only</string>
+       <string>Report</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
@@ -549,7 +648,7 @@
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>pushButton_9</string>
+          <string>load report for Vmax</string>
          </property>
         </widget>
        </item>
@@ -559,14 +658,14 @@
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>pushButton_10</string>
+          <string>load report for Vmin</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_11">
          <property name="enabled">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="text">
           <string>pushButton_11</string>

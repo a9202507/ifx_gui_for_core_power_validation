@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.label_23.setFont(font1)
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
-        self.tabWidget.setGeometry(QRect(10, 90, 701, 711))
+        self.tabWidget.setGeometry(QRect(10, 80, 701, 711))
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
         self.groupBox_3 = QGroupBox(self.tab)
@@ -271,60 +271,53 @@ class Ui_MainWindow(object):
 
         self.groupBox_4 = QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(u"groupBox_4")
-        self.groupBox_4.setGeometry(QRect(10, 200, 473, 174))
-        self.gridLayout_2 = QGridLayout(self.groupBox_4)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.groupBox_4.setGeometry(QRect(10, 200, 471, 226))
         self.checkBox_4 = QCheckBox(self.groupBox_4)
         self.checkBox_4.setObjectName(u"checkBox_4")
+        self.checkBox_4.setEnabled(False)
+        self.checkBox_4.setGeometry(QRect(10, 110, 103, 20))
         self.checkBox_4.setChecked(True)
-
-        self.gridLayout_2.addWidget(self.checkBox_4, 0, 0, 1, 1)
-
         self.checkBox_5 = QCheckBox(self.groupBox_4)
         self.checkBox_5.setObjectName(u"checkBox_5")
+        self.checkBox_5.setEnabled(False)
+        self.checkBox_5.setGeometry(QRect(10, 136, 91, 20))
         self.checkBox_5.setChecked(True)
-
-        self.gridLayout_2.addWidget(self.checkBox_5, 1, 0, 1, 1)
-
         self.label_8 = QLabel(self.groupBox_4)
         self.label_8.setObjectName(u"label_8")
-
-        self.gridLayout_2.addWidget(self.label_8, 2, 0, 1, 1)
-
+        self.label_8.setGeometry(QRect(10, 82, 112, 16))
         self.checkBox = QCheckBox(self.groupBox_4)
         self.checkBox.setObjectName(u"checkBox")
         self.checkBox.setEnabled(False)
+        self.checkBox.setGeometry(QRect(10, 162, 213, 20))
+        self.checkBox.setCheckable(True)
         self.checkBox.setChecked(True)
-
-        self.gridLayout_2.addWidget(self.checkBox, 3, 1, 1, 1)
-
+        self.checkBox.setTristate(False)
         self.checkBox_2 = QCheckBox(self.groupBox_4)
         self.checkBox_2.setObjectName(u"checkBox_2")
+        self.checkBox_2.setGeometry(QRect(10, 192, 182, 20))
         self.checkBox_2.setChecked(True)
-
-        self.gridLayout_2.addWidget(self.checkBox_2, 4, 1, 1, 1)
-
         self.pushButton_7 = QPushButton(self.groupBox_4)
         self.pushButton_7.setObjectName(u"pushButton_7")
         self.pushButton_7.setEnabled(True)
-
-        self.gridLayout_2.addWidget(self.pushButton_7, 4, 2, 1, 1)
-
+        self.pushButton_7.setGeometry(QRect(319, 188, 141, 28))
         self.lineEdit_27 = QLineEdit(self.groupBox_4)
         self.lineEdit_27.setObjectName(u"lineEdit_27")
-
-        self.gridLayout_2.addWidget(self.lineEdit_27, 1, 1, 1, 2)
-
+        self.lineEdit_27.setEnabled(True)
+        self.lineEdit_27.setGeometry(QRect(159, 54, 301, 22))
+        self.lineEdit_27.setCursorPosition(8)
+        self.lineEdit_27.setReadOnly(True)
         self.lineEdit_26 = QLineEdit(self.groupBox_4)
         self.lineEdit_26.setObjectName(u"lineEdit_26")
-
-        self.gridLayout_2.addWidget(self.lineEdit_26, 0, 1, 1, 2)
-
+        self.lineEdit_26.setGeometry(QRect(159, 26, 301, 22))
         self.lineEdit_7 = QLineEdit(self.groupBox_4)
         self.lineEdit_7.setObjectName(u"lineEdit_7")
-
-        self.gridLayout_2.addWidget(self.lineEdit_7, 2, 1, 1, 2)
-
+        self.lineEdit_7.setGeometry(QRect(159, 82, 301, 22))
+        self.label_9 = QLabel(self.groupBox_4)
+        self.label_9.setObjectName(u"label_9")
+        self.label_9.setGeometry(QRect(10, 26, 141, 16))
+        self.label_14 = QLabel(self.groupBox_4)
+        self.label_14.setObjectName(u"label_14")
+        self.label_14.setGeometry(QRect(10, 54, 141, 16))
         self.groupBox_5 = QGroupBox(self.tab_2)
         self.groupBox_5.setObjectName(u"groupBox_5")
         self.groupBox_5.setGeometry(QRect(500, 10, 181, 141))
@@ -344,7 +337,7 @@ class Ui_MainWindow(object):
 
         self.pushButton_11 = QPushButton(self.groupBox_5)
         self.pushButton_11.setObjectName(u"pushButton_11")
-        self.pushButton_11.setEnabled(True)
+        self.pushButton_11.setEnabled(False)
 
         self.verticalLayout.addWidget(self.pushButton_11)
 
@@ -424,16 +417,18 @@ class Ui_MainWindow(object):
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Misc", None))
         self.checkBox_4.setText(QCoreApplication.translate("MainWindow", u"Save as MSO", None))
         self.checkBox_5.setText(QCoreApplication.translate("MainWindow", u"Save as PC", None))
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"output filename", None))
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"filename include transinet condition", None))
+        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Wavefrom filename", None))
+        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"filename with transinet condition", None))
         self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"filename include trimstamp", None))
         self.pushButton_7.setText(QCoreApplication.translate("MainWindow", u"Save waveform once", None))
-        self.lineEdit_27.setText(QCoreApplication.translate("MainWindow", u"C:/temp", None))
+        self.lineEdit_27.setText(QCoreApplication.translate("MainWindow", u"./report", None))
         self.lineEdit_26.setText(QCoreApplication.translate("MainWindow", u"C:/temp", None))
         self.lineEdit_7.setText(QCoreApplication.translate("MainWindow", u"IFX_DB410_", None))
-        self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"test only", None))
-        self.pushButton_9.setText(QCoreApplication.translate("MainWindow", u"pushButton_9", None))
-        self.pushButton_10.setText(QCoreApplication.translate("MainWindow", u"pushButton_10", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Output folder in scope", None))
+        self.label_14.setText(QCoreApplication.translate("MainWindow", u"Output folder in PC", None))
+        self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"Report", None))
+        self.pushButton_9.setText(QCoreApplication.translate("MainWindow", u"load report for Vmax", None))
+        self.pushButton_10.setText(QCoreApplication.translate("MainWindow", u"load report for Vmin", None))
         self.pushButton_11.setText(QCoreApplication.translate("MainWindow", u"pushButton_11", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"setting", None))
         self.menuabout.setTitle(QCoreApplication.translate("MainWindow", u"Menu", None))

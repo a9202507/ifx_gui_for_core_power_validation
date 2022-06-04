@@ -59,8 +59,8 @@ class DB410_3d_thread(QThread):
                                              filename,
                                              myWin.parameter_setting_filename_include_timestamp
                                              )
-                if myWin.checkBox_5.isChecked:
-                    print("save_file_to_PC")
+                if myWin.debug == True:
+                    myWin.push_msg_to_GUI("save_file_to_PC")
                 myWin.save_wavefrom_from_scope_to_pc(filename)
                 # for save wavefrom delay time
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
@@ -113,11 +113,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_10.clicked.connect(self.open_3d_report_min)
 
         self.pushButton_7.clicked.connect(
-            self.update_GUI_then_save_waveform_in_scope)
+            self.update_GUI_then_save_waveform_once_time)
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
         self.actionAbout_the_GUI.triggered.connect(self.about_the_GUI)
-        self.about_the_gui_text = "powered by PySide2 and Python3."
+        self.about_the_gui_text = "Powered by PySide2 and Python3."
         self.debug = debug
         # set off_RadioButton is checked.
         self.radioButton_2.setChecked(True)
@@ -145,17 +145,20 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        Window_title = "IFX loadSlammer GUI Rev.2022.06.02 Beta"
+        Window_title = "IFX loadSlammer GUI Rev.2022.06.04 "
 
         if self.debug == True:
             self.setWindowTitle(Window_title+"_Debug mode")
         else:
             self.setWindowTitle(Window_title)
 
-    def update_GUI_then_save_waveform_in_scope(self):
+    def update_GUI_then_save_waveform_once_time(self):
         self.update_GUI()
         self.save_waveform_in_scope(self.parameter_setting_folder_in_inst,
                                     self.parameter_setting_filename, self.parameter_setting_filename_include_timestamp)
+        time.sleep(1)
+        self.save_wavefrom_from_scope_to_pc(
+            self.waveform_file, self.parameter_setting_filename_include_timestamp)
 
     def init_scope(self):
         self.scope = myvisa.tek_visa_mso_escope(
@@ -197,7 +200,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def run_function_gen_3d_thread(self):
         # self.push_msg_to_GUI("run function gen 3d")
         self.update_GUI()
-        self.function_gen_3d.start()
+        if self.comboBox_2.currentText() == "" or self.comboBox.currentText() == "":
+            QMessageBox.about(
+                self, "error", "please check equipment setting on Setting page")
+        else:
+            self.function_gen_3d.start()
         # self.myprogpressbar.start()
 
     def stop_function_gen_3d_thread(self):
@@ -454,7 +461,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    myWin = MyMainWindow(debug=True)
+    myWin = MyMainWindow(debug=False)
 
     myWin.show()
 
