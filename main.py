@@ -83,7 +83,7 @@ class DB410_3d_thread(QThread):
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
         self.DB410_process_bar.emit(100)
         df.to_excel(
-            f"{myWin.lineEdit_7.text()}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report_{datetime.datetime.now().strftime('%Y_%m%d_%H%M')}.xls")
+            f"report\{myWin.lineEdit_7.text()}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report_{datetime.datetime.now().strftime('%Y_%m%d_%H%M')}.xls")
 
         self.DB410_msg.emit("==3D test finish==")
 
@@ -172,7 +172,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def save_wavefrom_from_scope_to_pc(self, filename, timestamp=True):
         local_fildfolder = self.lineEdit_26.text()
         self.scope.save_waveform_back_to_pc(
-            local_fildfolder, filename+".png", True)
+            local_fildfolder, filename+".png", "./report/", True)
 
     def get_scope_meansurement_value(self, item_number=1, measure_item_type="max"):
         result = self.scope.get_measurement_value(

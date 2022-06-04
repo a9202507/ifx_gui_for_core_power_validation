@@ -104,24 +104,26 @@ class tek_visa_mso_escope(visa_equipment):
             print(('SAVE:IMAGe '+self.filename_with_path_in_inst))
 
     # TODO:
-    def save_waveform_back_to_pc(self,directory,filename,debug=False):
+    def save_waveform_back_to_pc(self, inst_directory, filename, local_directory="./report/", debug=False):
 
-        direct_filename=directory+"/"+filename
-        if debug==True:
-            print(f'{direct_filename}')
-        self.inst.write(f"FileSystem:READFile '{direct_filename}'")
-        imgData=self.inst.read_raw(1024*1024)
-        file = open(filename,"wb")
+        inst_direct_filename = inst_directory+"/"+filename
+        if debug == True:
+            print(f'{inst_direct_filename}')
+        self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")
+        imgData = self.inst.read_raw(1024*1024)
+        pc_dicrect_filename = local_directory+filename
+        file = open(pc_dicrect_filename, "wb")
         file.write(imgData)
         file.close()
         return None
-    def set_waveform_directory_in_scope(self,directory="E:/20220530"):
+
+    def set_waveform_directory_in_scope(self, directory="E:/20220530"):
         self.inst.write(f"FILESystem:CWD '{directory}'")
 
     def get_waveform_directory_in_scope(self):
-        directory=self.inst.query(f"FILESystem:CWD?")
+        directory = self.inst.query(f"FILESystem:CWD?")
         return directory
-    
+
     def set_channel_measure_items(self):
         pass
 
@@ -134,16 +136,14 @@ class tek_visa_mso_escope(visa_equipment):
             "MEASUrement:MEAS"+str(item_number)+":"+measure_type_dict[measure_item_type]+"?")
         return result
 
-    def set_horizontal_scale(self,scale="2e-6"):
+    def set_horizontal_scale(self, scale="2e-6"):
         self.inst.write("HORIZONTAL:SCAlE "+scale)
 
-    def set_trigger_level(self,trigger_level="1.0"):
+    def set_trigger_level(self, trigger_level="1.0"):
         self.inst.write("TRIGger:A:level "+trigger_level)
-    def set_trigger_channel(self,channel="CH1"):
+
+    def set_trigger_channel(self, channel="CH1"):
         self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
-        
-        
-        
 
 
 def save_waveform_in_inst(visaRsrcAddr, fileSaveLocationInInst, filename, timestamp_enable=True, debug=False):
@@ -181,8 +181,9 @@ if __name__ == '__main__':
     #fungen = tek_visa_functionGen(devices[4])
     scope = tek_visa_mso_escope(devices[0])
 
-    scope.save_waveform_in_inst("E:/20220530","12345",False,True)
-    scope.save_waveform_back_to_pc("E:/20220530","12345.png",True)
+    scope.save_waveform_in_inst("E:/20220530", "12345", False, True)
+    scope.save_waveform_back_to_pc(
+        "E:/20220530", "12345.png", "./report/", True)
 
     '''
     freqs = [10, 20, 100, 200]
