@@ -32,7 +32,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>IFX_LOGO_RGB.jpg</pixmap>
+     <pixmap>../../../../Users/EChen3/.designer/backup/IFX_LOGO_RGB.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -60,9 +60,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>90</y>
       <width>701</width>
-      <height>711</height>
+      <height>701</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -628,6 +628,22 @@
         <string>Output folder in PC</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="pushButton_11">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>150</y>
+         <width>141</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>set report folder</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_5">
       <property name="geometry">
@@ -659,16 +675,6 @@
          </property>
          <property name="text">
           <string>load report for Vmin</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_11">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>pushButton_11</string>
          </property>
         </widget>
        </item>

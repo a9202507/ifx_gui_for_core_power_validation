@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'PySide2_DB410_ui.ui'
+# Form generated from reading UI file 'PySide2_DB410_ui.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.2
+# Created by: Qt User Interface Compiler version 5.15.2
 ##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
+# WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
 from PySide2.QtCore import *
@@ -32,7 +32,7 @@ class Ui_MainWindow(object):
         font = QFont()
         font.setPointSize(12)
         self.label_10.setFont(font)
-        self.label_10.setPixmap(QPixmap(u"IFX_LOGO_RGB.jpg"))
+        self.label_10.setPixmap(QPixmap(u"./resource/IFX_LOGO_RGB.jpg"))
         self.label_10.setScaledContents(True)
         self.label_23 = QLabel(self.centralwidget)
         self.label_23.setObjectName(u"label_23")
@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.label_23.setFont(font1)
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
-        self.tabWidget.setGeometry(QRect(10, 80, 701, 711))
+        self.tabWidget.setGeometry(QRect(10, 90, 701, 701))
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
         self.groupBox_3 = QGroupBox(self.tab)
@@ -143,7 +143,6 @@ class Ui_MainWindow(object):
         self.radioButton.setObjectName(u"radioButton")
 
         self.horizontalLayout.addWidget(self.radioButton)
-
 
         self.gridLayout_4.addWidget(self.groupBox_6, 7, 1, 1, 1)
 
@@ -318,6 +317,10 @@ class Ui_MainWindow(object):
         self.label_14 = QLabel(self.groupBox_4)
         self.label_14.setObjectName(u"label_14")
         self.label_14.setGeometry(QRect(10, 54, 141, 16))
+        self.pushButton_11 = QPushButton(self.groupBox_4)
+        self.pushButton_11.setObjectName(u"pushButton_11")
+        self.pushButton_11.setEnabled(True)
+        self.pushButton_11.setGeometry(QRect(320, 150, 141, 28))
         self.groupBox_5 = QGroupBox(self.tab_2)
         self.groupBox_5.setObjectName(u"groupBox_5")
         self.groupBox_5.setGeometry(QRect(500, 10, 181, 141))
@@ -334,12 +337,6 @@ class Ui_MainWindow(object):
         self.pushButton_10.setEnabled(True)
 
         self.verticalLayout.addWidget(self.pushButton_10)
-
-        self.pushButton_11 = QPushButton(self.groupBox_5)
-        self.pushButton_11.setObjectName(u"pushButton_11")
-        self.pushButton_11.setEnabled(False)
-
-        self.verticalLayout.addWidget(self.pushButton_11)
 
         self.tabWidget.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -363,74 +360,131 @@ class Ui_MainWindow(object):
 
         self.tabWidget.setCurrentIndex(0)
 
-
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.actionAbout_the_GUI.setText(QCoreApplication.translate("MainWindow", u"About the GUI", None))
-        self.actionLoad_config.setText(QCoreApplication.translate("MainWindow", u"Load config", None))
-        self.actionSave_config.setText(QCoreApplication.translate("MainWindow", u"Save config", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate(
+            "MainWindow", u"MainWindow", None))
+        self.actionAbout_the_GUI.setText(
+            QCoreApplication.translate("MainWindow", u"About the GUI", None))
+        self.actionLoad_config.setText(
+            QCoreApplication.translate("MainWindow", u"Load config", None))
+        self.actionSave_config.setText(
+            QCoreApplication.translate("MainWindow", u"Save config", None))
         self.label_10.setText("")
-        self.label_23.setText(QCoreApplication.translate("MainWindow", u"LoadSlammer GUI", None))
-        self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Transient-3D", None))
-        self.label_13.setText(QCoreApplication.translate("MainWindow", u"duty list(%)", None))
-        self.lineEdit_13.setText(QCoreApplication.translate("MainWindow", u"10,20,30", None))
-        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Frequency_list (Khz)", None))
-        self.lineEdit_15.setText(QCoreApplication.translate("MainWindow", u"10,20,30,100,200,300", None))
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Ton duration time(Sec)", None))
-        self.lineEdit_21.setText(QCoreApplication.translate("MainWindow", u"1", None))
-        self.lineEdit_22.setText(QCoreApplication.translate("MainWindow", u"1", None))
-        self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"3D roll up/down enable", None))
-        self.label_17.setText(QCoreApplication.translate("MainWindow", u"Toff duration time(Sec)", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Function Generator setting", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Gain mV/A", None))
-        self.lineEdit.setText(QCoreApplication.translate("MainWindow", u"10", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"rise time(nSec)", None))
-        self.lineEdit_17.setText(QCoreApplication.translate("MainWindow", u"10", None))
-        self.lineEdit_4.setText(QCoreApplication.translate("MainWindow", u"10", None))
+        self.label_23.setText(QCoreApplication.translate(
+            "MainWindow", u"LoadSlammer GUI", None))
+        self.groupBox_3.setTitle(QCoreApplication.translate(
+            "MainWindow", u"Transient-3D", None))
+        self.label_13.setText(QCoreApplication.translate(
+            "MainWindow", u"duty list(%)", None))
+        self.lineEdit_13.setText(QCoreApplication.translate(
+            "MainWindow", u"10,20,30", None))
+        self.label_15.setText(QCoreApplication.translate(
+            "MainWindow", u"Frequency_list (Khz)", None))
+        self.lineEdit_15.setText(QCoreApplication.translate(
+            "MainWindow", u"10,20,30,100,200,300", None))
+        self.label_16.setText(QCoreApplication.translate(
+            "MainWindow", u"Ton duration time(Sec)", None))
+        self.lineEdit_21.setText(
+            QCoreApplication.translate("MainWindow", u"1", None))
+        self.lineEdit_22.setText(
+            QCoreApplication.translate("MainWindow", u"1", None))
+        self.checkBox_3.setText(QCoreApplication.translate(
+            "MainWindow", u"3D roll up/down enable", None))
+        self.label_17.setText(QCoreApplication.translate(
+            "MainWindow", u"Toff duration time(Sec)", None))
+        self.groupBox.setTitle(QCoreApplication.translate(
+            "MainWindow", u"Function Generator setting", None))
+        self.label_11.setText(QCoreApplication.translate(
+            "MainWindow", u"Gain mV/A", None))
+        self.lineEdit.setText(
+            QCoreApplication.translate("MainWindow", u"10", None))
+        self.label_6.setText(QCoreApplication.translate(
+            "MainWindow", u"rise time(nSec)", None))
+        self.lineEdit_17.setText(
+            QCoreApplication.translate("MainWindow", u"10", None))
+        self.lineEdit_4.setText(
+            QCoreApplication.translate("MainWindow", u"10", None))
         self.groupBox_6.setTitle("")
-        self.radioButton_2.setText(QCoreApplication.translate("MainWindow", u"Off", None))
-        self.radioButton.setText(QCoreApplication.translate("MainWindow", u"On", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Low current(A)", None))
-        self.lineEdit_16.setText(QCoreApplication.translate("MainWindow", u"20", None))
-        self.lineEdit_5.setText(QCoreApplication.translate("MainWindow", u"9", None))
-        self.lineEdit_6.setText(QCoreApplication.translate("MainWindow", u"765", None))
-        self.lineEdit_8.setText(QCoreApplication.translate("MainWindow", u"10", None))
-        self.label_18.setText(QCoreApplication.translate("MainWindow", u"High current(A)", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Frequency(Khz)", None))
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"duct (%)", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"fall time(nSec)", None))
-        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Toggle", None))
+        self.radioButton_2.setText(
+            QCoreApplication.translate("MainWindow", u"Off", None))
+        self.radioButton.setText(
+            QCoreApplication.translate("MainWindow", u"On", None))
+        self.label.setText(QCoreApplication.translate(
+            "MainWindow", u"Low current(A)", None))
+        self.lineEdit_16.setText(
+            QCoreApplication.translate("MainWindow", u"20", None))
+        self.lineEdit_5.setText(
+            QCoreApplication.translate("MainWindow", u"9", None))
+        self.lineEdit_6.setText(
+            QCoreApplication.translate("MainWindow", u"765", None))
+        self.lineEdit_8.setText(
+            QCoreApplication.translate("MainWindow", u"10", None))
+        self.label_18.setText(QCoreApplication.translate(
+            "MainWindow", u"High current(A)", None))
+        self.label_7.setText(QCoreApplication.translate(
+            "MainWindow", u"Frequency(Khz)", None))
+        self.label_5.setText(QCoreApplication.translate(
+            "MainWindow", u"duct (%)", None))
+        self.label_4.setText(QCoreApplication.translate(
+            "MainWindow", u"fall time(nSec)", None))
+        self.label_12.setText(QCoreApplication.translate(
+            "MainWindow", u"Toggle", None))
         self.groupBox_7.setTitle("")
-        self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Clear log", None))
-        self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"abort 3D test", None))
-        self.pushButton_8.setText(QCoreApplication.translate("MainWindow", u"Start 3D  test", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"main", None))
-        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Equipments setting", None))
-        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Escope", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Function Generator", None))
-        self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"re-scan equipments", None))
+        self.pushButton_5.setText(QCoreApplication.translate(
+            "MainWindow", u"Clear log", None))
+        self.pushButton_4.setText(QCoreApplication.translate(
+            "MainWindow", u"abort 3D test", None))
+        self.pushButton_8.setText(QCoreApplication.translate(
+            "MainWindow", u"Start 3D  test", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(
+            self.tab), QCoreApplication.translate("MainWindow", u"main", None))
+        self.groupBox_2.setTitle(QCoreApplication.translate(
+            "MainWindow", u"Equipments setting", None))
+        self.label_19.setText(QCoreApplication.translate(
+            "MainWindow", u"Escope", None))
+        self.label_2.setText(QCoreApplication.translate(
+            "MainWindow", u"Function Generator", None))
+        self.pushButton_6.setText(QCoreApplication.translate(
+            "MainWindow", u"re-scan equipments", None))
         self.lineEdit_28.setText("")
         self.lineEdit_29.setText("")
-        self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Misc", None))
-        self.checkBox_4.setText(QCoreApplication.translate("MainWindow", u"Save as MSO", None))
-        self.checkBox_5.setText(QCoreApplication.translate("MainWindow", u"Save as PC", None))
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Wavefrom filename", None))
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"filename with transinet condition", None))
-        self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"filename include trimstamp", None))
-        self.pushButton_7.setText(QCoreApplication.translate("MainWindow", u"Save waveform once", None))
-        self.lineEdit_27.setText(QCoreApplication.translate("MainWindow", u"./report", None))
-        self.lineEdit_26.setText(QCoreApplication.translate("MainWindow", u"C:/temp", None))
-        self.lineEdit_7.setText(QCoreApplication.translate("MainWindow", u"IFX_DB410_", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Output folder in scope", None))
-        self.label_14.setText(QCoreApplication.translate("MainWindow", u"Output folder in PC", None))
-        self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"Report", None))
-        self.pushButton_9.setText(QCoreApplication.translate("MainWindow", u"load report for Vmax", None))
-        self.pushButton_10.setText(QCoreApplication.translate("MainWindow", u"load report for Vmin", None))
-        self.pushButton_11.setText(QCoreApplication.translate("MainWindow", u"pushButton_11", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"setting", None))
-        self.menuabout.setTitle(QCoreApplication.translate("MainWindow", u"Menu", None))
+        self.groupBox_4.setTitle(
+            QCoreApplication.translate("MainWindow", u"Misc", None))
+        self.checkBox_4.setText(QCoreApplication.translate(
+            "MainWindow", u"Save as MSO", None))
+        self.checkBox_5.setText(QCoreApplication.translate(
+            "MainWindow", u"Save as PC", None))
+        self.label_8.setText(QCoreApplication.translate(
+            "MainWindow", u"Wavefrom filename", None))
+        self.checkBox.setText(QCoreApplication.translate(
+            "MainWindow", u"filename with transinet condition", None))
+        self.checkBox_2.setText(QCoreApplication.translate(
+            "MainWindow", u"filename include trimstamp", None))
+        self.pushButton_7.setText(QCoreApplication.translate(
+            "MainWindow", u"Save waveform once", None))
+        self.lineEdit_27.setText(QCoreApplication.translate(
+            "MainWindow", u"./report", None))
+        self.lineEdit_26.setText(QCoreApplication.translate(
+            "MainWindow", u"C:/temp", None))
+        self.lineEdit_7.setText(QCoreApplication.translate(
+            "MainWindow", u"IFX_DB410_", None))
+        self.label_9.setText(QCoreApplication.translate(
+            "MainWindow", u"Output folder in scope", None))
+        self.label_14.setText(QCoreApplication.translate(
+            "MainWindow", u"Output folder in PC", None))
+        self.pushButton_11.setText(QCoreApplication.translate(
+            "MainWindow", u"set report folder", None))
+        self.groupBox_5.setTitle(
+            QCoreApplication.translate("MainWindow", u"Report", None))
+        self.pushButton_9.setText(QCoreApplication.translate(
+            "MainWindow", u"load report for Vmax", None))
+        self.pushButton_10.setText(QCoreApplication.translate(
+            "MainWindow", u"load report for Vmin", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(
+            self.tab_2), QCoreApplication.translate("MainWindow", u"setting", None))
+        self.menuabout.setTitle(
+            QCoreApplication.translate("MainWindow", u"Menu", None))
     # retranslateUi
-
