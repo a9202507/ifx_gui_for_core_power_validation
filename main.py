@@ -54,22 +54,28 @@ class DB410_3d_thread(QThread):
 
                 filename = myWin.parameter_setting_filename+str(myWin.parameter_main_high_current)+"A_"+str(
                     myWin.parameter_main_low_current)+"A_"+"Gain"+str(myWin.parameter_main_gain)+"mVa"+"_"+str(freq)+"Khz"+"_D"+str(duty)
-
-                myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
-                                             filename,
-                                             myWin.parameter_setting_filename_include_timestamp
-                                             )
+                try:
+                    myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
+                                                 filename,
+                                                 myWin.parameter_setting_filename_include_timestamp
+                                                 )
+                except:
+                    myWin.push_msg_to_GUI("Failed to save waveform to Scope")
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI("save_file_to_PC")
-                myWin.save_wavefrom_from_scope_to_pc(filename)
+
+                try:
+                    myWin.save_wavefrom_from_scope_to_pc(filename)
+                except:
+                    myWin.push_msg_to_GUI("Failed to save waveform to PC")
                 # for save wavefrom delay time
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
-                measure_result_dict['item1'] = float(freq)
-                measure_result_dict['item2'] = float(duty)
-                measure_result_dict['item3'] = float(myWin.get_scope_meansurement_value(
+                measure_result_dict['Freq'] = float(freq)
+                measure_result_dict['duty'] = float(duty)
+                measure_result_dict['Vmax'] = float(myWin.get_scope_meansurement_value(
                     3, "value"))
-                measure_result_dict['item4'] = float(myWin.get_scope_meansurement_value(
+                measure_result_dict['Vmin'] = float(myWin.get_scope_meansurement_value(
                     4, "value"))
                 df = df.append(measure_result_dict, ignore_index=True)
                 if myWin.debug == True:
@@ -82,9 +88,12 @@ class DB410_3d_thread(QThread):
                 # for transient off duration time
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
         self.DB410_process_bar.emit(100)
-        df.to_excel(
-            f"{myWin.lineEdit_27.text()}/{myWin.lineEdit_7.text()}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report_{datetime.datetime.now().strftime('%Y_%m%d_%H%M')}.xls")
 
+        try:
+            df.to_excel(
+                f"{myWin.lineEdit_27.text()}/{myWin.lineEdit_7.text()}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report_{datetime.datetime.now().strftime('%Y_%m%d_%H%M')}.xls")
+        except:
+            myWin.push_msg_to_GUI("Failed to save report to PC")
         self.DB410_msg.emit("==3D test finish==")
         self.DB410_msg.emit(" ")
 
@@ -146,7 +155,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        Window_title = "IFX loadSlammer GUI Rev.2022.06.06 "
+        Window_title = "IFX loadSlammer GUI Rev.2022.06.08 "
 
         if self.debug == True:
             self.setWindowTitle(Window_title+"_Debug mode")
@@ -184,6 +193,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                 f"save waveform as: {filefolder}, {self.waveform_file}")
 
         self.scope.save_waveform_in_inst(filefolder, self.waveform_file, False)
+
+        # read waveform back to check save funciton success.
+        self.scope.read_file_in_inst(filefolder, self.waveform_file+".png")
+        self.scope.inst.read_raw(1024*1024)
 
     def save_wavefrom_from_scope_to_pc(self, filename, timestamp=True):
         local_fildfolder = self.lineEdit_26.text()

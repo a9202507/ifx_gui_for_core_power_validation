@@ -18,18 +18,18 @@ def plt_vmax(filename):
     ax = fig.gca(projection='3d')
 
     # Make data.
-    X = pd.Series(df['item1'])
-    Y = pd.Series(df['item2'])
-    Z = pd.Series(df['item3'])
+    X = pd.Series(df['Freq'])
+    Y = pd.Series(df['duty'])
+    Z = pd.Series(df['Vmax'])
     # Plot the surface.
     surf = ax.plot_trisurf(X, Y, Z, cmap=cm.coolwarm,
                            linewidth=0, antialiased=False)
 
     # Customize the z axis.
     #ax.set_zlim(1.75, 1.85)
-    ax.set_xlabel("item1")
-    ax.set_ylabel("item2")
-    ax.set_zlabel("item3")
+    ax.set_xlabel("Freq")
+    ax.set_ylabel("duty")
+    ax.set_zlabel("Vmax")
 
     ax.zaxis.set_major_locator(LinearLocator(10))
     ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
@@ -48,18 +48,18 @@ def plt_vmin(filename):
     ax = fig.gca(projection='3d')
 
     # Make data.
-    X = pd.Series(df['item1'])
-    Y = pd.Series(df['item2'])
-    Z = pd.Series(df['item4'])
+    X = pd.Series(df['Freq'])
+    Y = pd.Series(df['duty'])
+    Z = pd.Series(df['Vmin'])
     # Plot the surface.
     surf = ax.plot_trisurf(X, Y, Z, cmap=cm.coolwarm,
                            linewidth=0, antialiased=False)
 
     # Customize the z axis.
     #ax.set_zlim(1.75, 1.85)
-    ax.set_xlabel("item1")
-    ax.set_ylabel("item2")
-    ax.set_zlabel("item4")
+    ax.set_xlabel("Freq")
+    ax.set_ylabel("duty")
+    ax.set_zlabel("Vmin")
 
     ax.zaxis.set_major_locator(LinearLocator(10))
     ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))

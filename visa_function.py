@@ -104,6 +104,10 @@ class tek_visa_mso_escope(visa_equipment):
         if debug == True:
             print(('SAVE:IMAGe '+self.filename_with_path_in_inst))
 
+    def read_file_in_inst(self, inst_directory, filename):
+        inst_direct_filename = inst_directory+"/"+filename
+        self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")
+
     # TODO:
     def save_waveform_back_to_pc(self, inst_directory, filename, local_directory="./report/", debug=False):
 
