@@ -128,7 +128,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
         self.actionAbout_the_GUI.triggered.connect(self.about_the_GUI)
-        self.about_the_gui_text = "Powered by PySide2 and Python3."
+        self.about_the_gui_text = "Powered by PySide2 and Python3. \n https://github.com/a9202507/ifx_loadslammer"
         self.debug = debug
         # set off_RadioButton is checked.
         self.radioButton_2.setChecked(True)
@@ -155,7 +155,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        Window_title = "IFX loadSlammer GUI Rev.2022.06.08 "
+        Window_title = "IFX loadSlammer GUI Rev.2022.06.09 MSO58 "
 
         if self.debug == True:
             self.setWindowTitle(Window_title+"_Debug mode")
@@ -196,7 +196,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
         # read waveform back to check save funciton success.
         self.scope.read_file_in_inst(filefolder, self.waveform_file+".png")
-        self.scope.inst.read_raw(1024*1024)
+
+    # comment out as below line for MSO58, 20220609
+        # self.scope.inst.read_raw(1024*1024)
 
     def save_wavefrom_from_scope_to_pc(self, filename, timestamp=True):
         local_fildfolder = self.lineEdit_26.text()
