@@ -4,6 +4,7 @@
 import sys
 from PySide2.QtCore import QThread, Signal
 from PySide2.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
+from PySide2.QtGui import QIcon
 import PySide2_DB410_ui
 import json
 import os
@@ -14,6 +15,11 @@ import pandas
 import time
 import pandas_report
 import datetime
+
+# set icon to taskbar
+import ctypes
+myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 
 class DB410_3d_thread(QThread):
@@ -156,6 +162,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
         # set windowTitle
         Window_title = "IFX loadSlammer GUI Rev.2022.06.09 MSO58 "
+
+        # set icon
+        app_icon = QIcon()
+        app_icon.addFile("./resource/load slammer.ico")
+        self.setWindowIcon(app_icon)
 
         if self.debug == True:
             self.setWindowTitle(Window_title+"_Debug mode")
@@ -481,9 +492,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    # TODO:
-    #app.setWindowIcon(QIcon("./resource/load slammer.ico"))
 
     myWin = MyMainWindow(debug=False)
 
