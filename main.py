@@ -75,7 +75,8 @@ class DB410_3d_thread(QThread):
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform to PC")
                 # for save wavefrom delay time
-                time.sleep(myWin.parameter_main_ton_duration_time_sec)
+                myWin.scope.inst.query('*OPC?')
+                # time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
                 measure_result_dict['Freq'] = float(freq)
                 measure_result_dict['duty'] = float(duty)
@@ -127,7 +128,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.comboBox.currentIndexChanged.connect(
             self.update_escope_name)
         self.pushButton_9.clicked.connect(self.open_3d_report_max)
-        self.pushButton_10.clicked.connect(self.open_3d_report_min)
+        self.pushButton_9.setText("load 3D report")
+
+        self.pushButton_10.setText("unused")
+        self.pushButton_10.clicked.connect(self.check_debug_mode)
 
         self.pushButton_7.clicked.connect(
             self.update_GUI_then_save_waveform_once_time)
@@ -161,17 +165,31 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        Window_title = "IFX loadSlammer GUI Rev.2022.06.09 MSO58 "
+        self.Window_title = "IFX loadSlammer GUI Rev.2022.06.13"
 
         # set icon
         app_icon = QIcon()
         app_icon.addFile("./resource/load slammer.ico")
         self.setWindowIcon(app_icon)
 
+        self.set_window_title_with_debug_mode()
+
+    def set_window_title_with_debug_mode(self):
         if self.debug == True:
-            self.setWindowTitle(Window_title+"_Debug mode")
+            self.setWindowTitle(self.Window_title+"_Debug mode")
         else:
-            self.setWindowTitle(Window_title)
+            self.setWindowTitle(self.Window_title)
+
+    def check_debug_mode(self):
+        if self.lineEdit_7.text() == "53523962":
+            self.set_debug_mode_enable(True)
+            self.push_msg_to_GUI(f"debug is {self.debug}")
+        else:
+            self.set_debug_mode_enable(False)
+
+    def set_debug_mode_enable(self, mode=False):
+        self.debug = mode
+        self.set_window_title_with_debug_mode()
 
     def update_GUI_then_save_waveform_once_time(self):
         self.update_GUI()
@@ -211,10 +229,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     # comment out as below line for MSO58, 20220609
         # self.scope.inst.read_raw(1024*1024)
 
-    def save_wavefrom_from_scope_to_pc(self, filename, timestamp=True):
+    def save_wavefrom_from_scope_to_pc(self, filename, debug=True):
         local_fildfolder = self.lineEdit_26.text()
         self.scope.save_waveform_back_to_pc(
-            local_fildfolder, self.waveform_file+".png", self.lineEdit_27.text()+"/", True)
+            local_fildfolder, self.waveform_file+".png", self.lineEdit_27.text()+"/", self.debug)
 
     def get_scope_meansurement_value(self, item_number=1, measure_item_type="max"):
         result = self.scope.get_measurement_value(
@@ -247,8 +265,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen.set_duty = str(duty)
         self.function_gen.set_rise_time_ns = str(rise_time)
         self.function_gen.set_fall_time_ns = str(fall_time)
-        print(
-            f"run_function_gen freq{freq}duty{duty}rise{rise_time}fala{fall_time}")
+
+        if self.debug == True:
+            print(
+                f"run_function_gen freq{freq}duty{duty}rise{rise_time}fala{fall_time}")
 
         if on_off == True:
             self.function_gen.on()
@@ -476,13 +496,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def open_3d_report_max(self):
         self.get_filename()
-        print(self.filenames[0])
-        pandas_report.plt_vmax(self.filenames[0])
 
-    def open_3d_report_min(self):
-        self.get_filename()
-        print(self.filenames[0])
-        pandas_report.plt_vmin(self.filenames[0])
+        if self.debug == True:
+            print(self.filenames[0])
+        pandas_report.plt_vmax(self.filenames[0])
 
     def select_directory(self):
         self.dir_path = QFileDialog.getExistingDirectory(

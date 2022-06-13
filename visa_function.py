@@ -113,7 +113,7 @@ class tek_visa_mso_escope(visa_equipment):
 
         inst_direct_filename = inst_directory+"/"+filename
         if debug == True:
-            print(f'{inst_direct_filename}')
+            print(f'save wavfrom:{inst_direct_filename}')
         self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")
         imgData = self.inst.read_raw(1024*1024)
         pc_dicrect_filename = local_directory+filename
