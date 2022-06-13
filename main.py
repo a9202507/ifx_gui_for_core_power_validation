@@ -482,6 +482,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
+    # TODO:
+    #app.setWindowIcon(QIcon("./resource/load slammer.ico"))
+
     myWin = MyMainWindow(debug=False)
 
     myWin.show()
