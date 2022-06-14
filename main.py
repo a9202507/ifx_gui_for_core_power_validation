@@ -43,6 +43,7 @@ class DB410_3d_thread(QThread):
         duty_list_len = len(myWin.parameter_main_duty_list)
         measure_result_dict = dict()
         df = pd.DataFrame()
+        base_filename = myWin.lineEdit_7.text()
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
 
@@ -58,15 +59,19 @@ class DB410_3d_thread(QThread):
                 # for transinet duration time.
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
 
-                filename = myWin.parameter_setting_filename+str(myWin.parameter_main_high_current)+"A_"+str(
+                filename = base_filename+str(myWin.parameter_main_high_current)+"A_"+str(
                     myWin.parameter_main_low_current)+"A_"+"Gain"+str(myWin.parameter_main_gain)+"mVa"+"_"+str(freq)+"Khz"+"_D"+str(duty)
-                try:
-                    myWin.save_waveform_in_scope(myWin.parameter_setting_folder_in_inst,
-                                                 filename,
-                                                 myWin.parameter_setting_filename_include_timestamp
-                                                 )
+
+                print(f"line65 filename={filename}")
+                myWin.lineEdit_7.setText(filename)
+                # try:
+                myWin.update_GUI_then_save_waveform_once_time()
+                '''
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform to Scope")
+                
+                '''
+
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI("save_file_to_PC")
 
@@ -165,7 +170,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        self.Window_title = "IFX loadSlammer GUI Rev.2022.06.13"
+        self.Window_title = "IFX loadSlammer GUI Rev.2022.06.14"
 
         # set icon
         app_icon = QIcon()
@@ -192,9 +197,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.set_window_title_with_debug_mode()
 
     def update_GUI_then_save_waveform_once_time(self):
-        self.update_GUI()
+
+        self.parameter_setting_folder_in_inst = self.lineEdit_26.text()
+        self.parameter_setting_filename = self.lineEdit_7.text()
         self.save_waveform_in_scope(self.parameter_setting_folder_in_inst,
-                                    self.parameter_setting_filename, self.parameter_setting_filename_include_timestamp)
+                                    self.parameter_setting_filename, False)
         time.sleep(1)
         self.save_wavefrom_from_scope_to_pc(
             self.waveform_file, self.parameter_setting_filename_include_timestamp)
