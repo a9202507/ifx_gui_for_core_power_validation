@@ -43,7 +43,7 @@ class DB410_3d_thread(QThread):
         duty_list_len = len(myWin.parameter_main_duty_list)
         measure_result_dict = dict()
         df = pd.DataFrame()
-        base_filename = myWin.lineEdit_7.text()
+        base_filename = "IFX_"
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
 
@@ -64,13 +64,11 @@ class DB410_3d_thread(QThread):
 
                 print(f"line65 filename={filename}")
                 myWin.lineEdit_7.setText(filename)
-                # try:
-                myWin.update_GUI_then_save_waveform_once_time()
-                '''
+                try:
+                    myWin.update_GUI_then_save_waveform_once_time()
+
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform to Scope")
-                
-                '''
 
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI("save_file_to_PC")
@@ -80,16 +78,21 @@ class DB410_3d_thread(QThread):
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform to PC")
                 # for save wavefrom delay time
-                myWin.scope.inst.query('*OPC?')
-                # time.sleep(myWin.parameter_main_ton_duration_time_sec)
+                # myWin.scope.inst.query('*OPC?')
+                time.sleep(1)
 
-                measure_result_dict['Freq'] = float(freq)
-                measure_result_dict['duty'] = float(duty)
-                measure_result_dict['Vmax'] = float(myWin.get_scope_meansurement_value(
-                    3, "value"))
-                measure_result_dict['Vmin'] = float(myWin.get_scope_meansurement_value(
-                    4, "value"))
-                df = df.append(measure_result_dict, ignore_index=True)
+                try:
+                    measure_result_dict['Freq'] = float(freq)
+                    measure_result_dict['duty'] = float(duty)
+                    measure_result_dict['Vmax'] = float(myWin.get_scope_meansurement_value(
+                        1, "value"))
+                    measure_result_dict['Vmin'] = float(myWin.get_scope_meansurement_value(
+                        2, "value"))
+                    df = df.append(measure_result_dict, ignore_index=True)
+                except:
+                    myWin.push_msg_to_GUI(
+                        "Failed to get measurement from scope")
+                    print("line 97: Failed to get measurement from scope")
                 if myWin.debug == True:
                     self.DB410_msg.emit(str(measure_result_dict))
                     print(f"df={df}")
@@ -170,7 +173,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        self.Window_title = "IFX loadSlammer GUI Rev.2022.06.14"
+        self.Window_title = "IFX loadSlammer GUI Rev.2022.06.15"
 
         # set icon
         app_icon = QIcon()
