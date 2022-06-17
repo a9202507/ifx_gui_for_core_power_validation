@@ -138,7 +138,7 @@ class tek_visa_mso_escope(visa_equipment):
                              "mean": "MEAN",
                              "value": "value", }
         result = self.inst.query(
-            "MEASUrement:MEAS"+str(item_number)+":"+measure_type_dict[measure_item_type]+"?")
+            "MEASUrement:MEAS"+str(item_number)+":RESUlts:CURRentacq:"+measure_type_dict[measure_item_type]+"?")
         return result
 
     def set_horizontal_scale(self, scale="2e-6"):
@@ -186,11 +186,18 @@ if __name__ == '__main__':
     #fungen = tek_visa_functionGen(devices[4])
     scope = tek_visa_mso_escope(devices[0])
 
+    for i in range(1,20):
+        value=scope.get_measurement_value(1,"mean")
+        print(value)
+
+    
+    
+    '''
     scope.save_waveform_in_inst("E:/20220530", "12345", False, True)
     scope.save_waveform_back_to_pc(
         "E:/20220530", "12345.png", "./report/", True)
 
-    '''
+    
     freqs = [10, 20, 100, 200]
     dutys = [10, 20, 50]
 

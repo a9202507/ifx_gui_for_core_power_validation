@@ -43,6 +43,7 @@ class DB410_3d_thread(QThread):
         duty_list_len = len(myWin.parameter_main_duty_list)
         measure_result_dict = dict()
         df = pd.DataFrame()
+                    
         base_filename = "IFX_"
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
@@ -58,9 +59,10 @@ class DB410_3d_thread(QThread):
 
                 # for transinet duration time.
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
-
+                dt = datetime.datetime.now()
+                timestamp_str = dt.strftime("_%Y%m%d_%H%M%S")
                 filename = base_filename+str(myWin.parameter_main_high_current)+"A_"+str(
-                    myWin.parameter_main_low_current)+"A_"+"Gain"+str(myWin.parameter_main_gain)+"mVa"+"_"+str(freq)+"Khz"+"_D"+str(duty)
+                    myWin.parameter_main_low_current)+"A_"+"Gain"+str(myWin.parameter_main_gain)+"mVa"+"_"+str(freq)+"Khz"+"_D"+str(duty)+timestamp_str
 
                 print(f"line65 filename={filename}")
                 myWin.lineEdit_7.setText(filename)
@@ -81,18 +83,28 @@ class DB410_3d_thread(QThread):
                 # myWin.scope.inst.query('*OPC?')
                 time.sleep(1)
 
-                try:
-                    measure_result_dict['Freq'] = float(freq)
-                    measure_result_dict['duty'] = float(duty)
-                    measure_result_dict['Vmax'] = float(myWin.get_scope_meansurement_value(
-                        1, "value"))
-                    measure_result_dict['Vmin'] = float(myWin.get_scope_meansurement_value(
-                        2, "value"))
-                    df = df.append(measure_result_dict, ignore_index=True)
-                except:
-                    myWin.push_msg_to_GUI(
-                        "Failed to get measurement from scope")
-                    print("line 97: Failed to get measurement from scope")
+            
+                measure_result_dict['Freq'] = float(freq)
+                measure_result_dict['duty'] = float(duty)
+                vmax=myWin.get_scope_meansurement_value('1', "mean")
+                print(f"line88 vmax={vmax}")
+                measure_result_dict['Vmax'] = float(vmax)
+
+                #
+                #except:
+                #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmax={vmax}")
+
+                
+                vmin=myWin.get_scope_meansurement_value('2', "mean")
+                print(f"line97 vmin={vmin}")
+                measure_result_dict['Vmin'] = vmin
+                
+                #
+                #except:
+                #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmin={vmin}")
+
+                df = df.append(measure_result_dict, ignore_index=True)
+
                 if myWin.debug == True:
                     self.DB410_msg.emit(str(measure_result_dict))
                     print(f"df={df}")
@@ -138,11 +150,13 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_9.clicked.connect(self.open_3d_report_max)
         self.pushButton_9.setText("load 3D report")
 
-        self.pushButton_10.setText("unused")
+        self.pushButton_10.setText("init Scope")
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
         self.pushButton_7.clicked.connect(
             self.update_GUI_then_save_waveform_once_time)
+        self.pushButton_7.setEnabled(False)
+        
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
         self.actionAbout_the_GUI.triggered.connect(self.about_the_GUI)
@@ -173,7 +187,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        self.Window_title = "IFX loadSlammer GUI Rev.2022.06.15"
+        self.Window_title = "IFX loadSlammer GUI Rev.2022.06.17"
 
         # set icon
         app_icon = QIcon()
@@ -189,12 +203,15 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.setWindowTitle(self.Window_title)
 
     def check_debug_mode(self):
+        self.update_GUI()
+        self.init_scope()
+
         if self.lineEdit_7.text() == "53523962":
             self.set_debug_mode_enable(True)
             self.push_msg_to_GUI(f"debug is {self.debug}")
         else:
             self.set_debug_mode_enable(False)
-
+        self.pushButton_7.setEnabled(True)
     def set_debug_mode_enable(self, mode=False):
         self.debug = mode
         self.set_window_title_with_debug_mode()
@@ -206,8 +223,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.save_waveform_in_scope(self.parameter_setting_folder_in_inst,
                                     self.parameter_setting_filename, False)
         time.sleep(1)
-        self.save_wavefrom_from_scope_to_pc(
-            self.waveform_file, self.parameter_setting_filename_include_timestamp)
+        #self.save_wavefrom_from_scope_to_pc(
+        #    self.waveform_file, self.parameter_setting_filename_include_timestamp)
 
     def init_scope(self):
         self.scope = myvisa.tek_visa_mso_escope(
@@ -245,8 +262,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             local_fildfolder, self.waveform_file+".png", self.lineEdit_27.text()+"/", self.debug)
 
     def get_scope_meansurement_value(self, item_number=1, measure_item_type="max"):
-        result = self.scope.get_measurement_value(
-            item_number=item_number, measure_item_type=measure_item_type)
+        result = self.scope.get_measurement_value(str(item_number), measure_item_type)
         return result
 
     def set_process_bar(self, data):
