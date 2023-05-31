@@ -129,16 +129,27 @@ class tek_visa_mso_escope(visa_equipment):
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
 
-    def set_channel_measure_items(self):
-        pass
 
-    def get_measurement_value(self, item_number="1", measure_item_type="max"):
-        measure_type_dict = {"max": "MAXIMUM",
-                             "min": "MINIMUM",
+        ''' pdutty = postive duty
+            freq = frequency 
+        '''
+    def set_measurement_items(self, item_number='1', channel_number='1', measure_item_type="mean"):
+
+        self.inst.write("MEASUrement:MEAS"+str(item_number) +
+                        ":SOURCE CH"+channel_number)
+
+        
+        self.inst.write("MEASUrement:MEAS"+str(item_number) +
+                        ":TYPE "+measure_item_type)
+    def get_measurement_value(self, item_number="1", measure_item_type="mean"):
+        measure_type_dict = {"max": "MAXimum",
+                             "min": "MINimum",
                              "mean": "MEAN",
                              "value": "value", }
+
         result = self.inst.query(
             "MEASUrement:MEAS"+str(item_number)+":RESUlts:CURRentacq:"+measure_type_dict[measure_item_type]+"?")
+
         return result
 
     def set_horizontal_scale(self, scale="2e-6"):
@@ -181,9 +192,12 @@ if __name__ == '__main__':
 
     devices = get_visa_resource_list()
     print(devices)
+    escope = tek_visa_mso_escope(devices[0])
     # escope=create_visa_equipment(devices[0])
     # print(escope.query('*IDN?'))
     #fungen = tek_visa_functionGen(devices[4])
+
+    '''
     scope = tek_visa_mso_escope(devices[0])
 
     for i in range(1,20):
@@ -192,7 +206,7 @@ if __name__ == '__main__':
 
     
     
-    '''
+    
     scope.save_waveform_in_inst("E:/20220530", "12345", False, True)
     scope.save_waveform_back_to_pc(
         "E:/20220530", "12345.png", "./report/", True)

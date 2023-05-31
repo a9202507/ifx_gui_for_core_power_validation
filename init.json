@@ -29,7 +29,7 @@
     "parameter_main_roll_up_down_enable": false,
     "parameter_setting_scope_resource_name": "USB0::0x0699::0x0401::C020907::INSTR",
     "parameter_setting_function_gen_resource_name": "USB0::0x0699::0x034B::C010363::INSTR",
-    "parameter_setting_folder_in_inst": "E:/20220531",
+    "parameter_setting_folder_in_inst": "C:/Temp",
     "parameter_setting_filename": "IFX_",
     "parameter_setting_filename_include_timestamp": true,
     "parameter_setting_filename_include_transient": true

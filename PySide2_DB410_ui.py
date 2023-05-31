@@ -230,16 +230,6 @@ class Ui_MainWindow(object):
         self.groupBox_2.setGeometry(QRect(10, 10, 471, 176))
         self.gridLayout = QGridLayout(self.groupBox_2)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label_19 = QLabel(self.groupBox_2)
-        self.label_19.setObjectName(u"label_19")
-
-        self.gridLayout.addWidget(self.label_19, 0, 0, 1, 1)
-
-        self.label_2 = QLabel(self.groupBox_2)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
-
         self.pushButton_6 = QPushButton(self.groupBox_2)
         self.pushButton_6.setObjectName(u"pushButton_6")
         self.pushButton_6.setEnabled(True)
@@ -252,11 +242,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.lineEdit_28, 1, 0, 1, 3)
 
-        self.comboBox = QComboBox(self.groupBox_2)
-        self.comboBox.setObjectName(u"comboBox")
-
-        self.gridLayout.addWidget(self.comboBox, 0, 1, 1, 2)
-
         self.comboBox_2 = QComboBox(self.groupBox_2)
         self.comboBox_2.setObjectName(u"comboBox_2")
 
@@ -267,6 +252,16 @@ class Ui_MainWindow(object):
         self.lineEdit_29.setEnabled(False)
 
         self.gridLayout.addWidget(self.lineEdit_29, 3, 0, 1, 3)
+
+        self.label_2 = QLabel(self.groupBox_2)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 1)
+
+        self.comboBox = QComboBox(self.groupBox_2)
+        self.comboBox.setObjectName(u"comboBox")
+
+        self.gridLayout.addWidget(self.comboBox, 0, 1, 1, 2)
 
         self.groupBox_4 = QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(u"groupBox_4")
@@ -338,6 +333,47 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.pushButton_10)
 
+        self.groupBox_8 = QGroupBox(self.tab_2)
+        self.groupBox_8.setObjectName(u"groupBox_8")
+        self.groupBox_8.setGeometry(QRect(500, 170, 181, 141))
+        self.verticalLayout_2 = QVBoxLayout(self.groupBox_8)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.label_19 = QLabel(self.groupBox_8)
+        self.label_19.setObjectName(u"label_19")
+
+        self.verticalLayout_2.addWidget(self.label_19)
+
+        self.comboBox_3 = QComboBox(self.groupBox_8)
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.setObjectName(u"comboBox_3")
+
+        self.verticalLayout_2.addWidget(self.comboBox_3)
+
+        self.label_20 = QLabel(self.groupBox_8)
+        self.label_20.setObjectName(u"label_20")
+
+        self.verticalLayout_2.addWidget(self.label_20)
+
+        self.comboBox_4 = QComboBox(self.groupBox_8)
+        self.comboBox_4.addItem("")
+        self.comboBox_4.addItem("")
+        self.comboBox_4.addItem("")
+        self.comboBox_4.addItem("")
+        self.comboBox_4.addItem("")
+        self.comboBox_4.addItem("")
+        self.comboBox_4.addItem("")
+        self.comboBox_4.addItem("")
+        self.comboBox_4.setObjectName(u"comboBox_4")
+
+        self.verticalLayout_2.addWidget(self.comboBox_4)
+
         self.tabWidget.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -358,7 +394,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -443,14 +479,12 @@ class Ui_MainWindow(object):
             self.tab), QCoreApplication.translate("MainWindow", u"main", None))
         self.groupBox_2.setTitle(QCoreApplication.translate(
             "MainWindow", u"Equipments setting", None))
-        self.label_19.setText(QCoreApplication.translate(
-            "MainWindow", u"Escope", None))
-        self.label_2.setText(QCoreApplication.translate(
-            "MainWindow", u"Function Generator", None))
         self.pushButton_6.setText(QCoreApplication.translate(
             "MainWindow", u"re-scan equipments", None))
         self.lineEdit_28.setText("")
         self.lineEdit_29.setText("")
+        self.label_2.setText(QCoreApplication.translate(
+            "MainWindow", u"Function Generator", None))
         self.groupBox_4.setTitle(
             QCoreApplication.translate("MainWindow", u"Misc", None))
         self.checkBox_4.setText(QCoreApplication.translate(
@@ -483,6 +517,46 @@ class Ui_MainWindow(object):
             "MainWindow", u"load report for Vmax", None))
         self.pushButton_10.setText(QCoreApplication.translate(
             "MainWindow", u"load report for Vmin", None))
+        self.groupBox_8.setTitle(QCoreApplication.translate(
+            "MainWindow", u"Escop channel setting", None))
+        self.label_19.setText(QCoreApplication.translate(
+            "MainWindow", u"Vout channel", None))
+        self.comboBox_3.setItemText(
+            0, QCoreApplication.translate("MainWindow", u"1", None))
+        self.comboBox_3.setItemText(
+            1, QCoreApplication.translate("MainWindow", u"2", None))
+        self.comboBox_3.setItemText(
+            2, QCoreApplication.translate("MainWindow", u"3", None))
+        self.comboBox_3.setItemText(
+            3, QCoreApplication.translate("MainWindow", u"4", None))
+        self.comboBox_3.setItemText(
+            4, QCoreApplication.translate("MainWindow", u"5", None))
+        self.comboBox_3.setItemText(
+            5, QCoreApplication.translate("MainWindow", u"6", None))
+        self.comboBox_3.setItemText(
+            6, QCoreApplication.translate("MainWindow", u"7", None))
+        self.comboBox_3.setItemText(
+            7, QCoreApplication.translate("MainWindow", u"8", None))
+
+        self.label_20.setText(QCoreApplication.translate(
+            "MainWindow", u"Imon channel", None))
+        self.comboBox_4.setItemText(
+            0, QCoreApplication.translate("MainWindow", u"1", None))
+        self.comboBox_4.setItemText(
+            1, QCoreApplication.translate("MainWindow", u"2", None))
+        self.comboBox_4.setItemText(
+            2, QCoreApplication.translate("MainWindow", u"3", None))
+        self.comboBox_4.setItemText(
+            3, QCoreApplication.translate("MainWindow", u"4", None))
+        self.comboBox_4.setItemText(
+            4, QCoreApplication.translate("MainWindow", u"5", None))
+        self.comboBox_4.setItemText(
+            5, QCoreApplication.translate("MainWindow", u"6", None))
+        self.comboBox_4.setItemText(
+            6, QCoreApplication.translate("MainWindow", u"7", None))
+        self.comboBox_4.setItemText(
+            7, QCoreApplication.translate("MainWindow", u"8", None))
+
         self.tabWidget.setTabText(self.tabWidget.indexOf(
             self.tab_2), QCoreApplication.translate("MainWindow", u"setting", None))
         self.menuabout.setTitle(
