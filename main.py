@@ -162,7 +162,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_9.clicked.connect(self.open_3d_report_max)
         self.pushButton_9.setText("load 3D report")
 
-        self.pushButton_10.setText("init Scope")
+        self.pushButton_10.setText("debug only")
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
         self.pushButton_7.clicked.connect(
@@ -171,8 +171,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
-        self.actionAbout_the_GUI.triggered.connect(self.about_the_GUI)
-        self.about_the_gui_text = "Powered by PySide2 and Python3. \n https://github.com/a9202507/ifx_loadslammer"
+        self.actionAbout_the_GUI.triggered.connect(self.about_the_gui)
+
         self.debug = debug
         # set off_RadioButton is checked.
         self.radioButton_2.setChecked(True)
@@ -217,6 +217,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def check_debug_mode(self):
         self.update_GUI()
         self.init_scope()
+        self.set_window_title_with_debug_mode()
 
         if self.lineEdit_7.text() == "53523962":
             self.set_debug_mode_enable(True)
@@ -437,10 +438,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         # print(self.filenames[0])
         self.load_config_from_filename(self.filenames)
 
-    def get_filename(self):
+    def get_filename(self, filetype='JSON Files (*.json);;XLS Files (*.xls);;All Files (*)'):
         try:
-            dlg = QFileDialog(self, 'Open File', '.',
-                              'JSON Files (*.json);;XLS Files (*.xls);;All Files (*)')
+            dlg = QFileDialog(self, 'Open File', '.', filetype)
             if dlg.exec_():
                 self.filenames = dlg.selectedFiles()
                 if self.debug == True:
@@ -484,9 +484,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                 str(json_data["parameter_setting_filename"]))
             self.checkBox_2.setChecked(
                 json_data["parameter_setting_filename_include_timestamp"])
-
-    def about_the_GUI(self):
-        QMessageBox.about(self, "about the GUI", self.about_the_gui_text)
 
     def update_GUI(self):
         # get GUI import
@@ -540,7 +537,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.textEdit.clear()
 
     def open_3d_report_max(self):
-        self.get_filename()
+        self.get_filename(filetype="XLS Files (*.xls)")
 
         if self.debug == True:
             print(self.filenames[0])
@@ -550,6 +547,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.dir_path = QFileDialog.getExistingDirectory(
             self, "Chose Directory", "./")
         self.lineEdit_27.setText(self.dir_path)
+
+    def about_the_gui(self):
+        QMessageBox.about(
+            self, "About the GUI", 'Powered by PySide2, <a href=https://github.com/a9202507/ifx_loadslammer>Github</a>')
 
 
 if __name__ == "__main__":
