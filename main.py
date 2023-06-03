@@ -199,7 +199,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        self.Window_title = "IFX loadSlammer GUI Rev.2023.05.31"
+        self.Window_title = "IFX loadSlammer GUI Rev.2023.06.03"
 
         # set icon
         app_icon = QIcon()
@@ -207,6 +207,23 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setWindowIcon(app_icon)
 
         self.set_window_title_with_debug_mode()
+
+        self.set_components_order()
+
+    def set_components_order(self):
+        self.setTabOrder(self.lineEdit_16, self.lineEdit)
+        self.setTabOrder(self.lineEdit, self.lineEdit_17)
+        self.setTabOrder(self.lineEdit_17, self.lineEdit_6)
+        self.setTabOrder(self.lineEdit_6, self.lineEdit_4)
+        self.setTabOrder(self.lineEdit_4, self.lineEdit_5)
+        self.setTabOrder(self.lineEdit_5, self.lineEdit_8)
+        self.setTabOrder(self.lineEdit_8, self.radioButton_2)
+        self.setTabOrder(self.radioButton_2, self.radioButton)
+        self.setTabOrder(self.radioButton, self.lineEdit_13)
+        self.setTabOrder(self.lineEdit_13, self.lineEdit_15)
+        self.setTabOrder(self.lineEdit_15, self.lineEdit_21)
+        self.setTabOrder(self.lineEdit_21, self.lineEdit_22)
+        #self.setTabOrder(self.lineEdit_22, self.lineEdit_16)
 
     def set_window_title_with_debug_mode(self):
         if self.debug == True:
@@ -420,6 +437,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                                "parameter_setting_filename": self.parameter_setting_filename,
                                "parameter_setting_filename_include_timestamp": self.parameter_setting_filename_include_timestamp,
                                "parameter_setting_filename_include_transient": self.parameter_setting_filename_include_transient,
+                               "parameter_setting_vout_channel_in_scope": self.parameter_setting_vout_channel_scope,
+                               "parameter_setting_iout_channel_in_scope": self.parameter_setting_iout_channel_scope,
                                }
         filename_with_path = QFileDialog.getSaveFileName(
             self, 'Save File', '.', 'JSON Files (*.json)')
@@ -484,6 +503,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                 str(json_data["parameter_setting_filename"]))
             self.checkBox_2.setChecked(
                 json_data["parameter_setting_filename_include_timestamp"])
+            self.comboBox_3.setCurrentText(
+                json_data["parameter_setting_vout_channel_in_scope"])
+            self.comboBox_4.setCurrentText(
+                json_data["parameter_setting_iout_channel_in_scope"])
 
     def update_GUI(self):
         # get GUI import
@@ -515,6 +538,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.parameter_setting_filename = self.lineEdit_7.text()
         self.parameter_setting_filename_include_timestamp = self.checkBox_2.isChecked()
         self.parameter_setting_filename_include_transient = self.checkBox.isChecked()
+        self.parameter_setting_vout_channel_scope = self.comboBox_3.currentText()
+        self.parameter_setting_iout_channel_scope = self.comboBox_4.currentText()
 
     def update_function_gen_name(self):
         if self.comboBox_2.currentText() != "":

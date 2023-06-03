@@ -32,5 +32,7 @@
     "parameter_setting_folder_in_inst": "C:/Temp",
     "parameter_setting_filename": "IFX_",
     "parameter_setting_filename_include_timestamp": true,
-    "parameter_setting_filename_include_transient": true
+    "parameter_setting_filename_include_transient": true,
+    "parameter_setting_vout_channel_in_scope": "2",
+    "parameter_setting_iout_channel_in_scope": "2"
 }
