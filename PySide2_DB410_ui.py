@@ -263,6 +263,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.comboBox, 0, 1, 1, 2)
 
+        self.label_3 = QLabel(self.groupBox_2)
+        self.label_3.setObjectName(u"label_3")
+
+        self.gridLayout.addWidget(self.label_3, 0, 0, 1, 1)
+
         self.groupBox_4 = QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(u"groupBox_4")
         self.groupBox_4.setGeometry(QRect(10, 200, 471, 226))
@@ -478,13 +483,15 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(
             self.tab), QCoreApplication.translate("MainWindow", u"main", None))
         self.groupBox_2.setTitle(QCoreApplication.translate(
-            "MainWindow", u"Equipments setting", None))
+            "MainWindow", u"Equipment selection", None))
         self.pushButton_6.setText(QCoreApplication.translate(
             "MainWindow", u"re-scan equipments", None))
         self.lineEdit_28.setText("")
         self.lineEdit_29.setText("")
         self.label_2.setText(QCoreApplication.translate(
             "MainWindow", u"Function Generator", None))
+        self.label_3.setText(QCoreApplication.translate(
+            "MainWindow", u"Escope", None))
         self.groupBox_4.setTitle(
             QCoreApplication.translate("MainWindow", u"Misc", None))
         self.checkBox_4.setText(QCoreApplication.translate(
