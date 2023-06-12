@@ -82,6 +82,9 @@ class tek_visa_functionGen(tek_visa_equipment):
 
     def get_rise_time_ns(self):
         return self.inst.query("SOURce1:PULSe:TRANsition:LEADing?")
+    
+    def set_output_impedance(self,impedance_value='INFinity'):
+        self.inst.write(f"OUTPut1:IMPedance {impedance_value}")
 
 
 class tek_visa_mso_escope(visa_equipment):
@@ -192,47 +195,6 @@ if __name__ == '__main__':
 
     devices = get_visa_resource_list()
     print(devices)
-    escope = tek_visa_mso_escope(devices[0])
-    # escope=create_visa_equipment(devices[0])
-    # print(escope.query('*IDN?'))
-    #fungen = tek_visa_functionGen(devices[4])
-
-    '''
-    scope = tek_visa_mso_escope(devices[0])
-
-    for i in range(1,20):
-        value=scope.get_measurement_value(1,"mean")
-        print(value)
+    afg=tek_visa_functionGen(devices[0])
 
     
-    
-    
-    scope.save_waveform_in_inst("E:/20220530", "12345", False, True)
-    scope.save_waveform_back_to_pc(
-        "E:/20220530", "12345.png", "./report/", True)
-
-    
-    freqs = [10, 20, 100, 200]
-    dutys = [10, 20, 50]
-
-    # work with DPO4104
-    for freq in freqs:
-        for duty in dutys:
-
-            fungen.set_duty(duty)
-            fungen.set_freq(freq)
-            fungen.on()
-            time.sleep(2)
-            scope.save_waveform_in_inst(
-                "C:/Users/Tek_Local_Admin/Desktop/Eason", f"Eason_mso56_{freq}khz_D{duty}", True, True)
-            time.sleep(5)
-            fungen.off()
-            time.sleep(2)
-            
-
-    
->>> scope.inst.query("MEASUrement:MEAS1:MAXIMUM?")
-'550.0000E-3\n'
->>> scope.inst.query("MEASUrement:MEAS1:MEAN?")
-
-'''

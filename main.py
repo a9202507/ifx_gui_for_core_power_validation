@@ -49,8 +49,11 @@ class DB410_3d_thread(QThread):
         iout_channel = myWin.comboBox_4.currentText()
         myWin.set_scope_meansurement_item(1, vout_channel, 'MAXimum')
         myWin.set_scope_meansurement_item(2, vout_channel, 'MINimum')
-        myWin.set_scope_meansurement_item(3, iout_channel, 'Frequency')
-        myWin.set_scope_meansurement_item(4, iout_channel, 'PDUTTY')
+        myWin.set_scope_meansurement_item(3, vout_channel, 'PK2PK')
+        myWin.set_scope_meansurement_item(4, iout_channel, 'Frequency')
+        myWin.set_scope_meansurement_item(5, iout_channel, 'PDUTY')
+        myWin.set_scope_meansurement_item(6, iout_channel, 'MAXimum')
+        myWin.set_scope_meansurement_item(7, iout_channel, 'MINimum')
 
         base_filename = "IFX_"
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
@@ -199,7 +202,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        self.Window_title = "IFX loadSlammer GUI Rev.2023.06.03"
+        self.Window_title = "IFX loadSlammer GUI Rev.2023.06.12"
 
         # set icon
         app_icon = QIcon()
@@ -319,11 +322,15 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.stop()
         # self.push_msg_to_GUI("stop the 3d test")
 
-    def run_function_gen(self, function_gen_resource_name, high_voltage, low_voltage, freq, duty, rise_time, fall_time, on_off=False):
+    '''def run_function_gen(self, function_gen_resource_name, high_voltage, low_voltage, freq, duty, rise_time, fall_time, on_off=False):
         self.function_gen = myvisa.tek_visa_functionGen(
             self.comboBox_2.currentText())
         # self.function_gen.set_voltage_high = high_voltage
         # self.function_gen.set_voltage_low = low_voltage
+
+        # set ouput inpedance to high-z
+        self.function_gen.set_output_impedance(impedance_value="INFinity")
+        print("output_impedance")
         self.function_gen.set_freq = str(freq)
         self.function_gen.set_duty = str(duty)
         self.function_gen.set_rise_time_ns = str(rise_time)
@@ -336,7 +343,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         if on_off == True:
             self.function_gen.on()
         else:
-            self.function_gen.off()
+            self.function_gen.off()'''
 
     def update_GUI_then_send_function_gen(self):
         self.update_GUI()
@@ -364,6 +371,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def send_function_gen_command_one_time(self, freq, duty, on_off=False):
         self.function_gen = myvisa.tek_visa_functionGen(
             self.comboBox_2.currentText())
+        self.function_gen.set_output_impedance("INFinity")
         self.function_gen.set_duty(duty)
         self.function_gen.set_freq(freq)
 
