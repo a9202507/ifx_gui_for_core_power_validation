@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>733</width>
-    <height>851</height>
+    <width>737</width>
+    <height>860</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@
      </font>
     </property>
     <property name="text">
-     <string>LoadSlammer GUI</string>
+     <string>Infineon GUI for core power validation</string>
     </property>
    </widget>
    <widget class="QTabWidget" name="tabWidget">
@@ -375,14 +375,14 @@
         <x>10</x>
         <y>10</y>
         <width>471</width>
-        <height>176</height>
+        <height>201</height>
        </rect>
       </property>
       <property name="title">
        <string>Equipment selection</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="4" column="2">
+       <item row="5" column="2">
         <widget class="QPushButton" name="pushButton_6">
          <property name="enabled">
           <bool>true</bool>
@@ -392,7 +392,10 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="3">
+       <item row="3" column="1" colspan="2">
+        <widget class="QComboBox" name="comboBox_2"/>
+       </item>
+       <item row="2" column="0" colspan="3">
         <widget class="QLineEdit" name="lineEdit_28">
          <property name="enabled">
           <bool>false</bool>
@@ -402,20 +405,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1" colspan="2">
-        <widget class="QComboBox" name="comboBox_2"/>
-       </item>
-       <item row="3" column="0" colspan="3">
-        <widget class="QLineEdit" name="lineEdit_29">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Function Generator</string>
@@ -428,7 +418,33 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Escope</string>
+          <string>Scope</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="3">
+        <widget class="QLineEdit" name="lineEdit_29">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="checkBox_6">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Using older TeK scope</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -438,7 +454,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>200</y>
+        <y>230</y>
         <width>471</width>
         <height>226</height>
        </rect>
@@ -690,7 +706,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>Escop channel setting</string>
+       <string>Scope channel setting</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -805,8 +821,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>733</width>
-     <height>26</height>
+     <width>737</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuabout">

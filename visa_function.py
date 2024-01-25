@@ -125,9 +125,11 @@ class tek_visa_mso_escope(visa_equipment):
         file.close()
         return None
 
+        ## work
     def set_waveform_directory_in_scope(self, directory="E:/20220530"):
         self.inst.write(f"FILESystem:CWD '{directory}'")
 
+        ## work
     def get_waveform_directory_in_scope(self):
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
@@ -136,6 +138,8 @@ class tek_visa_mso_escope(visa_equipment):
         ''' pdutty = postive duty
             freq = frequency 
         '''
+
+        ##work
     def set_measurement_items(self, item_number='1', channel_number='1', measure_item_type="mean"):
 
         self.inst.write("MEASUrement:MEAS"+str(item_number) +
@@ -144,6 +148,9 @@ class tek_visa_mso_escope(visa_equipment):
         
         self.inst.write("MEASUrement:MEAS"+str(item_number) +
                         ":TYPE "+measure_item_type)
+
+
+        ## can't work on 2024/01/17
     def get_measurement_value(self, item_number="1", measure_item_type="mean"):
         measure_type_dict = {"max": "MAXimum",
                              "min": "MINimum",
@@ -155,12 +162,107 @@ class tek_visa_mso_escope(visa_equipment):
 
         return result
 
-    def set_horizontal_scale(self, scale="2e-6"):
+    def set_horizontal_scale(self, scale="2e-6"): ## work
         self.inst.write("HORIZONTAL:SCAlE "+scale)
 
-    def set_trigger_level(self, trigger_level="1.0"):
+    def set_trigger_level(self, trigger_level="1.0"): ## work
         self.inst.write("TRIGger:A:level "+trigger_level)
 
+    def set_trigger_channel(self, channel="CH1"): ##work
+        self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
+
+class tek_visa_dpo_escope(tek_visa_mso_escope):
+    def __init__(self, visa_resource_name):
+        tek_visa_mso_escope.__init__(self, visa_resource_name)
+
+    def set_measurement_items(self, item_number='1', channel_number='1', measure_item_type="mean"):
+
+        self.inst.write(f"MEASUrement:MEAS{item_number}:TYPE {measure_item_type}") 
+        self.inst.write(f"MEASUrement:MEAS{item_number}:SOURCE1 CH{channel_number}")               
+        self.inst.write(f"MEASUrement:MEAS{item_number}:STATE ON")
+
+    def get_measurement_value(self, item_number="1", measure_item_type="mean"):
+        measure_type_dict = {"max": "MAXimum",
+                             "min": "MINimum",
+                             "mean": "MEAN",
+                             "value": "value", }
+
+        result = self.inst.query(f"MEASUrement:MEAS{item_number}:VALue?")
+
+        return result
+
+          
+
+        
+    '''
+    dpo7054c command example
+    MEASUrement:MEAS1:TYPE pk2pk -> set N1 measure type to peak-to-peak
+    MEASUrement:MEAS1:TYPE max   -> set N1 measure type to max
+    MEASUrement:MEAS1:TYPE mini  -> set N1 measure type to mini
+    MEASUrement:MEAS1:TYPE rms   -> set N1 measure type to rms
+    MEASUrement:MEAS1:TYPE mean  -> set N1 measure type to mean
+    '''
+
+    ## workable on 20240123
+    def save_waveform_in_inst(self, file_save_location_in_inst, filename="temp.png", timestamp_enable=True, debug=False):
+        file_save_location_in_inst= "C:\\Users\Tek_Local_Admin\Tektronix\TekScope\\"
+        self.file_save_path = pathlib.Path(file_save_location_in_inst)
+        dt = datetime.now()
+        if timestamp_enable == True:
+            timestamp = dt.strftime("_%Y%m%d_%H%M%S")
+            self.filename_in_inst = filename+timestamp
+        else:
+            self.filename_in_inst = filename
+        self.filename_in_inst += ".png"
+        '''
+        self.filename_with_path_in_inst = "'" + \
+            str(self.file_save_path / self.filename_in_inst) + "'"
+        '''
+        self.inst.write("HARDCopy:PORT FILE;")
+        self.inst.write("EXPort:FORMat PNG")
+        command_code=f"HARDCopy:FILEName \'{file_save_location_in_inst}{filename}'"
+        self.inst.write(command_code)
+        self.inst.write("HARDCopy STARt")
+
+        if debug == True:
+            print(command_code)
+        pass
+
+    def read_file_in_inst(self, inst_directory, filename):
+        '''
+        inst_direct_filename = inst_directory+"/"+filename
+        self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")'''
+        pass
+    
+    def save_waveform_back_to_pc(self, inst_directory, filename, local_directory="./report/", debug=False):
+        '''
+        inst_direct_filename = inst_directory+"/"+filename
+        if debug == True:
+            print(f'save wavfrom:{inst_direct_filename}')
+        self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")
+        imgData = self.inst.read_raw(1024*1024)
+        pc_dicrect_filename = local_directory+filename
+        file = open(pc_dicrect_filename, "wb")
+        file.write(imgData)
+        file.close()
+        return None ''' 
+        pass
+
+    def set_waveform_directory_in_scope(self, directory="C:/TekScope/Screenshots"):
+        self.inst.write(f"FILESystem:CWD '{directory}'")
+        
+    def get_waveform_directory_in_scope(self):
+        
+        directory = self.inst.query(f"FILESystem:CWD?")
+        return directory
+
+        #work
+    def set_horizontal_scale(self, scale="2e-6"):
+        self.inst.write("HORIZONTAL:SCAlE "+scale)
+        #work
+    def set_trigger_level(self, trigger_level="1.0"):
+        self.inst.write("TRIGger:A:level "+trigger_level)
+        #work
     def set_trigger_channel(self, channel="CH1"):
         self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
 
@@ -195,6 +297,6 @@ if __name__ == '__main__':
 
     devices = get_visa_resource_list()
     print(devices)
-    afg=tek_visa_functionGen(devices[0])
-
+    scope=tek_visa_dpo_escope(devices[1])
+    
     

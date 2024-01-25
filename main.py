@@ -202,7 +202,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        self.Window_title = "IFX loadSlammer GUI Rev.2023.06.12"
+        self.Window_title = "Infineon GUI for core power validation, Rev.2024.01.25"
 
         # set icon
         app_icon = QIcon()
@@ -261,8 +261,14 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         #    self.waveform_file, self.parameter_setting_filename_include_timestamp)
 
     def init_scope(self):
-        self.scope = myvisa.tek_visa_mso_escope(
-            self.parameter_setting_scope_resource_name)
+
+        if self.checkBox_6.isChecked() == False:
+            self.scope = myvisa.tek_visa_mso_escope(
+                self.parameter_setting_scope_resource_name)
+        else:
+            self.scope = myvisa.tek_visa_dpo_escope(
+                self.parameter_setting_scope_resource_name)
+            
 
     def save_waveform_in_scope(self, filefolder, filename, timestamp=True):
         self.init_scope()
@@ -291,9 +297,14 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         # self.scope.inst.read_raw(1024*1024)
 
     def save_wavefrom_from_scope_to_pc(self, filename, debug=True):
-        local_fildfolder = self.lineEdit_26.text()
-        self.scope.save_waveform_back_to_pc(
-            local_fildfolder, self.waveform_file+".png", self.lineEdit_27.text()+"/", self.debug)
+        if self.checkBox_6.isChecked()== True:
+            pass
+            #print(f"scope type = {type(self.scope)}") 
+        else:
+            local_fildfolder = self.lineEdit_26.text()
+            self.scope.save_waveform_back_to_pc(
+                local_fildfolder, self.waveform_file+".png", self.lineEdit_27.text()+"/", self.debug)
+            #print(f"scope type = {type(self.scope)}") 
 
     def set_scope_meansurement_item(self, item_number=1, channel=5, measure_item_type="max"):
         result = self.scope.set_measurement_items(
