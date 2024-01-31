@@ -119,8 +119,8 @@ class tek_visa_mso_escope(visa_equipment):
             print(f'save wavfrom:{inst_direct_filename}')
         self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")
         imgData = self.inst.read_raw(1024*1024)
-        pc_dicrect_filename = local_directory+filename
-        file = open(pc_dicrect_filename, "wb")
+        pc_direct_filename = local_directory+filename
+        file = open(pc_direct_filename, "wb")
         file.write(imgData)
         file.close()
         return None
@@ -188,7 +188,6 @@ class tek_visa_dpo_escope(tek_visa_mso_escope):
                              "value": "value", }
 
         result = self.inst.query(f"MEASUrement:MEAS{item_number}:VALue?")
-
         return result
 
           
@@ -204,23 +203,17 @@ class tek_visa_dpo_escope(tek_visa_mso_escope):
     '''
 
     ## workable on 20240123
-    def save_waveform_in_inst(self, file_save_location_in_inst, filename="temp.png", timestamp_enable=True, debug=False):
-        file_save_location_in_inst= "C:\\Users\Tek_Local_Admin\Tektronix\TekScope\\"
-        self.file_save_path = pathlib.Path(file_save_location_in_inst)
-        dt = datetime.now()
-        if timestamp_enable == True:
-            timestamp = dt.strftime("_%Y%m%d_%H%M%S")
-            self.filename_in_inst = filename+timestamp
-        else:
-            self.filename_in_inst = filename
-        self.filename_in_inst += ".png"
-        '''
-        self.filename_with_path_in_inst = "'" + \
-            str(self.file_save_path / self.filename_in_inst) + "'"
-        '''
+    def save_waveform_in_inst(self, scope_folder, filename="temp.png", debug=False):
+        #dt = datetime.now()
+        #if timestamp_enable == True:
+        #    timestamp = dt.strftime("_%Y%m%d_%H%M%S")
+        #    self.filename_in_inst = filename+timestamp
+        #else:
+        #self.filename_in_inst = filename
+        #self.filename_in_inst += ".png"
         self.inst.write("HARDCopy:PORT FILE;")
         self.inst.write("EXPort:FORMat PNG")
-        command_code=f"HARDCopy:FILEName \'{file_save_location_in_inst}{filename}'"
+        command_code=f"HARDCopy:FILEName '{scope_folder}/{filename}'"
         self.inst.write(command_code)
         self.inst.write("HARDCopy STARt")
 
@@ -228,31 +221,25 @@ class tek_visa_dpo_escope(tek_visa_mso_escope):
             print(command_code)
         pass
 
-    def read_file_in_inst(self, inst_directory, filename):
-        '''
-        inst_direct_filename = inst_directory+"/"+filename
-        self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")'''
+    def read_file_in_inst(self, scope_folder, filename):
+        self.inst.write(f"FILESystem:READFile '{scope_folder}/{filename}'")
         pass
     
-    def save_waveform_back_to_pc(self, inst_directory, filename, local_directory="./report/", debug=False):
-        '''
-        inst_direct_filename = inst_directory+"/"+filename
+    def save_waveform_back_to_pc(self, scope_folder, filename, local_directory="./report/", debug=False):
         if debug == True:
-            print(f'save wavfrom:{inst_direct_filename}')
-        self.inst.write(f"FileSystem:READFile '{inst_direct_filename}'")
+            print(f"save waveform: {scope_folder}/{filename}")
+        self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}'")
         imgData = self.inst.read_raw(1024*1024)
-        pc_dicrect_filename = local_directory+filename
-        file = open(pc_dicrect_filename, "wb")
+        file = open(f"{local_directory}/{filename}", "wb")
         file.write(imgData)
         file.close()
-        return None ''' 
+        return None
         pass
 
     def set_waveform_directory_in_scope(self, directory="C:/TekScope/Screenshots"):
         self.inst.write(f"FILESystem:CWD '{directory}'")
         
     def get_waveform_directory_in_scope(self):
-        
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
 

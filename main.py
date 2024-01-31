@@ -55,7 +55,6 @@ class DB410_3d_thread(QThread):
         myWin.set_scope_meansurement_item(6, iout_channel, 'MAXimum')
         myWin.set_scope_meansurement_item(7, iout_channel, 'MINimum')
 
-        base_filename = "IFX_"
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
 
@@ -70,30 +69,30 @@ class DB410_3d_thread(QThread):
 
                 # for transinet duration time.
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
-                dt = datetime.datetime.now()
-                timestamp_str = dt.strftime("_%Y%m%d_%H%M%S")
-                filename = base_filename+str(myWin.parameter_main_high_current)+"A_"+str(
-                    myWin.parameter_main_low_current)+"A_"+"Gain"+str(myWin.parameter_main_gain)+"mVa"+"_"+str(freq)+"Khz"+"_D"+str(duty)+timestamp_str
+                if myWin.parameter_setting_filename_include_timestamp == True:
+                    dt = datetime.datetime.now()
+                    timestamp_str = dt.strftime("_%Y-%m-%d_%H%M%S")
+                else:
+                    timestamp_str = ""
+                filename = f"{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_{freq}kHz_D{duty}{timestamp_str}.png"
 
                 if myWin.debug == True:
-                    myWin.push_msg_to_GUI(f"line65 filename={filename}")
-                myWin.lineEdit_7.setText(filename)
+                    myWin.push_msg_to_GUI("save file to scope and PC")
+                    myWin.push_msg_to_GUI(f"line65 filename = {filename}")
+                #myWin.lineEdit_7.setText(filename)
                 try:
-                    myWin.update_GUI_then_save_waveform_once_time()
+                    myWin.update_GUI_then_save_waveform(filename)
 
                 except:
-                    myWin.push_msg_to_GUI("Failed to save waveform to Scope")
+                    myWin.push_msg_to_GUI("Failed to save waveform")
 
-                if myWin.debug == True:
-                    myWin.push_msg_to_GUI("save_file_to_PC")
-
-                try:
-                    myWin.save_wavefrom_from_scope_to_pc(filename)
-                except:
-                    myWin.push_msg_to_GUI("Failed to save waveform to PC")
-                # for save wavefrom delay time
+                #try:
+                    #myWin.save_waveform_from_scope_to_pc(filename)
+                #except:
+                    #myWin.push_msg_to_GUI("Failed to save waveform to PC")
+                # for save waveform delay time
                 # myWin.scope.inst.query('*OPC?')
-                time.sleep(1)
+                #time.sleep(1)
 
                 measure_result_dict['Freq'] = float(freq)
                 measure_result_dict['duty'] = float(duty)
@@ -118,7 +117,7 @@ class DB410_3d_thread(QThread):
                 # except:
                 #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmin={vmin}")
 
-                df = df.append(measure_result_dict, ignore_index=True)
+                df = pd.concat([df, pd.DataFrame([measure_result_dict])], ignore_index=True)
 
                 if myWin.debug == True:
                     self.DB410_msg.emit(str(measure_result_dict))
@@ -131,9 +130,13 @@ class DB410_3d_thread(QThread):
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
         self.DB410_process_bar.emit(100)
 
+        if myWin.parameter_setting_filename_include_timestamp == True:
+            dt = datetime.datetime.now()
+            timestamp_str = dt.strftime("_%Y-%m-%d_%H%M%S")
+        else:
+            timestamp_str = ""
         try:
-            df.to_excel(
-                f"{myWin.lineEdit_27.text()}/{myWin.lineEdit_7.text()}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report_{datetime.datetime.now().strftime('%Y_%m%d_%H%M')}.xls")
+            df.to_excel(f"{myWin.parameter_setting_local_folder}/{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report{timestamp_str}.xlsx")
         except:
             myWin.push_msg_to_GUI("Failed to save report to PC")
         self.DB410_msg.emit("==3D test finish==")
@@ -169,7 +172,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
         self.pushButton_7.clicked.connect(
-            self.update_GUI_then_save_waveform_once_time)
+            self.update_GUI_then_save_waveform)
         self.pushButton_7.setEnabled(False)
 
         self.actionLoad_config.triggered.connect(self.load_config)
@@ -250,15 +253,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.debug = mode
         self.set_window_title_with_debug_mode()
 
-    def update_GUI_then_save_waveform_once_time(self):
-
-        self.parameter_setting_folder_in_inst = self.lineEdit_26.text()
-        self.parameter_setting_filename = self.lineEdit_7.text()
-        self.save_waveform_in_scope(self.parameter_setting_folder_in_inst,
-                                    self.parameter_setting_filename, False)
-        time.sleep(1)
-        # self.save_wavefrom_from_scope_to_pc(
-        #    self.waveform_file, self.parameter_setting_filename_include_timestamp)
 
     def init_scope(self):
 
@@ -269,42 +263,31 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.scope = myvisa.tek_visa_dpo_escope(
                 self.parameter_setting_scope_resource_name)
             
+    def update_GUI_then_save_waveform(self, filename="temp.png"):
+        self.update_GUI()
+        self.save_waveform_in_scope_and_pc(filename)
 
-    def save_waveform_in_scope(self, filefolder, filename, timestamp=True):
+    def save_waveform_in_scope_and_pc(self, filename="temp.png"):
         self.init_scope()
-
+        
         # set waveform dirctory in scope
-        self.scope.set_waveform_directory_in_scope(self.lineEdit_26.text())
+        self.scope.set_waveform_directory_in_scope(self.parameter_setting_scope_folder)
 
-        if timestamp == True:
-            dt = datetime.datetime.now()
-            timestamp_str = dt.strftime("_%Y%m%d_%H%M%S")
-            self.waveform_file = filename+timestamp_str
-        else:
-            self.waveform_file = filename
+        #self.latest_waveform_filename = filename
 
-        # save waveform
+        # save waveform to scope
         if self.debug == True:
             self.push_msg_to_GUI(
-                f"save waveform as: {filefolder}, {self.waveform_file}")
+                f"save waveform as: {self.parameter_setting_scope_folder}/{filename}")
 
-        self.scope.save_waveform_in_inst(filefolder, self.waveform_file, False)
+        self.scope.save_waveform_in_inst(self.parameter_setting_scope_folder, filename)
+        time.sleep(1)
+        # read waveform back to check save function success.
+        #self.scope.read_file_in_inst(self.parameter_setting_scope_folder, filename)
 
-        # read waveform back to check save funciton success.
-        self.scope.read_file_in_inst(filefolder, self.waveform_file+".png")
-
-    # comment out as below line for MSO58, 20220609
-        # self.scope.inst.read_raw(1024*1024)
-
-    def save_wavefrom_from_scope_to_pc(self, filename, debug=True):
-        if self.checkBox_6.isChecked()== True:
-            pass
-            #print(f"scope type = {type(self.scope)}") 
-        else:
-            local_fildfolder = self.lineEdit_26.text()
-            self.scope.save_waveform_back_to_pc(
-                local_fildfolder, self.waveform_file+".png", self.lineEdit_27.text()+"/", self.debug)
-            #print(f"scope type = {type(self.scope)}") 
+        # copy waveform from scope to PC
+        self.scope.save_waveform_back_to_pc(self.parameter_setting_scope_folder, filename, self.parameter_setting_local_folder, self.debug)
+        #print(f"scope type = {type(self.scope)}") 
 
     def set_scope_meansurement_item(self, item_number=1, channel=5, measure_item_type="max"):
         result = self.scope.set_measurement_items(
@@ -364,7 +347,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
             QMessageBox.about(
-                self, "error", "please select fucntion get on Setting page first")
+                self, "error", "please select function gen on Setting page first")
         else:
             self.update_GUI_then_send_to_function_gen(
                 function_output_enable=True)
@@ -452,7 +435,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                                # ===========================================================
                                "parameter_setting_scope_resource_name": self.parameter_setting_scope_resource_name,
                                "parameter_setting_function_gen_resource_name": self.parameter_setting_function_gen_resource_name,
-                               "parameter_setting_folder_in_inst": self.parameter_setting_folder_in_inst,
+                               "parameter_setting_scope_folder": self.parameter_setting_scope_folder,
+                               "parameter_setting_local_folder": self.parameter_setting_local_folder,
                                "parameter_setting_filename": self.parameter_setting_filename,
                                "parameter_setting_filename_include_timestamp": self.parameter_setting_filename_include_timestamp,
                                "parameter_setting_filename_include_transient": self.parameter_setting_filename_include_transient,
@@ -517,7 +501,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                 json_data["parameter_main_roll_up_down_enable"])
             # ==================================
             self.lineEdit_26.setText(
-                json_data["parameter_setting_folder_in_inst"])
+                json_data["parameter_setting_scope_folder"])
+            self.lineEdit_27.setText(
+                json_data["parameter_setting_local_folder"])
             self.lineEdit_7.setText(
                 str(json_data["parameter_setting_filename"]))
             self.checkBox_2.setChecked(
@@ -553,7 +539,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         # setting page
         self.parameter_setting_function_gen_resource_name = self.comboBox_2.currentText()
         self.parameter_setting_scope_resource_name = self.comboBox.currentText()
-        self.parameter_setting_folder_in_inst = self.lineEdit_26.text()
+        self.parameter_setting_scope_folder = self.lineEdit_26.text()
+        self.parameter_setting_local_folder = self.lineEdit_27.text()
         self.parameter_setting_filename = self.lineEdit_7.text()
         self.parameter_setting_filename_include_timestamp = self.checkBox_2.isChecked()
         self.parameter_setting_filename_include_transient = self.checkBox.isChecked()
