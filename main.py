@@ -11,7 +11,6 @@ import os
 import visa_function as myvisa
 import pandas as pd
 import DB410_3d_function
-import pandas
 import time
 import pandas_report
 import datetime
@@ -81,7 +80,7 @@ class DB410_3d_thread(QThread):
                     myWin.push_msg_to_GUI(f"line65 filename = {filename}")
                 #myWin.lineEdit_7.setText(filename)
                 try:
-                    myWin.update_GUI_then_save_waveform(filename)
+                    myWin.save_waveform_in_scope_and_pc(filename)
 
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform")
@@ -171,8 +170,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_10.setText("debug only")
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
-        self.pushButton_7.clicked.connect(
-            self.update_GUI_then_save_waveform)
+        self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform("temp.png"))
         self.pushButton_7.setEnabled(False)
 
         self.actionLoad_config.triggered.connect(self.load_config)
@@ -268,10 +266,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.save_waveform_in_scope_and_pc(filename)
 
     def save_waveform_in_scope_and_pc(self, filename="temp.png"):
-        self.init_scope()
+        #self.init_scope()
         
         # set waveform dirctory in scope
-        self.scope.set_waveform_directory_in_scope(self.parameter_setting_scope_folder)
+        #self.scope.set_waveform_directory_in_scope(self.parameter_setting_scope_folder)
 
         #self.latest_waveform_filename = filename
 
