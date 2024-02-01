@@ -1,4 +1,4 @@
-# Rev2022.06.06 for beta release
+# Rev2024.02.01 for beta release
 # a9202507@gmail.com
 
 import sys
@@ -37,6 +37,7 @@ class DB410_3d_thread(QThread):
         self.DB410_msg.emit("== start to run 3D test==")
         myWin.update_GUI()
         myWin.init_scope()
+        myWin.init_function_gen()
 
         freq_list_len = len(myWin.parameter_main_freq_list)
         duty_list_len = len(myWin.parameter_main_duty_list)
@@ -46,13 +47,13 @@ class DB410_3d_thread(QThread):
         # setup measurement items in escope
         vout_channel = myWin.comboBox_3.currentText()
         iout_channel = myWin.comboBox_4.currentText()
-        myWin.set_scope_meansurement_item(1, vout_channel, 'MAXimum')
-        myWin.set_scope_meansurement_item(2, vout_channel, 'MINimum')
-        myWin.set_scope_meansurement_item(3, vout_channel, 'PK2PK')
-        myWin.set_scope_meansurement_item(4, iout_channel, 'Frequency')
-        myWin.set_scope_meansurement_item(5, iout_channel, 'PDUTY')
-        myWin.set_scope_meansurement_item(6, iout_channel, 'MAXimum')
-        myWin.set_scope_meansurement_item(7, iout_channel, 'MINimum')
+        myWin.set_scope_measurement_item(1, vout_channel, 'MAXimum')
+        myWin.set_scope_measurement_item(2, vout_channel, 'MINimum')
+        myWin.set_scope_measurement_item(3, vout_channel, 'PK2PK')
+        myWin.set_scope_measurement_item(4, iout_channel, 'Frequency')
+        myWin.set_scope_measurement_item(5, iout_channel, 'PDUTY')
+        myWin.set_scope_measurement_item(6, iout_channel, 'MAXimum')
+        myWin.set_scope_measurement_item(7, iout_channel, 'MINimum')
 
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
@@ -95,7 +96,7 @@ class DB410_3d_thread(QThread):
 
                 measure_result_dict['Freq'] = float(freq)
                 measure_result_dict['duty'] = float(duty)
-                vmax = myWin.get_scope_meansurement_value(
+                vmax = myWin.get_scope_measurement_value(
                     item_number='1', measure_item_type="max")
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI(f"line88 vmax={vmax}")
@@ -105,7 +106,7 @@ class DB410_3d_thread(QThread):
                 # except:
                 #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmax={vmax}")
 
-                vmin = myWin.get_scope_meansurement_value(
+                vmin = myWin.get_scope_measurement_value(
                     item_number='2', measure_item_type="min")
 
                 if myWin.debug == True:
@@ -155,19 +156,22 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setFixedSize(730, 850)
         self.setupUi(self)
 
-        # self.pushButton_8.clicked.connect(self.create_visa_equipment)
+        # define scope and function generator types as dictionaries, pointing to the visa class.
+        self.scope_types = {
+            "Tektronix_MSO4x_MSO5x_MSO6x": myvisa.Tektronix_MSO4x_MSO5x_MSO6x,
+            "Tektronix_MSO5000_DPO5000_DP07000": myvisa.Tektronix_MSO5000_DPO5000_DP07000}
+        self.function_gen_types = {
+            "Tektronix_AFG3000": myvisa.Tektronix_AFG3000}
+       
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
         self.pushButton_4.clicked.connect(self.stop_function_gen_3d_thread)
-        self.pushButton_6.clicked.connect(self.update_equipment_on_combox)
+        self.pushButton_6.clicked.connect(self.update_equipment_address_on_combobox)
         self.pushButton_5.clicked.connect(self.clear_message_box)
-        self.comboBox_2.currentIndexChanged.connect(
-            self.update_function_gen_name)
-        self.comboBox.currentIndexChanged.connect(
-            self.update_escope_name)
+        self.comboBox.currentIndexChanged.connect(self.update_scope_address)
+        self.comboBox_6.currentIndexChanged.connect(self.update_scope_address)
+        self.comboBox_2.currentIndexChanged.connect(self.update_function_gen_address)
+        self.comboBox_7.currentIndexChanged.connect(self.update_function_gen_address)
         self.pushButton_9.clicked.connect(self.open_3d_report_max)
-        self.pushButton_9.setText("load 3D report")
-
-        self.pushButton_10.setText("debug only")
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
         self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform("temp.png"))
@@ -183,7 +187,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_11.clicked.connect(self.select_directory)
 
         # start-up function
-        self.update_equipment_on_combox()
+        self.update_equipment_address_on_combobox()
+        self.update_equipment_type_on_combobox()
 
         # set auto load init.json during startup
         self.path = os.path.dirname(os.path.abspath(__file__))
@@ -203,7 +208,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev.2024.01.25"
+        self.Window_title = "Infineon GUI for core power validation, Rev.2024.02.01"
 
         # set icon
         app_icon = QIcon()
@@ -253,13 +258,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
 
     def init_scope(self):
+        self.scope = self.scope_types[self.parameter_setting_scope_resource_type](self.parameter_setting_scope_resource_address)
 
-        if self.checkBox_6.isChecked() == False:
-            self.scope = myvisa.tek_visa_mso_escope(
-                self.parameter_setting_scope_resource_name)
-        else:
-            self.scope = myvisa.tek_visa_dpo_escope(
-                self.parameter_setting_scope_resource_name)
+    def init_function_gen(self):
+        self.function_gen = self.function_gen_types[self.parameter_setting_function_gen_resource_type](self.parameter_setting_function_gen_resource_address)
             
     def update_GUI_then_save_waveform(self, filename="temp.png"):
         self.update_GUI()
@@ -287,12 +289,12 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.scope.save_waveform_back_to_pc(self.parameter_setting_scope_folder, filename, self.parameter_setting_local_folder, self.debug)
         #print(f"scope type = {type(self.scope)}") 
 
-    def set_scope_meansurement_item(self, item_number=1, channel=5, measure_item_type="max"):
+    def set_scope_measurement_item(self, item_number=1, channel=5, measure_item_type="max"):
         result = self.scope.set_measurement_items(
             str(item_number), str(channel), measure_item_type)
         return result
 
-    def get_scope_meansurement_value(self, item_number=1, measure_item_type="max"):
+    def get_scope_measurement_value(self, item_number=1, measure_item_type="max"):
         result = self.scope.get_measurement_value(
             str(item_number), measure_item_type)
         return result
@@ -337,11 +339,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         else:
             self.function_gen.off()'''
 
-    def update_GUI_then_send_function_gen(self):
-        self.update_GUI()
-        self.send_function_gen_command_one_time(
-            self.lineEdit_8.text(), self.lineEdit_5.text(), self.comboBox_3.currentIndex())
-
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
             QMessageBox.about(
@@ -361,8 +358,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         ), self.lineEdit_5.text(), function_output_enable)
 
     def send_function_gen_command_one_time(self, freq, duty, on_off=False):
-        self.function_gen = myvisa.tek_visa_functionGen(
-            self.comboBox_2.currentText())
         self.function_gen.set_output_impedance("INFinity")
         self.function_gen.set_duty(duty)
         self.function_gen.set_freq(freq)
@@ -381,16 +376,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         else:
             self.function_gen.off()
 
-    def create_visa_equipment(self):
-        if self.comboBox.currentText() != "":
-
-            self.escope = myvisa.create_visa_equipment(
-                self.comboBox.currentText())
-            message = self.escope.query('*IDN?')
-            if self.debug == True:
-                self.push_msg_to_GUI(message)
-
-    def update_equipment_on_combox(self):
+    def update_equipment_address_on_combobox(self):
         self.get_visa_resource()
         self.comboBox.clear()
         self.lineEdit_28.clear()
@@ -401,6 +387,13 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.comboBox_2.addItem("")
         self.comboBox_2.addItems(self.resource_list)
 
+    def update_equipment_type_on_combobox(self):
+        self.comboBox_6.clear()
+        self.comboBox_7.clear()
+        # use the keys of the equipment type dictionaries to create the equipment list
+        self.comboBox_6.addItems([key for key in self.scope_types])
+        self.comboBox_7.addItems([key for key in self.function_gen_types])
+    
     def get_visa_resource(self):
 
         self.resource_list = myvisa.get_visa_resource_list(
@@ -431,15 +424,19 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                                "parameter_main_toff_duration_time_sec": self.parameter_main_toff_duration_time_sec,
                                "parameter_main_roll_up_down_enable": self.parameter_main_roll_up_down_enable,
                                # ===========================================================
-                               "parameter_setting_scope_resource_name": self.parameter_setting_scope_resource_name,
-                               "parameter_setting_function_gen_resource_name": self.parameter_setting_function_gen_resource_name,
+                               "parameter_setting_scope_resource_type": self.parameter_setting_scope_resource_type,
+                               "parameter_setting_scope_resource_address": self.parameter_setting_scope_resource_address,
+                               "parameter_setting_function_gen_resource_type": self.parameter_setting_function_gen_resource_type,
+                               "parameter_setting_function_gen_resource_address": self.parameter_setting_function_gen_resource_address,
                                "parameter_setting_scope_folder": self.parameter_setting_scope_folder,
                                "parameter_setting_local_folder": self.parameter_setting_local_folder,
                                "parameter_setting_filename": self.parameter_setting_filename,
+                               "parameter_setting_screenshot_save_scope": self.parameter_setting_screenshot_save_scope,
+                               "parameter_setting_screenshot_save_pc": self.parameter_setting_screenshot_save_pc,
                                "parameter_setting_filename_include_timestamp": self.parameter_setting_filename_include_timestamp,
-                               "parameter_setting_filename_include_transient": self.parameter_setting_filename_include_transient,
-                               "parameter_setting_vout_channel_in_scope": self.parameter_setting_vout_channel_scope,
-                               "parameter_setting_iout_channel_in_scope": self.parameter_setting_iout_channel_scope,
+                               "parameter_setting_scope_vout_channel": self.parameter_setting_scope_vout_channel,
+                               "parameter_setting_scope_iout_channel": self.parameter_setting_scope_iout_channel,
+                               "parameter_setting_function_gen_channel": self.parameter_setting_function_gen_channel,
                                }
         filename_with_path = QFileDialog.getSaveFileName(
             self, 'Save File', '.', 'JSON Files (*.json)')
@@ -476,41 +473,32 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             if self.debug == True:
                 self.push_msg_to_GUI(str(json_data))
 
-            self.lineEdit_16.setText(
-                str(json_data["parameter_main_high_current"]))
+            self.lineEdit_16.setText(str(json_data["parameter_main_high_current"]))
             self.lineEdit.setText(str(json_data["parameter_main_low_current"]))
             self.lineEdit_17.setText(str(json_data["parameter_main_gain"]))
-            self.lineEdit_6.setText(str(
-                json_data["parameter_main_rise_time_nsec"]))
-            self.lineEdit_4.setText(str(
-                json_data["parameter_main_fall_time_nsec"]))
+            self.lineEdit_6.setText(str(json_data["parameter_main_rise_time_nsec"]))
+            self.lineEdit_4.setText(str(json_data["parameter_main_fall_time_nsec"]))
             self.lineEdit_5.setText(str(json_data["parameter_main_duty"]))
             self.lineEdit_8.setText(str(json_data["parameter_main_frequency"]))
             # =============================
-            self.lineEdit_13.setText(
-                str(json_data["parameter_main_duty_list"])[1:-1])
-            self.lineEdit_15.setText(
-                str(json_data["parameter_main_freq_list"])[1:-1])
-            self.lineEdit_21.setText(str(
-                json_data["parameter_main_ton_duration_time_sec"]))
-            self.lineEdit_22.setText(str(
-                json_data["parameter_main_toff_duration_time_sec"]))
-            self.checkBox_3.setChecked(
-                json_data["parameter_main_roll_up_down_enable"])
+            self.lineEdit_13.setText(str(json_data["parameter_main_duty_list"])[1:-1])
+            self.lineEdit_15.setText(str(json_data["parameter_main_freq_list"])[1:-1])
+            self.lineEdit_21.setText(str(json_data["parameter_main_ton_duration_time_sec"]))
+            self.lineEdit_22.setText(str(json_data["parameter_main_toff_duration_time_sec"]))
+            self.checkBox_3.setChecked(json_data["parameter_main_roll_up_down_enable"])
             # ==================================
-            self.lineEdit_26.setText(
-                json_data["parameter_setting_scope_folder"])
-            self.lineEdit_27.setText(
-                json_data["parameter_setting_local_folder"])
-            self.lineEdit_7.setText(
-                str(json_data["parameter_setting_filename"]))
-            self.checkBox_2.setChecked(
-                json_data["parameter_setting_filename_include_timestamp"])
-            self.comboBox_3.setCurrentText(
-                json_data["parameter_setting_vout_channel_in_scope"])
-            self.comboBox_4.setCurrentText(
-                json_data["parameter_setting_iout_channel_in_scope"])
-
+            self.lineEdit_26.setText(json_data["parameter_setting_scope_folder"])
+            self.lineEdit_27.setText(json_data["parameter_setting_local_folder"])
+            self.lineEdit_7.setText(str(json_data["parameter_setting_filename"]))
+            self.checkBox_4.setChecked(json_data["parameter_setting_screenshot_save_scope"])
+            self.checkBox_5.setChecked(json_data["parameter_setting_screenshot_save_pc"])
+            self.checkBox_2.setChecked(json_data["parameter_setting_filename_include_timestamp"])
+            self.comboBox_3.setCurrentText(json_data["parameter_setting_scope_vout_channel"])
+            self.comboBox_4.setCurrentText(json_data["parameter_setting_scope_iout_channel"])
+            self.comboBox_5.setCurrentText(json_data["parameter_setting_function_gen_channel"])
+            self.comboBox_6.setCurrentText(json_data["parameter_setting_scope_resource_type"])
+            self.comboBox_7.setCurrentText(json_data["parameter_setting_function_gen_resource_type"])
+            
     def update_GUI(self):
         # get GUI import
         # main page
@@ -523,41 +511,39 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.parameter_main_frequency = float(self.lineEdit_8.text())
 
         # ======
-        self.parameter_main_duty_list = eval(
-            "["+str(self.lineEdit_13.text())+"]")
+        self.parameter_main_duty_list = eval("["+str(self.lineEdit_13.text())+"]")
 
-        self.parameter_main_freq_list = eval(
-            "["+str(self.lineEdit_15.text())+"]")
-        self.parameter_main_ton_duration_time_sec = float(
-            self.lineEdit_21.text())
-        self.parameter_main_toff_duration_time_sec = float(
-            self.lineEdit_22.text())
+        self.parameter_main_freq_list = eval("["+str(self.lineEdit_15.text())+"]")
+        self.parameter_main_ton_duration_time_sec = float(self.lineEdit_21.text())
+        self.parameter_main_toff_duration_time_sec = float(self.lineEdit_22.text())
         self.parameter_main_roll_up_down_enable = self.checkBox_3.isChecked()
 
         # setting page
-        self.parameter_setting_function_gen_resource_name = self.comboBox_2.currentText()
-        self.parameter_setting_scope_resource_name = self.comboBox.currentText()
+        self.parameter_setting_function_gen_resource_type = self.comboBox_7.currentText()
+        self.parameter_setting_function_gen_resource_address = self.comboBox_2.currentText()
+        self.parameter_setting_scope_resource_type = self.comboBox_6.currentText()
+        self.parameter_setting_scope_resource_address = self.comboBox.currentText()
         self.parameter_setting_scope_folder = self.lineEdit_26.text()
         self.parameter_setting_local_folder = self.lineEdit_27.text()
         self.parameter_setting_filename = self.lineEdit_7.text()
+        self.parameter_setting_screenshot_save_scope = self.checkBox_4.isChecked()
+        self.parameter_setting_screenshot_save_pc = self.checkBox_5.isChecked()
         self.parameter_setting_filename_include_timestamp = self.checkBox_2.isChecked()
-        self.parameter_setting_filename_include_transient = self.checkBox.isChecked()
-        self.parameter_setting_vout_channel_scope = self.comboBox_3.currentText()
-        self.parameter_setting_iout_channel_scope = self.comboBox_4.currentText()
-
-    def update_function_gen_name(self):
-        if self.comboBox_2.currentText() != "":
-            self.function_gen = myvisa.tek_visa_functionGen(
-                self.comboBox_2.currentText())
-            device_name = self.function_gen.get_equipment_name()
-            self.lineEdit_29.setText(device_name)
-
-    def update_escope_name(self):
+        self.parameter_setting_scope_vout_channel = self.comboBox_3.currentText()
+        self.parameter_setting_scope_iout_channel = self.comboBox_4.currentText()
+        self.parameter_setting_function_gen_channel = self.comboBox_5.currentText()
+        
+    def update_scope_address(self):
         if self.comboBox.currentText() != "":
-            self.function_gen = myvisa.tek_visa_functionGen(
-                self.comboBox.currentText())
-            device_name = self.function_gen.get_equipment_name()
-            self.lineEdit_28.setText(device_name)
+            self.update_GUI()
+            self.init_scope()
+            self.lineEdit_28.setText(self.scope.get_equipment_name())
+
+    def update_function_gen_address(self):
+        if self.comboBox_2.currentText() != "":
+            self.update_GUI()
+            self.init_function_gen()
+            self.lineEdit_29.setText(self.function_gen.get_equipment_name())
 
     def set_horizontal_scale_in_scope(self, scale_value="1e-6"):
         self.scope.set_horizontal_scale(scale_value)
@@ -566,7 +552,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.textEdit.clear()
 
     def open_3d_report_max(self):
-        self.get_filename(filetype="XLS Files (*.xls)")
+        self.get_filename(filetype="Excel Files (*.xls; *.xlsx)")
 
         if self.debug == True:
             print(self.filenames[0])

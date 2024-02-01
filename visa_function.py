@@ -18,12 +18,6 @@ def get_visa_resource_list(remove_ASRL_devices=False):
     return device_list
 
 
-def create_visa_equipment(resource_name):
-    equipment = rm.open_resource(resource_name)
-
-    return equipment
-
-
 class visa_equipment():
     def __init__(self, visa_resource_name):
         self.visa_resource_name = visa_resource_name
@@ -52,7 +46,8 @@ class tek_visa_equipment(visa_equipment):
         self.inst.write("OUTPut1:STATe off")
 
 
-class tek_visa_functionGen(tek_visa_equipment):
+
+class Tektronix_AFG3000(tek_visa_equipment):
     def __init__(self, visa_resource_name, shape="PULS"):
         tek_visa_equipment.__init__(self, visa_resource_name)
         self.set_waveform_shape(shape)
@@ -87,7 +82,8 @@ class tek_visa_functionGen(tek_visa_equipment):
         self.inst.write(f"OUTPut1:IMPedance {impedance_value}")
 
 
-class tek_visa_mso_escope(visa_equipment):
+
+class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
     def __init__(self, visa_resource_name):
         visa_equipment.__init__(self, visa_resource_name)
 
@@ -117,11 +113,6 @@ class tek_visa_mso_escope(visa_equipment):
     def get_waveform_directory_in_scope(self):
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
-
-
-        ''' pdutty = postive duty
-            freq = frequency 
-        '''
 
         ##work
     def set_measurement_items(self, item_number='1', channel_number='1', measure_item_type="mean"):
@@ -155,9 +146,11 @@ class tek_visa_mso_escope(visa_equipment):
     def set_trigger_channel(self, channel="CH1"): ##work
         self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
 
-class tek_visa_dpo_escope(tek_visa_mso_escope):
+
+
+class Tektronix_MSO5000_DPO5000_DP07000(visa_equipment):
     def __init__(self, visa_resource_name):
-        tek_visa_mso_escope.__init__(self, visa_resource_name)
+        visa_equipment.__init__(self, visa_resource_name)
 
     def set_measurement_items(self, item_number='1', channel_number='1', measure_item_type="mean"):
 
@@ -173,10 +166,6 @@ class tek_visa_dpo_escope(tek_visa_mso_escope):
 
         result = self.inst.query(f"MEASUrement:MEAS{item_number}:VALue?")
         return result
-
-          
-
-        
     '''
     dpo7054c command example
     MEASUrement:MEAS1:TYPE pk2pk -> set N1 measure type to peak-to-peak
@@ -186,7 +175,6 @@ class tek_visa_dpo_escope(tek_visa_mso_escope):
     MEASUrement:MEAS1:TYPE mean  -> set N1 measure type to mean
     '''
 
-    ## workable on 20240123
     def save_waveform_in_inst(self, scope_folder, filename="temp.png", debug=False):
         self.inst.write("HARDCopy:PORT FILE;")
         self.inst.write("EXPort:FORMat PNG")
@@ -215,17 +203,18 @@ class tek_visa_dpo_escope(tek_visa_mso_escope):
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
 
-        #work
     def set_horizontal_scale(self, scale="2e-6"):
         self.inst.write("HORIZONTAL:SCAlE "+scale)
-        #work
+
     def set_trigger_level(self, trigger_level="1.0"):
         self.inst.write("TRIGger:A:level "+trigger_level)
-        #work
+
     def set_trigger_channel(self, channel="CH1"):
         self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
 
 
+
+'''
 def save_waveform_in_inst(visaRsrcAddr, fileSaveLocationInInst, filename, timestamp_enable=True, debug=False):
     rm = pyvisa.ResourceManager()
     scope = rm.open_resource(visaRsrcAddr)
@@ -250,7 +239,7 @@ def save_waveform_in_inst(visaRsrcAddr, fileSaveLocationInInst, filename, timest
         print('SAVE:IMAGe '+path_filename_in_inst)
     scope.close()
     rm.close()
-
+'''
 
 if __name__ == '__main__':
 

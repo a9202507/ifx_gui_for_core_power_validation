@@ -27,13 +27,17 @@
     "parameter_main_ton_duration_time_sec": 5.0,
     "parameter_main_toff_duration_time_sec": 3.0,
     "parameter_main_roll_up_down_enable": false,
-    "parameter_setting_scope_resource_name": "USB0::0x0699::0x0401::C020907::INSTR",
-    "parameter_setting_function_gen_resource_name": "USB0::0x0699::0x034B::C010363::INSTR",
+    "parameter_setting_scope_resource_type": "Tektronix_MSO5000_DPO5000_DP07000",
+	"parameter_setting_scope_resource_address": "USB0::0x0699::0x0401::C020907::INSTR",
+    "parameter_setting_function_gen_resource_type": "Tektronix_AFG3000",
+    "parameter_setting_function_gen_resource_address": "USB0::0x0699::0x034B::C010363::INSTR",
     "parameter_setting_scope_folder": "C:/Temp",
     "parameter_setting_local_folder": "./report",
     "parameter_setting_filename": "IFX_",
+    "parameter_setting_screenshot_save_scope": true,
+    "parameter_setting_screenshot_save_pc": true,
     "parameter_setting_filename_include_timestamp": true,
-    "parameter_setting_filename_include_transient": true,
-    "parameter_setting_vout_channel_in_scope": "1",
-    "parameter_setting_iout_channel_in_scope": "2"
+    "parameter_setting_scope_vout_channel": "1",
+    "parameter_setting_scope_iout_channel": "2",
+    "parameter_setting_function_gen_channel": "1"
 }
