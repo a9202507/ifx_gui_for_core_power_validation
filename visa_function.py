@@ -241,10 +241,17 @@ def save_waveform_in_inst(visaRsrcAddr, fileSaveLocationInInst, filename, timest
     rm.close()
 '''
 
+
+
+# define scope and function generator types as dictionaries, pointing to the visa class.
+scope_types = {        "Tektronix_MSO4x_MSO5x_MSO6x": Tektronix_MSO4x_MSO5x_MSO6x,
+                       "Tektronix_MSO5000_DPO5000_DP07000": Tektronix_MSO5000_DPO5000_DP07000}
+function_gen_types = { "Tektronix_AFG3000": Tektronix_AFG3000}
+
+
+
 if __name__ == '__main__':
 
     devices = get_visa_resource_list()
     print(devices)
-    scope=tek_visa_dpo_escope(devices[1])
-    
     

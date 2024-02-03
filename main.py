@@ -156,13 +156,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.setFixedSize(730, 850)
         self.setupUi(self)
 
-        # define scope and function generator types as dictionaries, pointing to the visa class.
-        self.scope_types = {
-            "Tektronix_MSO4x_MSO5x_MSO6x": myvisa.Tektronix_MSO4x_MSO5x_MSO6x,
-            "Tektronix_MSO5000_DPO5000_DP07000": myvisa.Tektronix_MSO5000_DPO5000_DP07000}
-        self.function_gen_types = {
-            "Tektronix_AFG3000": myvisa.Tektronix_AFG3000}
-       
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
         self.pushButton_4.clicked.connect(self.stop_function_gen_3d_thread)
         self.pushButton_6.clicked.connect(self.update_equipment_address_on_combobox)
@@ -258,10 +251,10 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
 
     def init_scope(self):
-        self.scope = self.scope_types[self.parameter_setting_scope_resource_type](self.parameter_setting_scope_resource_address)
+        self.scope = myvisa.scope_types[self.parameter_setting_scope_resource_type](self.parameter_setting_scope_resource_address)
 
     def init_function_gen(self):
-        self.function_gen = self.function_gen_types[self.parameter_setting_function_gen_resource_type](self.parameter_setting_function_gen_resource_address)
+        self.function_gen = myvisa.function_gen_types[self.parameter_setting_function_gen_resource_type](self.parameter_setting_function_gen_resource_address)
             
     def update_GUI_then_save_waveform(self, filename="temp.png"):
         self.update_GUI()
@@ -391,8 +384,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.comboBox_6.clear()
         self.comboBox_7.clear()
         # use the keys of the equipment type dictionaries to create the equipment list
-        self.comboBox_6.addItems([key for key in self.scope_types])
-        self.comboBox_7.addItems([key for key in self.function_gen_types])
+        self.comboBox_6.addItems(list(myvisa.scope_types.keys()))
+        self.comboBox_7.addItems(list(myvisa.function_gen_types.keys()))
     
     def get_visa_resource(self):
 
