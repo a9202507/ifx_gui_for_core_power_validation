@@ -41,6 +41,11 @@ class Tektronix_AFG3000(visa_equipment):
     def __init__(self, visa_resource_name):
         visa_equipment.__init__(self, visa_resource_name)
 
+    waveform_shape_dict = {"pulse": "PULSe",
+                           "sine": "SINusoid",
+                           "square": "SQUare",
+                           "dc": "DC"}
+
     def on(self):
         self.inst.write("OUTPut1:STATe ON")
 
@@ -62,16 +67,7 @@ class Tektronix_AFG3000(visa_equipment):
                         str(fall_time)+"ns")
 
     def set_waveform_shape(self, shape="pulse"):
-        if shape=="pulse":
-            self.inst.write("SOURce1:FUNCtion:SHAPe PULSe")
-        elif shape=="sine":
-            self.inst.write("SOURce1:FUNCtion:SHAPe SINusoid")
-        elif shape=="square":
-            self.inst.write("SOURce1:FUNCtion:SHAPe SQUare")
-        elif shape=="dc":
-            self.inst.write("SOURce1:FUNCtion:SHAPe DC")
-        else:
-           pass
+        self.inst.write(f"SOURce1:FUNCtion:SHAPe {self.waveform_shape_dict[shape]}")
 
     def set_voltage_high(self, voltage=0):
         self.inst.write("SOURce1:VOLTage:LEVel:IMMediate:High "+str(voltage))
@@ -94,6 +90,11 @@ class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
     def __init__(self, visa_resource_name):
         visa_equipment.__init__(self, visa_resource_name)
 
+    waveform_shape_dict = {"pulse": "PULSE",
+                           "sine": "SINE",
+                           "square": "SQUARE",
+                           "dc": "DC"}
+
     def on(self):
         self.inst.write("C1:OUTPut ON")
 
@@ -113,16 +114,7 @@ class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
         self.inst.write(f"C1:BaSic_WaVe FALL,{float(fall_time)/1000000000}")
 
     def set_waveform_shape(self, shape="pulse"):
-        if shape=="pulse":
-            self.inst.write(f"C1:BaSic_WaVe WVTP,PULSE")
-        elif shape=="sine":
-            self.inst.write(f"C1:BaSic_WaVe WVTP,SINE")
-        elif shape=="square":
-            self.inst.write(f"C1:BaSic_WaVe WVTP,SQUARE")
-        elif shape=="dc":
-            self.inst.write(f"C1:BaSic_WaVe WVTP,DC")
-        else:
-            pass
+        self.inst.write(f"C1:BaSic_WaVe WVTP,{self.waveform_shape_dict[shape]}")
 
     def set_voltage_high(self, voltage=0):
         self.inst.write(f"C1:BaSic_WaVe HLEV,{voltage}")
