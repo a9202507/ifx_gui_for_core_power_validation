@@ -62,13 +62,18 @@ class DB410_3d_thread(QThread):
                 self.DB410_process_bar.emit(
                     int((duty_idx+freq_idx*duty_list_len)/(freq_list_len*duty_list_len)*100))
 
-                # scope horizontal scale
-                myWin.set_horizontal_scale_in_scope(str(1/(freq*1000)))
-
+                # send function generator on command
                 myWin.send_function_gen_command_one_time(freq, duty, True)
+                time.sleep(0.3)
 
-                # for transinet duration time.
+                # scope horizontal scale and trigger
+                myWin.set_horizontal_scale_in_scope(str(1/(freq*1000)))
+                myWin.scope.set_trigger(iout_channel, "auto", "DC")
+
+                # sleep for transient on duration time
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
+                
+                # get screenshot
                 if myWin.parameter_setting_filename_include_timestamp == True:
                     dt = datetime.datetime.now()
                     timestamp_str = dt.strftime("_%Y-%m-%d_%H%M%S")
@@ -79,21 +84,12 @@ class DB410_3d_thread(QThread):
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI("save file to scope and PC")
                     myWin.push_msg_to_GUI(f"line65 filename = {filename}")
-                #myWin.lineEdit_7.setText(filename)
                 try:
                     myWin.save_waveform_in_scope_and_pc(filename)
-
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform")
 
-                #try:
-                    #myWin.save_waveform_from_scope_to_pc(filename)
-                #except:
-                    #myWin.push_msg_to_GUI("Failed to save waveform to PC")
-                # for save waveform delay time
-                # myWin.scope.inst.query('*OPC?')
-                #time.sleep(1)
-
+                # get measurements
                 measure_result_dict['Freq'] = float(freq)
                 measure_result_dict['duty'] = float(duty)
                 vmax = myWin.get_scope_measurement_value(item_number=1, channel=vout_channel, item_type="max", item_statistic="max")
@@ -121,12 +117,15 @@ class DB410_3d_thread(QThread):
                     print(f"df={df}")
                 time.sleep(0.2)
 
+                # send function generator off command
                 myWin.function_gen_off()
 
-                # for transient off duration time
+                # sleep for for transient off duration time
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
+
         self.DB410_process_bar.emit(100)
 
+        # save report file
         if myWin.parameter_setting_filename_include_timestamp == True:
             dt = datetime.datetime.now()
             timestamp_str = dt.strftime("_%Y-%m-%d_%H%M%S")

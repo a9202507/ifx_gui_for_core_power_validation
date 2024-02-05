@@ -196,11 +196,14 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
     def set_horizontal_scale(self, scale="2e-6"): ## work
         self.inst.write("HORIZONTAL:SCAlE "+scale)
 
-    def set_trigger_level(self, trigger_level="1.0"): ## work
-        self.inst.write("TRIGger:A:level "+trigger_level)
-
-    def set_trigger_channel(self, channel="1"): ##work
-        self.inst.write(f"TRIGger:A:EDGE:SOURCE CH{channel}")
+    def set_trigger(self, channel="1", level="1.0", coupling="DC"):
+        self.inst.write(f"TRIGger:A:EDGE:SOUrce CH{channel}")
+        self.inst.write(f"TRIGger:A:EDGE:COUPling {coupling}")
+        self.inst.write("TRIGger:A:EDGE:SLOPE RISe")
+        if level == "auto":
+            self.inst.write("TRIGger:A SETLevel")
+        else:
+            self.inst.write(f"TRIGger:A:LEVel:CH{channel} {level}")
 
 
 
@@ -271,11 +274,14 @@ class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
     def set_horizontal_scale(self, scale="2e-6"):
         self.inst.write("HORIZONTAL:SCAlE "+scale)
 
-    def set_trigger_level(self, trigger_level="1.0"):
-        self.inst.write("TRIGger:A:level "+trigger_level)
-
-    def set_trigger_channel(self, channel="1"):
+    def set_trigger(self, channel="1", level="1.0", coupling="DC"):
         self.inst.write(f"TRIGger:A:EDGE:SOURCE CH{channel}")
+        self.inst.write(f"TRIGger:A:EDGE:COUPling {coupling}")
+        self.inst.write("TRIGger:A:EDGE:SLOPE RISe")
+        if level == "auto":
+            self.inst.write("TRIGger:A")
+        else:
+            self.inst.write(f"TRIGger:A:LEVel:CH{channel} {level}")
 
 
 
@@ -352,15 +358,13 @@ class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
     def set_horizontal_scale(self, scale="2e-6"):
         self.inst.write(f"TIME_DIV {scale}")
 
-    def set_trigger_level(self, trigger_level="1.0"):
-        # not used - Trigger Level needs to be set together with channel, e.g.: C1:TRIG_LEVEL <trig-level>
-        #self.inst.write("TRIGger:A:level "+trigger_level)
-        pass
-
-    def set_trigger_channel(self, channel="1"):
-        # not used - e.g. TRIG_SELECT EDGE,SR,<source(e.g. C1)>,HT,<hold-type>,HV,<hold-value-1>[,HV2,<hold-value-2>]
-        #self.inst.write(f"TRIGger:A:EDGE:SOURCE CH{channel}")
-        pass
+    def set_trigger(self, channel="1", level="1.0", coupling="DC"):
+        self.inst.write(f"C{channel}:TRIG_COUPLING {coupling}")
+        if level == "auto":
+            #self.inst.write(f"C{channel}:TRIG_LEVEL 0")
+            self.inst.write("SET50")
+        else:
+            self.inst.write(f"C{channel}:TRIG_LEVEL {level}")
 
 
 
