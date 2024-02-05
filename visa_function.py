@@ -18,6 +18,7 @@ def get_visa_resource_list(remove_ASRL_devices=False):
     return device_list
 
 
+
 class visa_equipment():
     def __init__(self, visa_resource_name):
         self.visa_resource_name = visa_resource_name
@@ -35,7 +36,8 @@ class visa_equipment():
         return self.equipment_name
 
 
-class tek_visa_equipment(visa_equipment):
+
+class Tektronix_AFG3000(visa_equipment):
     def __init__(self, visa_resource_name):
         visa_equipment.__init__(self, visa_resource_name)
 
@@ -44,13 +46,6 @@ class tek_visa_equipment(visa_equipment):
 
     def off(self):
         self.inst.write("OUTPut1:STATe off")
-
-
-
-class Tektronix_AFG3000(tek_visa_equipment):
-    def __init__(self, visa_resource_name, shape="PULS"):
-        tek_visa_equipment.__init__(self, visa_resource_name)
-        self.set_waveform_shape(shape)
 
     def set_freq(self, freq_khz):
         self.inst.write("SOURce1:FREQuency:FIXed "+str(freq_khz)+"kHz")
@@ -66,8 +61,17 @@ class Tektronix_AFG3000(tek_visa_equipment):
         self.inst.write("SOURce1:PULSe:TRANsition:TRAiling " +
                         str(fall_time)+"ns")
 
-    def set_waveform_shape(self, shape="PULS"):
-        self.inst.write("SOURce1:FUNCtion:SHAPe "+shape)
+    def set_waveform_shape(self, shape="pulse"):
+        if shape=="pulse":
+            self.inst.write("SOURce1:FUNCtion:SHAPe PULSe")
+        elif shape=="sine":
+            self.inst.write("SOURce1:FUNCtion:SHAPe SINusoid")
+        elif shape=="square":
+            self.inst.write("SOURce1:FUNCtion:SHAPe SQUare")
+        elif shape=="dc":
+            self.inst.write("SOURce1:FUNCtion:SHAPe DC")
+        else:
+           pass
 
     def set_voltage_high(self, voltage=0):
         self.inst.write("SOURce1:VOLTage:LEVel:IMMediate:High "+str(voltage))
@@ -78,8 +82,64 @@ class Tektronix_AFG3000(tek_visa_equipment):
     def get_rise_time_ns(self):
         return self.inst.query("SOURce1:PULSe:TRANsition:LEADing?")
     
-    def set_output_impedance(self,impedance_value='INFinity'):
-        self.inst.write(f"OUTPut1:IMPedance {impedance_value}")
+    def set_output_impedance(self,impedance_value="HiZ"):
+        if impedance_value=="HiZ":
+            self.inst.write("OUTPut1:IMPedance INFinity")
+        else:
+            self.inst.write(f"OUTPut1:IMPedance {impedance_value}")
+
+
+
+class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
+    def __init__(self, visa_resource_name):
+        visa_equipment.__init__(self, visa_resource_name)
+
+    def on(self):
+        self.inst.write("C1:OUTPut ON")
+
+    def off(self):
+        self.inst.write("C1:OUTPut OFF")
+
+    def set_freq(self, freq_khz):
+        self.inst.write(f"C1:BaSic_WaVe FRQ,{float(freq_khz)*1000}")
+
+    def set_duty(self, duty):
+        self.inst.write(f"C1:BaSic_WaVe DUTY,{duty}")
+
+    def set_rise_time_ns(self, rise_time):
+        self.inst.write(f"C1:BaSic_WaVe RISE,{float(rise_time)/1000000000}")
+
+    def set_fall_time_ns(self, fall_time):
+        self.inst.write(f"C1:BaSic_WaVe FALL,{float(fall_time)/1000000000}")
+
+    def set_waveform_shape(self, shape="pulse"):
+        if shape=="pulse":
+            self.inst.write(f"C1:BaSic_WaVe WVTP,PULSE")
+        elif shape=="sine":
+            self.inst.write(f"C1:BaSic_WaVe WVTP,SINE")
+        elif shape=="square":
+            self.inst.write(f"C1:BaSic_WaVe WVTP,SQUARE")
+        elif shape=="dc":
+            self.inst.write(f"C1:BaSic_WaVe WVTP,DC")
+        else:
+            pass
+
+    def set_voltage_high(self, voltage=0):
+        self.inst.write(f"C1:BaSic_WaVe HLEV,{voltage}")
+
+    def set_voltage_low(self, voltage=0):
+        self.inst.write(f"C1:BaSic_WaVe LLEV,{voltage}")
+
+    def get_rise_time_ns(self):
+        # This would return the complete waveform settings, needs to be parsed for the rise time. Not used, therefore not yet implemented.
+        #return self.inst.query("C1:BaSic_WaVe?")
+        pass
+
+    def set_output_impedance(self,impedance_value="HiZ"):
+        if impedance_value=="HiZ":
+            self.inst.write("C1:OUTPut LOAD,HZ")
+        else:
+            self.inst.write(f"C1:OUTPut LOAD,{impedance_value}")
 
 
 
@@ -87,23 +147,50 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
     def __init__(self, visa_resource_name):
         visa_equipment.__init__(self, visa_resource_name)
 
-    def save_waveform_in_inst(self, scope_folder, filename="temp.png", debug=False):
-        command_code=f"SAVE:IMAGe '{scope_folder}/{filename}'"
+    measure_type_dict = {"max": "MAXimum",
+                         "min": "MINimum",
+                         "pkpk": "PK2PK",
+                         "mean": "MEAN",
+                         "rms": "RMS",
+                         "frequency": "FREQuency",
+                         "period": "PERIod",
+                         "duty": "PDUty",
+                         "nduty": "NDUty"}
+    measure_stat_dict = {"max": "MAXimum",
+                         "min": "MINimum",
+                         "mean": "MEAN",
+                         "value": "MEAN", #not supported? take mean instead... 
+                         "count": "POPUlation"}
+
+        ##work
+    def set_measurement_items(self, item_number=1, channel="1", item_type="max"):
+        self.inst.write("MEASUrement:MEAS"+str(item_number)+":SOURCE CH"+channel)
+        self.inst.write("MEASUrement:MEAS"+str(item_number)+":TYPE "+self.measure_type_dict[item_type])
+
+
+        ## can't work on 2024/01/17
+    def get_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
+        result = self.inst.query("MEASUrement:MEAS"+str(item_number)+":RESUlts:CURRentacq:"+measure_stat_dict[item_statistic]+"?")
+        return result
+        
+    def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
+        command_code=f"SAVE:IMAGe '{scope_folder}/{filename}.png'"
         self.inst.write(command_code)
         if debug == True:
             print(command_code)
+        time.sleep(1)
+
+        if debug == True:
+            print(f"save waveform: {local_folder}/{filename}.png")
+        self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}.png'")
+        imgData = self.inst.read_raw(1024*1024)
+        file = open(f"{local_folder}/{filename}.png", "wb")
+        file.write(imgData)
+        file.close()
 
     def read_file_in_inst(self, scope_folder, filename):
         self.inst.write(f"FILESystem:READFile '{scope_folder}/{filename}'")
 
-    def save_waveform_back_to_pc(self, scope_folder, filename, local_directory="./report", debug=False):
-        if debug == True:
-            print(f"save waveform: {scope_folder}/{filename}")
-        self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}'")
-        imgData = self.inst.read_raw(1024*1024)
-        file = open(f"{local_directory}/{filename}", "wb")
-        file.write(imgData)
-        file.close()
 
         ## work
     def set_waveform_directory_in_scope(self, directory="E:/20220530"):
@@ -114,56 +201,42 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
 
-        ##work
-    def set_measurement_items(self, item_number='1', channel_number='1', measure_item_type="mean"):
-
-        self.inst.write("MEASUrement:MEAS"+str(item_number) +
-                        ":SOURCE CH"+channel_number)
-
-        
-        self.inst.write("MEASUrement:MEAS"+str(item_number) +
-                        ":TYPE "+measure_item_type)
-
-
-        ## can't work on 2024/01/17
-    def get_measurement_value(self, item_number="1", measure_item_type="mean"):
-        measure_type_dict = {"max": "MAXimum",
-                             "min": "MINimum",
-                             "mean": "MEAN",
-                             "value": "value", }
-
-        result = self.inst.query(
-            "MEASUrement:MEAS"+str(item_number)+":RESUlts:CURRentacq:"+measure_type_dict[measure_item_type]+"?")
-
-        return result
-
     def set_horizontal_scale(self, scale="2e-6"): ## work
         self.inst.write("HORIZONTAL:SCAlE "+scale)
 
     def set_trigger_level(self, trigger_level="1.0"): ## work
         self.inst.write("TRIGger:A:level "+trigger_level)
 
-    def set_trigger_channel(self, channel="CH1"): ##work
-        self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
+    def set_trigger_channel(self, channel="1"): ##work
+        self.inst.write(f"TRIGger:A:EDGE:SOURCE CH{channel}")
 
 
 
-class Tektronix_MSO5000_DPO5000_DP07000(visa_equipment):
+class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
     def __init__(self, visa_resource_name):
         visa_equipment.__init__(self, visa_resource_name)
 
-    def set_measurement_items(self, item_number='1', channel_number='1', measure_item_type="mean"):
+    measure_type_dict = {"max": "MAXimum",
+                         "min": "MINImum",
+                         "pkpk": "PK2PK",
+                         "mean": "MEAN",
+                         "rms": "RMS",
+                         "frequency": "FREQuency",
+                         "period": "PERIod",
+                         "duty": "PDUty",
+                         "nduty": "NDUty"}
+    measure_stat_dict = {"max": "MAXimum",
+                         "min": "MINImum",
+                         "mean": "MEAN",
+                         "value": "VALue", 
+                         "count": "COUNt"}
 
-        self.inst.write(f"MEASUrement:MEAS{item_number}:TYPE {measure_item_type}") 
-        self.inst.write(f"MEASUrement:MEAS{item_number}:SOURCE1 CH{channel_number}")               
+    def set_measurement_items(self, item_number=1, channel="1", item_type="max"):
+        self.inst.write(f"MEASUrement:MEAS{item_number}:TYPE {self.measure_type_dict[item_type]}") 
+        self.inst.write(f"MEASUrement:MEAS{item_number}:SOURCE1 CH{channel}")               
         self.inst.write(f"MEASUrement:MEAS{item_number}:STATE ON")
 
-    def get_measurement_value(self, item_number="1", measure_item_type="mean"):
-        measure_type_dict = {"max": "MAXimum",
-                             "min": "MINimum",
-                             "mean": "MEAN",
-                             "value": "value", }
-
+    def get_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
         result = self.inst.query(f"MEASUrement:MEAS{item_number}:VALue?")
         return result
     '''
@@ -175,27 +248,27 @@ class Tektronix_MSO5000_DPO5000_DP07000(visa_equipment):
     MEASUrement:MEAS1:TYPE mean  -> set N1 measure type to mean
     '''
 
-    def save_waveform_in_inst(self, scope_folder, filename="temp.png", debug=False):
+    def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
         self.inst.write("HARDCopy:PORT FILE;")
         self.inst.write("EXPort:FORMat PNG")
-        command_code=f"HARDCopy:FILEName '{scope_folder}/{filename}'"
+        command_code=f"HARDCopy:FILEName '{scope_folder}/{filename}.png'"
         self.inst.write(command_code)
         self.inst.write("HARDCopy STARt")
         if debug == True:
             print(command_code)
+        time.sleep(1)
+
+        if debug == True:
+            print(f"save waveform: {local_folder}/{filename}.png")
+        self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}.png'")
+        imgData = self.inst.read_raw(1024*1024)
+        file = open(f"{local_folder}/{filename}.png", "wb")
+        file.write(imgData)
+        file.close()
 
     def read_file_in_inst(self, scope_folder, filename):
         self.inst.write(f"FILESystem:READFile '{scope_folder}/{filename}'")
     
-    def save_waveform_back_to_pc(self, scope_folder, filename, local_directory="./report", debug=False):
-        if debug == True:
-            print(f"save waveform: {scope_folder}/{filename}")
-        self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}'")
-        imgData = self.inst.read_raw(1024*1024)
-        file = open(f"{local_directory}/{filename}", "wb")
-        file.write(imgData)
-        file.close()
-
     def set_waveform_directory_in_scope(self, directory="C:/TekScope/Screenshots"):
         self.inst.write(f"FILESystem:CWD '{directory}'")
         
@@ -209,8 +282,93 @@ class Tektronix_MSO5000_DPO5000_DP07000(visa_equipment):
     def set_trigger_level(self, trigger_level="1.0"):
         self.inst.write("TRIGger:A:level "+trigger_level)
 
-    def set_trigger_channel(self, channel="CH1"):
-        self.inst.write(f"TRIGger:A:EDGE:SOURCE {channel}")
+    def set_trigger_channel(self, channel="1"):
+        self.inst.write(f"TRIGger:A:EDGE:SOURCE CH{channel}")
+
+
+
+class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
+    def __init__(self, visa_resource_name):
+        visa_equipment.__init__(self, visa_resource_name)
+
+    measure_type_dict = {"max": "MAX",
+                         "min": "MIN",
+                         "pkpk": "PKPK",
+                         "mean": "MEAN",
+                         "rms": "RMS",
+                         "frequency": "FREQ",
+                         "period": "PER",
+                         "duty": "DUTY",
+                         "nduty": "NDUTY"}
+    measure_stat_dict = {"max": "max",
+                         "min": "min",
+                         "mean": "mean",
+                         "value": "cur", 
+                         "count": "count"}
+
+    def set_measurement_items(self, item_number=1, channel="1", item_type="max"):
+        # only five custom measurements are supported
+        if item_number < 6:
+            self.inst.write(f"PARAMETER_CUSTOM {self.measure_type_dict[item_type]},C{channel}") 
+            self.inst.write("PASTAT ON")
+        
+    def get_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
+        # only five custom measurements with statistics are supported. If statistics are off or item_number>6, current value could be queried (not yet implemented).
+        if item_number < 6:
+            reply = self.inst.query(f"PARAMETER_VALUE? STAT{item_number}")
+            reply = reply.replace("\n", "")
+            resultlist = reply.split(":")[1].split(",") # split to get list in format (cur, XXX, mean, XXX, min, XXX, max, XXX, std-dev, XXX, count, XXX)
+            if resultlist[0] == "OFF": # measurement not enabled correctly
+                result="invalid"
+            else:
+                result = resultlist[resultlist.index(self.measure_stat_dict[item_statistic])+1] # look for the relevant statistic value in the list
+                result = result.replace("V", "") #remove the unit
+                result = result.replace("A", "") #remove the unit
+        else:
+            result="invalid"
+        if result == "invalid": # try to get current measurement from channel
+            reply = self.inst.query(f"C{channel}:PARAMETER_VALUE? {self.measure_type_dict[item_type]}")
+            result = reply.split(",")[1] # split to get the value
+            result = result.replace("V", "") #remove the unit
+            result = result.replace("A", "") #remove the unit
+        return result
+
+    def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
+        # only saving to PC in BMP format supported
+        self.inst.write("SCDP")
+        time.sleep(1)
+        imgData = self.inst.read_raw()
+        file = open(f"{local_folder}/{filename}.bmp", "wb")
+        file.write(imgData)
+        file.close()
+        if debug == True:
+            print(f"save waveform: {local_folder}/{filename}.bmp")
+
+    def read_file_in_inst(self, scope_folder, filename):
+        # not supported
+        pass
+
+    def set_waveform_directory_in_scope(self, directory="C:/TekScope/Screenshots"):
+        # not supported
+        pass
+        
+    def get_waveform_directory_in_scope(self):
+        # not supported
+        directory = ""
+        return directory
+
+    def set_horizontal_scale(self, scale="2e-6"):
+        self.inst.write(f"TIME_DIV {scale}")
+
+    def set_trigger_level(self, trigger_level="1.0"):
+        # not used - Trigger Level needs to be set together with channel, e.g.: C1:TRIG_LEVEL <trig-level>
+        #self.inst.write("TRIGger:A:level "+trigger_level)
+        pass
+
+    def set_trigger_channel(self, channel="1"):
+        # not used - e.g. TRIG_SELECT EDGE,SR,<source(e.g. C1)>,HT,<hold-type>,HV,<hold-value-1>[,HV2,<hold-value-2>]
+        #self.inst.write(f"TRIGger:A:EDGE:SOURCE CH{channel}")
+        pass
 
 
 
@@ -244,9 +402,11 @@ def save_waveform_in_inst(visaRsrcAddr, fileSaveLocationInInst, filename, timest
 
 
 # define scope and function generator types as dictionaries, pointing to the visa class.
-scope_types = {        "Tektronix_MSO4x_MSO5x_MSO6x": Tektronix_MSO4x_MSO5x_MSO6x,
-                       "Tektronix_MSO5000_DPO5000_DP07000": Tektronix_MSO5000_DPO5000_DP07000}
-function_gen_types = { "Tektronix_AFG3000": Tektronix_AFG3000}
+scope_types = {        "Tektronix MSO4x / MSO5x / MSO6x": Tektronix_MSO4x_MSO5x_MSO6x,
+                       "Tektronix MSO5000 / DPO5000 / DPO7000": Tektronix_MSO5000_DPO5000_DPO7000,
+                       "Siglent SDS1000X-E / SDS2000X-E": Siglent_SDS1000XE_SDS2000XE}
+function_gen_types = { "Tektronix AFG3000": Tektronix_AFG3000,
+                       "Siglent SDG1000X / SDG2000X / SDG6000X": Siglent_SDG1000X_SDG2000X_SDG6000X}
 
 
 

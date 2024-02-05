@@ -47,13 +47,13 @@ class DB410_3d_thread(QThread):
         # setup measurement items in escope
         vout_channel = myWin.comboBox_3.currentText()
         iout_channel = myWin.comboBox_4.currentText()
-        myWin.set_scope_measurement_item(1, vout_channel, 'MAXimum')
-        myWin.set_scope_measurement_item(2, vout_channel, 'MINimum')
-        myWin.set_scope_measurement_item(3, vout_channel, 'PK2PK')
-        myWin.set_scope_measurement_item(4, iout_channel, 'Frequency')
-        myWin.set_scope_measurement_item(5, iout_channel, 'PDUTY')
-        myWin.set_scope_measurement_item(6, iout_channel, 'MAXimum')
-        myWin.set_scope_measurement_item(7, iout_channel, 'MINimum')
+        myWin.set_scope_measurement_item(1, vout_channel, 'max')
+        myWin.set_scope_measurement_item(2, vout_channel, 'min')
+        myWin.set_scope_measurement_item(3, vout_channel, 'pkpk')
+        myWin.set_scope_measurement_item(4, iout_channel, 'frequency')
+        myWin.set_scope_measurement_item(5, iout_channel, 'duty')
+        myWin.set_scope_measurement_item(6, iout_channel, 'max')
+        myWin.set_scope_measurement_item(7, iout_channel, 'min')
 
         for freq_idx, freq in enumerate(myWin.parameter_main_freq_list):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
@@ -74,7 +74,7 @@ class DB410_3d_thread(QThread):
                     timestamp_str = dt.strftime("_%Y-%m-%d_%H%M%S")
                 else:
                     timestamp_str = ""
-                filename = f"{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_{freq}kHz_D{duty}{timestamp_str}.png"
+                filename = f"{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_{freq}kHz_D{duty}{timestamp_str}"
 
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI("save file to scope and PC")
@@ -96,8 +96,7 @@ class DB410_3d_thread(QThread):
 
                 measure_result_dict['Freq'] = float(freq)
                 measure_result_dict['duty'] = float(duty)
-                vmax = myWin.get_scope_measurement_value(
-                    item_number='1', measure_item_type="max")
+                vmax = myWin.get_scope_measurement_value(item_number=1, channel=vout_channel, item_type="max", item_statistic="max")
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI(f"line88 vmax={vmax}")
                 measure_result_dict['Vmax'] = float(vmax)
@@ -106,9 +105,7 @@ class DB410_3d_thread(QThread):
                 # except:
                 #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmax={vmax}")
 
-                vmin = myWin.get_scope_measurement_value(
-                    item_number='2', measure_item_type="min")
-
+                vmin = myWin.get_scope_measurement_value(item_number=2, channel=vout_channel, item_type="min", item_statistic="min")
                 if myWin.debug == True:
                     myWin.push_msg_to_GUI(f"line97 vmin={vmin}")
                 measure_result_dict['Vmin'] = float(vmin)
@@ -124,7 +121,7 @@ class DB410_3d_thread(QThread):
                     print(f"df={df}")
                 time.sleep(0.2)
 
-                myWin.send_function_gen_command_one_time(freq, duty, False)
+                myWin.function_gen_off()
 
                 # for transient off duration time
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
@@ -143,6 +140,7 @@ class DB410_3d_thread(QThread):
         self.DB410_msg.emit(" ")
 
     def stop(self):
+        myWin.function_gen_off()
         self.DB410_msg.emit("==3D test stop==")
         self.DB410_msg.emit(" ")
         self.DB410_process_bar.emit(0)
@@ -167,7 +165,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.pushButton_9.clicked.connect(self.open_3d_report_max)
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
-        self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform("temp.png"))
+        self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform("temp"))
         self.pushButton_7.setEnabled(False)
 
         self.actionLoad_config.triggered.connect(self.load_config)
@@ -190,10 +188,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.load_config_from_filename(self.path_file_list)
 
         # functionGen
-        self.radioButton.toggled.connect(
-            self.update_GUI_then_send_to_function_gen_on)
-        self.radioButton_2.toggled.connect(
-            self.update_GUI_then_send_to_function_gen_off)
+        self.radioButton.toggled.connect(self.update_GUI_then_send_to_function_gen_on)
+        self.radioButton_2.toggled.connect(self.update_GUI_then_send_to_function_gen_off)
 
         # initial thread
         self.function_gen_3d = DB410_3d_thread()
@@ -255,12 +251,14 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def init_function_gen(self):
         self.function_gen = myvisa.function_gen_types[self.parameter_setting_function_gen_resource_type](self.parameter_setting_function_gen_resource_address)
-            
-    def update_GUI_then_save_waveform(self, filename="temp.png"):
+        self.function_gen.set_output_impedance("HiZ")
+        self.function_gen.set_waveform_shape("pulse")
+ 
+    def update_GUI_then_save_waveform(self, filename="temp"):
         self.update_GUI()
         self.save_waveform_in_scope_and_pc(filename)
 
-    def save_waveform_in_scope_and_pc(self, filename="temp.png"):
+    def save_waveform_in_scope_and_pc(self, filename="temp"):
         #self.init_scope()
         
         # set waveform dirctory in scope
@@ -270,26 +268,15 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
         # save waveform to scope
         if self.debug == True:
-            self.push_msg_to_GUI(
-                f"save waveform as: {self.parameter_setting_scope_folder}/{filename}")
+            self.push_msg_to_GUI(f"save waveform as: {self.parameter_setting_scope_folder}/{filename}")
+        self.scope.save_waveform(self.parameter_setting_scope_folder, filename, self.parameter_setting_local_folder, self.debug)
 
-        self.scope.save_waveform_in_inst(self.parameter_setting_scope_folder, filename)
-        time.sleep(1)
-        # read waveform back to check save function success.
-        #self.scope.read_file_in_inst(self.parameter_setting_scope_folder, filename)
-
-        # copy waveform from scope to PC
-        self.scope.save_waveform_back_to_pc(self.parameter_setting_scope_folder, filename, self.parameter_setting_local_folder, self.debug)
-        #print(f"scope type = {type(self.scope)}") 
-
-    def set_scope_measurement_item(self, item_number=1, channel=5, measure_item_type="max"):
-        result = self.scope.set_measurement_items(
-            str(item_number), str(channel), measure_item_type)
+    def set_scope_measurement_item(self, item_number=1, channel="1", item_type="max"):
+        result = self.scope.set_measurement_items(item_number, channel, item_type)
         return result
 
-    def get_scope_measurement_value(self, item_number=1, measure_item_type="max"):
-        result = self.scope.get_measurement_value(
-            str(item_number), measure_item_type)
+    def get_scope_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
+        result = self.scope.get_measurement_value(item_number, channel, item_type, item_statistic)
         return result
 
     def set_process_bar(self, data):
@@ -316,7 +303,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         # self.function_gen.set_voltage_low = low_voltage
 
         # set ouput inpedance to high-z
-        self.function_gen.set_output_impedance(impedance_value="INFinity")
+        self.function_gen.set_output_impedance(impedance_value="HiZ")
         print("output_impedance")
         self.function_gen.set_freq = str(freq)
         self.function_gen.set_duty = str(duty)
@@ -337,37 +324,36 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             QMessageBox.about(
                 self, "error", "please select function gen on Setting page first")
         else:
-            self.update_GUI_then_send_to_function_gen(
-                function_output_enable=True)
+            # only execute if on button is checked (otherwise, command will be sent twice)
+            if self.radioButton.isChecked() == True:
+                self.update_GUI_then_send_to_function_gen(function_output_enable=True)
 
     def update_GUI_then_send_to_function_gen_off(self):
         if self.comboBox_2.currentText() != "":
-            self.update_GUI_then_send_to_function_gen(
-                function_output_enable=False)
+            # only execute if off button is checked (otherwise, command will be sent twice)
+            if self.radioButton_2.isChecked() == True:
+                self.update_GUI_then_send_to_function_gen(function_output_enable=False)
+
+    def function_gen_off(self):
+        self.function_gen.off()
 
     def update_GUI_then_send_to_function_gen(self, function_output_enable):
         self.update_GUI()
-        self.send_function_gen_command_one_time(self.lineEdit_8.text(
-        ), self.lineEdit_5.text(), function_output_enable)
+        self.send_function_gen_command_one_time(self.parameter_main_frequency, self.parameter_main_duty, function_output_enable)
 
     def send_function_gen_command_one_time(self, freq, duty, on_off=False):
-        self.function_gen.set_output_impedance("INFinity")
+        if on_off == False:
+            self.function_gen.off()
         self.function_gen.set_duty(duty)
         self.function_gen.set_freq(freq)
-
-        high_voltage_value = float(
-            self.lineEdit_16.text())*float(self.lineEdit_17.text())/1000
-        low_voltage_value = float(self.lineEdit.text()) * \
-            float(self.lineEdit_17.text())/1000
+        high_voltage_value = float(self.parameter_main_high_current) * float(self.parameter_main_gain) / 1000
+        low_voltage_value = float(self.parameter_main_low_current) * float(self.parameter_main_gain) / 1000
         self.function_gen.set_voltage_high(str(high_voltage_value))
         self.function_gen.set_voltage_low(str(low_voltage_value))
-        self.function_gen.set_rise_time_ns(self.lineEdit_6.text())
-        self.function_gen.set_fall_time_ns(self.lineEdit_4.text())
-
+        self.function_gen.set_rise_time_ns(self.parameter_main_rise_time_nsec)
+        self.function_gen.set_fall_time_ns(self.parameter_main_fall_time_nsec)
         if on_off == True:
             self.function_gen.on()
-        else:
-            self.function_gen.off()
 
     def update_equipment_address_on_combobox(self):
         self.get_visa_resource()
@@ -490,7 +476,9 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.comboBox_4.setCurrentText(json_data["parameter_setting_scope_iout_channel"])
             self.comboBox_5.setCurrentText(json_data["parameter_setting_function_gen_channel"])
             self.comboBox_6.setCurrentText(json_data["parameter_setting_scope_resource_type"])
+            self.comboBox.setCurrentText(json_data["parameter_setting_scope_resource_address"])
             self.comboBox_7.setCurrentText(json_data["parameter_setting_function_gen_resource_type"])
+            self.comboBox_2.setCurrentText(json_data["parameter_setting_function_gen_resource_address"])
             
     def update_GUI(self):
         # get GUI import
