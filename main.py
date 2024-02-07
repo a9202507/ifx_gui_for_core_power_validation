@@ -64,15 +64,48 @@ class DB410_3d_thread(QThread):
 
                 # send function generator on command
                 myWin.send_function_gen_command_one_time(freq, duty, True)
-                time.sleep(0.3)
 
-                # scope horizontal scale and trigger
-                myWin.set_horizontal_scale_in_scope(str(1/(freq*1000)))
+                # scope start acquisition, set trigger and horizontal scale, reset statistics
+                myWin.scope.acq_run()
+                time.sleep(0.5)
                 myWin.scope.set_trigger(iout_channel, "auto", "DC")
+                myWin.set_horizontal_scale_in_scope(str(1/(freq*1000)))
+                myWin.scope.reset_statistics()
 
                 # sleep for transient on duration time
                 time.sleep(myWin.parameter_main_ton_duration_time_sec)
+
+                # stop acquisition
+                myWin.scope.acq_stop()
+                time.sleep(1.5) # delay to allow scope to update screen with latest values after stopping
                 
+                # get measurements
+                measure_result_dict['Freq'] = float(freq)
+                measure_result_dict['duty'] = float(duty)
+                vmax = myWin.get_scope_measurement_statistics(item_number=1, channel=vout_channel, item_type="max", item_statistic="max")
+                if myWin.debug == True:
+                    myWin.push_msg_to_GUI(f"line88 vmax={vmax}")
+                measure_result_dict['Vmax'] = float(vmax)
+
+                #
+                # except:
+                #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmax={vmax}")
+
+                vmin = myWin.get_scope_measurement_statistics(item_number=2, channel=vout_channel, item_type="min", item_statistic="min")
+                if myWin.debug == True:
+                    myWin.push_msg_to_GUI(f"line97 vmin={vmin}")
+                measure_result_dict['Vmin'] = float(vmin)
+
+                #
+                # except:
+                #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmin={vmin}")
+
+                df = pd.concat([df, pd.DataFrame([measure_result_dict])], ignore_index=True)
+
+                if myWin.debug == True:
+                    self.DB410_msg.emit(str(measure_result_dict))
+                    print(f"df={df}")
+
                 # get screenshot
                 if myWin.parameter_setting_filename_include_timestamp == True:
                     dt = datetime.datetime.now()
@@ -88,34 +121,6 @@ class DB410_3d_thread(QThread):
                     myWin.save_waveform_in_scope_and_pc(filename)
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform")
-
-                # get measurements
-                measure_result_dict['Freq'] = float(freq)
-                measure_result_dict['duty'] = float(duty)
-                vmax = myWin.get_scope_measurement_value(item_number=1, channel=vout_channel, item_type="max", item_statistic="max")
-                if myWin.debug == True:
-                    myWin.push_msg_to_GUI(f"line88 vmax={vmax}")
-                measure_result_dict['Vmax'] = float(vmax)
-
-                #
-                # except:
-                #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmax={vmax}")
-
-                vmin = myWin.get_scope_measurement_value(item_number=2, channel=vout_channel, item_type="min", item_statistic="min")
-                if myWin.debug == True:
-                    myWin.push_msg_to_GUI(f"line97 vmin={vmin}")
-                measure_result_dict['Vmin'] = float(vmin)
-
-                #
-                # except:
-                #    myWin.push_msg_to_GUI(f"Failed to get measurement from scope , Vmin={vmin}")
-
-                df = pd.concat([df, pd.DataFrame([measure_result_dict])], ignore_index=True)
-
-                if myWin.debug == True:
-                    self.DB410_msg.emit(str(measure_result_dict))
-                    print(f"df={df}")
-                time.sleep(0.2)
 
                 # send function generator off command
                 myWin.function_gen_off()
@@ -194,6 +199,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d = DB410_3d_thread()
         self.function_gen_3d.DB410_msg.connect(self.push_msg_to_GUI)
         self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
+        self.set_process_bar(0)
 
         # set windowTitle
         self.Window_title = "Infineon GUI for core power validation, Rev.2024.02.01"
@@ -274,8 +280,12 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         result = self.scope.set_measurement_items(item_number, channel, item_type)
         return result
 
-    def get_scope_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
-        result = self.scope.get_measurement_value(item_number, channel, item_type, item_statistic)
+    def get_scope_measurement_statistics(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
+        result = self.scope.get_measurement_statistics(item_number, channel, item_type, item_statistic)
+        return result
+
+    def get_scope_measurement_value(self, item_number=1, channel="1", item_type="max"):
+        result = self.scope.get_measurement_value(item_number, channel, item_type)
         return result
 
     def set_process_bar(self, data):
@@ -343,8 +353,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def send_function_gen_command_one_time(self, freq, duty, on_off=False):
         if on_off == False:
             self.function_gen.off()
-        self.function_gen.set_duty(duty)
         self.function_gen.set_freq(freq)
+        self.function_gen.set_duty(duty)
         high_voltage_value = float(self.parameter_main_high_current) * float(self.parameter_main_gain) / 1000
         low_voltage_value = float(self.parameter_main_low_current) * float(self.parameter_main_gain) / 1000
         self.function_gen.set_voltage_high(str(high_voltage_value))

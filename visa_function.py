@@ -161,10 +161,18 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
 
 
         ## can't work on 2024/01/17
-    def get_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
-        result = self.inst.query("MEASUrement:MEAS"+str(item_number)+":RESUlts:CURRentacq:"+measure_stat_dict[item_statistic]+"?")
+    def get_measurement_value(self, item_number=1, channel="1", item_type="max"):
+        result = self.inst.query("MEASUrement:MEAS"+str(item_number)+":RESUlts:CURRentacq:"+self.measure_stat_dict[item_statistic]+"?")
+        return result
+
+    def get_measurement_statistics(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
+        result = self.inst.query("MEASUrement:MEAS"+str(item_number)+":RESUlts:CURRentacq:"+self.measure_stat_dict[item_statistic]+"?")
         return result
         
+    def reset_statistics(self):
+        # not supported? probably not needed, setting the horizontal scale probably also resets statistics...
+        pass
+
     def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
         command_code=f"SAVE:IMAGe '{scope_folder}/{filename}.png'"
         self.inst.write(command_code)
@@ -192,6 +200,13 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
     def get_waveform_directory_in_scope(self):
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
+
+    def acq_run(self):
+        self.inst.write("TRIGger:A:MODe AUTO")
+        self.inst.write("ACQuire:STATE RUN")
+
+    def acq_stop(self):
+        self.inst.write("ACQuire:STATE STOP")
 
     def set_horizontal_scale(self, scale="2e-6"): ## work
         self.inst.write("HORIZONTAL:SCAlE "+scale)
@@ -230,10 +245,7 @@ class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
         self.inst.write(f"MEASUrement:MEAS{item_number}:TYPE {self.measure_type_dict[item_type]}") 
         self.inst.write(f"MEASUrement:MEAS{item_number}:SOURCE1 CH{channel}")               
         self.inst.write(f"MEASUrement:MEAS{item_number}:STATE ON")
-
-    def get_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
-        result = self.inst.query(f"MEASUrement:MEAS{item_number}:VALue?")
-        return result
+        self.inst.write("MEASUrement:STATIstics:MODe ALL")
     '''
     dpo7054c command example
     MEASUrement:MEAS1:TYPE pk2pk -> set N1 measure type to peak-to-peak
@@ -242,6 +254,17 @@ class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
     MEASUrement:MEAS1:TYPE rms   -> set N1 measure type to rms
     MEASUrement:MEAS1:TYPE mean  -> set N1 measure type to mean
     '''
+
+    def get_measurement_value(self, item_number=1, channel="1", item_type="max"):
+        result = self.inst.query(f"MEASUrement:MEAS{item_number}:VALue?")
+        return result
+
+    def get_measurement_statistics(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
+        result = self.inst.query(f"MEASUrement:MEAS{item_number}:{self.measure_stat_dict[item_statistic]}?")
+        return result
+
+    def reset_statistics(self):
+        self.inst.write("MEASUrement:STATIstics:COUNt RESET")
 
     def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
         self.inst.write("HARDCopy:PORT FILE;")
@@ -271,6 +294,13 @@ class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
         directory = self.inst.query(f"FILESystem:CWD?")
         return directory
 
+    def acq_run(self):
+        self.inst.write("TRIGger:A:MODe AUTO")
+        self.inst.write("ACQuire:STATE RUN")
+
+    def acq_stop(self):
+        self.inst.write("ACQuire:STATE STOP")
+
     def set_horizontal_scale(self, scale="2e-6"):
         self.inst.write("HORIZONTAL:SCAlE "+scale)
 
@@ -279,7 +309,7 @@ class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
         self.inst.write(f"TRIGger:A:EDGE:COUPling {coupling}")
         self.inst.write("TRIGger:A:EDGE:SLOPE RISe")
         if level == "auto":
-            self.inst.write("TRIGger:A")
+            self.inst.write("TRIGger:A SETLevel")
         else:
             self.inst.write(f"TRIGger:A:LEVel:CH{channel} {level}")
 
@@ -309,8 +339,15 @@ class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
         if item_number < 6:
             self.inst.write(f"PARAMETER_CUSTOM {self.measure_type_dict[item_type]},C{channel}") 
             self.inst.write("PASTAT ON")
-        
-    def get_measurement_value(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
+
+    def get_measurement_value(self, item_number=1, channel="1", item_type="max"):
+        reply = self.inst.query(f"C{channel}:PARAMETER_VALUE? {self.measure_type_dict[item_type]}")
+        result = reply.split(",")[1] # split to get the value
+        result = result.replace("V", "") #remove the unit V
+        result = result.replace("A", "") #remove the unit A
+        return result
+
+    def get_measurement_statistics(self, item_number=1, channel="1", item_type="max", item_statistic="mean"):
         # only five custom measurements with statistics are supported. If statistics are off or item_number>6, current value could be queried (not yet implemented).
         if item_number < 6:
             reply = self.inst.query(f"PARAMETER_VALUE? STAT{item_number}")
@@ -325,11 +362,11 @@ class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
         else:
             result="invalid"
         if result == "invalid": # try to get current measurement from channel
-            reply = self.inst.query(f"C{channel}:PARAMETER_VALUE? {self.measure_type_dict[item_type]}")
-            result = reply.split(",")[1] # split to get the value
-            result = result.replace("V", "") #remove the unit
-            result = result.replace("A", "") #remove the unit
+            result = self.get_measurement_value(item_number, channel, item_type)
         return result
+
+    def reset_statistics(self):
+        self.inst.write("PASTAT RESET")
 
     def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
         # only saving to PC in BMP format supported
@@ -355,13 +392,19 @@ class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
         directory = ""
         return directory
 
+    def acq_run(self):
+        self.inst.write("TRIG_MODE AUTO") # setting trigger to auto also starts acquisition
+
+    def acq_stop(self):
+        self.inst.write("STOP")
+
     def set_horizontal_scale(self, scale="2e-6"):
         self.inst.write(f"TIME_DIV {scale}")
 
     def set_trigger(self, channel="1", level="1.0", coupling="DC"):
         self.inst.write(f"C{channel}:TRIG_COUPLING {coupling}")
+        self.inst.write(f"C{channel}:TRIG_SLOPE POS")
         if level == "auto":
-            #self.inst.write(f"C{channel}:TRIG_LEVEL 0")
             self.inst.write("SET50")
         else:
             self.inst.write(f"C{channel}:TRIG_LEVEL {level}")
