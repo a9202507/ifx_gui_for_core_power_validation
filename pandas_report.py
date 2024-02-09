@@ -1,7 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import cm
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 
 def dict_to_df(dict):
@@ -14,55 +12,58 @@ def plt_vmax(filename):
 
     df = pd.read_excel(filename, sheet_name="Sheet1")
 
-    fig = plt.figure()
+    plt.ion()
+    plt.rcParams.update({'font.size': 8})
+    fig = plt.figure(figsize=(6.5,10))
 
     #ax = fig.gca(projection='3d')
-    ax = fig.add_subplot(1, 2, 1, projection='3d')
+    ax = fig.add_subplot(2, 1, 1, projection='3d')
     # Make data.
     X = pd.Series(df['Freq'])
     Y = pd.Series(df['duty'])
     Z = pd.Series(df['Vmax'])
     # Plot the surface.
-    surf = ax.plot_trisurf(X, Y, Z, cmap=cm.coolwarm,
+    surf = ax.plot_trisurf(X, Y, Z, cmap=plt.cm.coolwarm,
                            linewidth=0, antialiased=False)
 
     # Customize the z axis.
     #ax.set_zlim(1.75, 1.85)
-    ax.set_xlabel("Freq")
-    ax.set_ylabel("duty")
-    ax.set_zlabel("Vmax")
+    ax.set_xlabel("Frequency")
+    ax.set_ylabel("Duty-Cycle")
+    ax.set_zlabel("Vmax", rotation=90)
 
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+    ax.zaxis.set_major_locator(plt.LinearLocator(10))
+    ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
 
     # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical')
+    fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical', pad=0.2)
 
-    plt.title("Vmax vs Freq/Duty")
+    plt.title("Vmax vs Frequency/Duty-Cycle")
 
-    ax = fig.add_subplot(1, 2, 2, projection='3d')
+    ax = fig.add_subplot(2, 1, 2, projection='3d')
     # Make data.
     X = pd.Series(df['Freq'])
     Y = pd.Series(df['duty'])
     Z = pd.Series(df['Vmin'])
     # Plot the surface.
-    surf = ax.plot_trisurf(X, Y, Z, cmap=cm.coolwarm,
+    surf = ax.plot_trisurf(X, Y, Z, cmap=plt.cm.coolwarm,
                            linewidth=0, antialiased=False)
 
     # Customize the z axis.
     #ax.set_zlim(1.75, 1.85)
-    ax.set_xlabel("Freq")
-    ax.set_ylabel("duty")
-    ax.set_zlabel("Vmin")
+    ax.set_xlabel("Frequency")
+    ax.set_ylabel("Duty-Cycle")
+    ax.set_zlabel("Vmin", rotation=90)
 
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+    ax.zaxis.set_major_locator(plt.LinearLocator(10))
+    ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
 
     # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-    plt.title("Vmin vs Freq/Duty")
+    fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical', pad=0.2)
+    plt.title("Vmin vs Frequency/Duty-Cycle")
 
-    plt.show()
+    plt.savefig(filename.replace(".xlsx", ".pdf").replace(".xls", ".pdf"), bbox_inches='tight')
+    plt.draw()
 
 
 def plt_vmin(filename):
@@ -77,7 +78,7 @@ def plt_vmin(filename):
     Y = pd.Series(df['duty'])
     Z = pd.Series(df['Vmin'])
     # Plot the surface.
-    surf = ax.plot_trisurf(X, Y, Z, cmap=cm.coolwarm,
+    surf = ax.plot_trisurf(X, Y, Z, cmap=plt.cm.coolwarm,
                            linewidth=0, antialiased=False)
 
     # Customize the z axis.
@@ -86,8 +87,8 @@ def plt_vmin(filename):
     ax.set_ylabel("duty")
     ax.set_zlabel("Vmin")
 
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+    ax.zaxis.set_major_locator(plt.LinearLocator(10))
+    ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
 
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5)

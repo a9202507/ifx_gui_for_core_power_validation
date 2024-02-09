@@ -1,5 +1,6 @@
-# Rev2024.02.01 for beta release
+# Rev2024.02.09 for beta release
 # a9202507@gmail.com
+# christian.berger@infineon.com
 
 import sys
 from PySide2.QtCore import QThread, Signal
@@ -23,7 +24,8 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 class DB410_3d_thread(QThread):
     DB410_msg = Signal(str)
-    DB410_process_bar = Signal(int)
+    DB410_progress_bar = Signal(int)
+    DB410_open_3d_plot = Signal(str)
 
     def __init__(self):
         QThread.__init__(self)
@@ -59,7 +61,7 @@ class DB410_3d_thread(QThread):
             for duty_idx, duty in enumerate(myWin.parameter_main_duty_list):
 
                 self.DB410_msg.emit(f"Freq={str(freq)}, Duty={str(duty)}")
-                self.DB410_process_bar.emit(
+                self.DB410_progress_bar.emit(
                     int((duty_idx+freq_idx*duty_list_len)/(freq_list_len*duty_list_len)*100))
 
                 # send function generator on command
@@ -123,12 +125,12 @@ class DB410_3d_thread(QThread):
                     myWin.push_msg_to_GUI("Failed to save waveform")
 
                 # send function generator off command
-                myWin.function_gen_off()
+                myWin.function_gen.off()
 
                 # sleep for for transient off duration time
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
 
-        self.DB410_process_bar.emit(100)
+        self.DB410_progress_bar.emit(100)
 
         # save report file
         if myWin.parameter_setting_filename_include_timestamp == True:
@@ -136,18 +138,20 @@ class DB410_3d_thread(QThread):
             timestamp_str = dt.strftime("_%Y-%m-%d_%H%M%S")
         else:
             timestamp_str = ""
+        filename = f"{myWin.parameter_setting_local_folder}/{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report{timestamp_str}.xlsx"
         try:
-            df.to_excel(f"{myWin.parameter_setting_local_folder}/{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report{timestamp_str}.xlsx")
+            df.to_excel(filename)
+            self.DB410_open_3d_plot.emit(filename)
         except:
             myWin.push_msg_to_GUI("Failed to save report to PC")
         self.DB410_msg.emit("==3D test finish==")
         self.DB410_msg.emit(" ")
 
     def stop(self):
-        myWin.function_gen_off()
+        myWin.function_gen.off()
         self.DB410_msg.emit("==3D test stop==")
         self.DB410_msg.emit(" ")
-        self.DB410_process_bar.emit(0)
+        self.DB410_progress_bar.emit(0)
         # todo
         self.terminate()
 
@@ -198,11 +202,12 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         # initial thread
         self.function_gen_3d = DB410_3d_thread()
         self.function_gen_3d.DB410_msg.connect(self.push_msg_to_GUI)
-        self.function_gen_3d.DB410_process_bar.connect(self.set_process_bar)
-        self.set_process_bar(0)
+        self.function_gen_3d.DB410_progress_bar.connect(self.set_progress_bar)
+        self.function_gen_3d.DB410_open_3d_plot.connect(self.open_3d_plot)
+        self.set_progress_bar(0)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev.2024.02.01"
+        self.Window_title = "Infineon GUI for core power validation, Rev.2024.02.09"
 
         # set icon
         app_icon = QIcon()
@@ -288,9 +293,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         result = self.scope.get_measurement_value(item_number, channel, item_type)
         return result
 
-    def set_process_bar(self, data):
-        self.progressBar.setValue(data)
-
     def run_function_gen_3d_thread(self):
         # self.push_msg_to_GUI("run function gen 3d")
         self.update_GUI()
@@ -305,28 +307,11 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d.stop()
         # self.push_msg_to_GUI("stop the 3d test")
 
-    '''def run_function_gen(self, function_gen_resource_name, high_voltage, low_voltage, freq, duty, rise_time, fall_time, on_off=False):
-        self.function_gen = myvisa.tek_visa_functionGen(
-            self.comboBox_2.currentText())
-        # self.function_gen.set_voltage_high = high_voltage
-        # self.function_gen.set_voltage_low = low_voltage
+    def set_progress_bar(self, data):
+        self.progressBar.setValue(data)
 
-        # set ouput inpedance to high-z
-        self.function_gen.set_output_impedance(impedance_value="HiZ")
-        print("output_impedance")
-        self.function_gen.set_freq = str(freq)
-        self.function_gen.set_duty = str(duty)
-        self.function_gen.set_rise_time_ns = str(rise_time)
-        self.function_gen.set_fall_time_ns = str(fall_time)
-
-        if self.debug == True:
-            print(
-                f"run_function_gen freq{freq}duty{duty}rise{rise_time}fala{fall_time}")
-
-        if on_off == True:
-            self.function_gen.on()
-        else:
-            self.function_gen.off()'''
+    def open_3d_plot(self, filename):
+        pandas_report.plt_vmax(filename)
 
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
@@ -342,9 +327,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             # only execute if off button is checked (otherwise, command will be sent twice)
             if self.radioButton_2.isChecked() == True:
                 self.update_GUI_then_send_to_function_gen(function_output_enable=False)
-
-    def function_gen_off(self):
-        self.function_gen.off()
 
     def update_GUI_then_send_to_function_gen(self, function_output_enable):
         self.update_GUI()
