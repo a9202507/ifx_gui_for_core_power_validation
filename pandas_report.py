@@ -8,7 +8,7 @@ def dict_to_df(dict):
     return None
 
 
-def plt_vmax(filename):
+def plt_vmax(filename, autosave=False):
 
     df = pd.read_excel(filename, sheet_name="Sheet1")
 
@@ -62,7 +62,8 @@ def plt_vmax(filename):
     fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical', pad=0.2)
     plt.title("Vmin vs Frequency/Duty-Cycle")
 
-    plt.savefig(filename.replace(".xlsx", ".pdf").replace(".xls", ".pdf"), bbox_inches='tight')
+    if autosave == True:
+        plt.savefig(filename.replace(".xlsx", ".pdf").replace(".xls", ".pdf"), bbox_inches='tight')
     plt.draw()
 
 

@@ -174,19 +174,33 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
         pass
 
     def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
-        command_code=f"SAVE:IMAGe '{scope_folder}/{filename}.png'"
-        self.inst.write(command_code)
-        if debug == True:
-            print(command_code)
-        time.sleep(1)
-
-        if debug == True:
-            print(f"save waveform: {local_folder}/{filename}.png")
-        self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}.png'")
-        imgData = self.inst.read_raw(1024*1024)
-        file = open(f"{local_folder}/{filename}.png", "wb")
-        file.write(imgData)
-        file.close()
+        if scope_folder != "none":
+            # save in scope_folder
+            command_code=f"SAVE:IMAGe '{scope_folder}/{filename}.png'"
+            self.inst.write(command_code)
+            if debug == True:
+                print(command_code)
+            #time.sleep(1)
+        if local_folder != "none":
+            if debug == True:
+                print(f"save waveform: {local_folder}/{filename}.png")
+            if scope_folder != "none":
+                # copy file which was already saved in scope_folder to PC
+                self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}.png'")
+                imgData = self.inst.read_raw(1024*1024)
+                file = open(f"{local_folder}/{filename}.png", "wb")
+                file.write(imgData)
+                file.close()
+            else:
+                # save in temp file in scope and copy to PC
+                self.inst.write(f"SAVE:IMAGe 'C:/temp.png'")
+                #time.sleep(1)
+                self.inst.write(f"FileSystem:READFile 'C:/temp.png'")
+                imgData = self.inst.read_raw(1024*1024)
+                file = open(f"{local_folder}/{filename}.png", "wb")
+                file.write(imgData)
+                file.close()
+                self.inst.write(f"FileSystem:READFile 'C:/temp.png'")
 
     def read_file_in_inst(self, scope_folder, filename):
         self.inst.write(f"FILESystem:READFile '{scope_folder}/{filename}'")
@@ -269,20 +283,35 @@ class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
     def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
         self.inst.write("HARDCopy:PORT FILE;")
         self.inst.write("EXPort:FORMat PNG")
-        command_code=f"HARDCopy:FILEName '{scope_folder}/{filename}.png'"
-        self.inst.write(command_code)
-        self.inst.write("HARDCopy STARt")
-        if debug == True:
-            print(command_code)
-        time.sleep(1)
-
-        if debug == True:
-            print(f"save waveform: {local_folder}/{filename}.png")
-        self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}.png'")
-        imgData = self.inst.read_raw(1024*1024)
-        file = open(f"{local_folder}/{filename}.png", "wb")
-        file.write(imgData)
-        file.close()
+        if scope_folder != "none":
+            # save in scope_folder
+            command_code=f"HARDCopy:FILEName '{scope_folder}/{filename}.png'"
+            self.inst.write(command_code)
+            self.inst.write("HARDCopy STARt")
+            if debug == True:
+                print(command_code)
+            #time.sleep(1)
+        if local_folder != "none":
+            if debug == True:
+                print(f"save waveform: {local_folder}/{filename}.png")
+            if scope_folder != "none":
+                # copy file which was already saved in scope_folder to PC
+                self.inst.write(f"FileSystem:READFile '{scope_folder}/{filename}.png'")
+                imgData = self.inst.read_raw(1024*1024)
+                file = open(f"{local_folder}/{filename}.png", "wb")
+                file.write(imgData)
+                file.close()
+            else:
+                # save in temp file in scope and copy to PC
+                self.inst.write(f"HARDCopy:FILEName 'C:/temp.png'")
+                self.inst.write("HARDCopy STARt")
+                #time.sleep(1)
+                self.inst.write(f"FileSystem:READFile 'C:/temp.png'")
+                imgData = self.inst.read_raw(1024*1024)
+                file = open(f"{local_folder}/{filename}.png", "wb")
+                file.write(imgData)
+                file.close()
+                self.inst.write(f"FileSystem:DELEte 'C:/temp.png'")
 
     def read_file_in_inst(self, scope_folder, filename):
         self.inst.write(f"FILESystem:READFile '{scope_folder}/{filename}'")
@@ -370,14 +399,24 @@ class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
 
     def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
         # only saving to PC in BMP format supported
-        self.inst.write("SCDP")
-        time.sleep(1)
-        imgData = self.inst.read_raw()
-        file = open(f"{local_folder}/{filename}.bmp", "wb")
-        file.write(imgData)
-        file.close()
-        if debug == True:
-            print(f"save waveform: {local_folder}/{filename}.bmp")
+        if scope_folder == "none":
+            # don't save in scope
+            pass
+        else:
+            # not supported anyway
+            pass
+        if local_folder == "none":
+            # don't save on PC
+            pass
+        else:
+            self.inst.write("SCDP")
+            #time.sleep(1)
+            imgData = self.inst.read_raw()
+            file = open(f"{local_folder}/{filename}.bmp", "wb")
+            file.write(imgData)
+            file.close()
+            if debug == True:
+                print(f"save waveform: {local_folder}/{filename}.bmp")
 
     def read_file_in_inst(self, scope_folder, filename):
         # not supported

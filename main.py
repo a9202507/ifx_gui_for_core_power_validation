@@ -269,17 +269,17 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.save_waveform_in_scope_and_pc(filename)
 
     def save_waveform_in_scope_and_pc(self, filename="temp"):
-        #self.init_scope()
-        
-        # set waveform dirctory in scope
-        #self.scope.set_waveform_directory_in_scope(self.parameter_setting_scope_folder)
-
-        #self.latest_waveform_filename = filename
-
-        # save waveform to scope
         if self.debug == True:
             self.push_msg_to_GUI(f"save waveform as: {self.parameter_setting_scope_folder}/{filename}")
-        self.scope.save_waveform(self.parameter_setting_scope_folder, filename, self.parameter_setting_local_folder, self.debug)
+        if self.parameter_setting_screenshot_save_scope == True:
+            scope_folder=self.parameter_setting_scope_folder
+        else:
+            scope_folder="none"
+        if self.parameter_setting_screenshot_save_pc == True:
+            local_folder=self.parameter_setting_local_folder
+        else:
+            local_folder="none"
+        self.scope.save_waveform(scope_folder, filename, local_folder, self.debug)
 
     def set_scope_measurement_item(self, item_number=1, channel="1", item_type="max"):
         result = self.scope.set_measurement_items(item_number, channel, item_type)
@@ -311,7 +311,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.progressBar.setValue(data)
 
     def open_3d_plot(self, filename):
-        pandas_report.plt_vmax(filename)
+        pandas_report.plt_vmax(filename, autosave=True)
 
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
