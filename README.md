@@ -1,30 +1,35 @@
-# ifx_GUI_for_core_power_validation
+# Infineon GUI for core power validation
 
-Users can use this GUI to control Tektronix scope and function generator equipments to do 3D transinet validation.
+Users can use this GUI to control a scope and a function generator to do 3D transient validation.
 
-Designed by Pyside2 and Python3.6.5
+Designed with Pyside6 and Python3.12.2
 
-# equipment list
+# Equipment list
 
-Tektronix MSO66b Windows10 base scope or Tektronix DPO7054 Win7 base scope
-Tektronix function generator AFG3021C
+### Scopes
+_ Tektronix MSO4x / MSO5x / MSO6x (Win10 based)
+_ Tektronix MSO5000 / DPO5000 / DPO7000 (Win7 based)
+_ Siglent SDS1000X-E / SDS2000X-E
+### Function generators
+_ Tektronix AFG3000
+_ Siglent SDG1000X / SDG2000X / SDG6000X
 
-# software requirment
+# Software requirements
 
 Windows 10 64bits
-Python 3.6.5 32bits
-Pyside2 for UI
+Python 3.12.2
+Pyside6 for UI
 GPIB driver, check with your GPIB cable vendor if you have to use GIPB cable.
 
-# before start-up
+# Before start-up
 
-1. coonected your equipment to your notebook, GPIB/USB/Ethernet all are acceptable.
-2. install realted libraies from requirements.txt
+1. Connect your equipment to your PC, GPIB/USB/Ethernet are all acceptable.
+2. Install libraries from requirements.txt.
 
-# start-up
+# Start-up
 
-1. run main.py
-2. goes to setting page, press "rescan" buttom on GUI to scans your equipment
-3. select your escope and function generator on setting page.
-4. goes to main page and select your transient conditions.
-5. press "run 3D" buttom" to start your validation.
+1. Run main.py.
+2. Go to Settings page, press "re-scan equipment" button on GUI to scan your equipment, if not already listed.
+3. Select your scope and function generator on Settings page.
+4. Go to main page and select your transient conditions.
+5. Press "Start 3D test" button" to start your validation.

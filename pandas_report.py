@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -12,8 +13,10 @@ def plt_vmax(filename, autosave=False):
 
     df = pd.read_excel(filename, sheet_name="Sheet1")
 
-    plt.ion()
+    matplotlib.use('pdf') # needed for pyinstaller to collect the pdf backend
+    matplotlib.use('qtagg') # needed for pyinstaller to collect the qtagg backend
     plt.rcParams.update({'font.size': 8})
+    plt.ion()
     fig = plt.figure(figsize=(6.5,10))
 
     #ax = fig.gca(projection='3d')
@@ -64,7 +67,7 @@ def plt_vmax(filename, autosave=False):
 
     if autosave == True:
         plt.savefig(filename.replace(".xlsx", ".pdf").replace(".xls", ".pdf"), bbox_inches='tight')
-    plt.draw()
+    plt.show()
 
 
 def plt_vmin(filename):

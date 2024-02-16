@@ -1,1 +1,0 @@
-pyside2-uic -o .\PySide2_DB410_ui.py .\PySide2_DB410_ui.ui

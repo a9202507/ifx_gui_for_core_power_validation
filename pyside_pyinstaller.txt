@@ -1,0 +1,5 @@
+Convert .ui file to .py file:
+pyside6-uic -o .\PySide6_Core_Power_Validation_ui.py .\PySide6_Core_Power_Validation_ui.ui
+
+Package GUI to .exe file:
+pyinstaller -n "Infineon GUI for core power validation 2024-02-16" -w --icon="resource/load_slammer.ico" --onefile --add-data="init.json;." --add-data="resource/load_slammer.ico;resource" --add-data="resource/IFX_LOGO_RGB.jpg;resource" main.py

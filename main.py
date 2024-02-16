@@ -1,12 +1,12 @@
-# Rev2024.02.09 for beta release
+# Rev. 2024-02-16 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
 import sys
-from PySide2.QtCore import QThread, Signal
-from PySide2.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
-from PySide2.QtGui import QIcon
-import PySide2_DB410_ui
+from PySide6.QtCore import QThread, Signal
+from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
+from PySide6.QtGui import QIcon, QPixmap
+import PySide6_Core_Power_Validation_ui
 import json
 import os
 import visa_function as myvisa
@@ -16,10 +16,15 @@ import time
 import pandas_report
 import datetime
 
-# set icon to taskbar
-import ctypes
-myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+basedir = os.path.dirname(__file__)
+
+# set icon to taskbar (only exists on windows)
+try:
+    from ctypes import windll
+    myappid = 'com.infineon.GUI.corepowervalidation.20240216'
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
 
 
 class DB410_3d_thread(QThread):
@@ -157,7 +162,7 @@ class DB410_3d_thread(QThread):
         self.terminate()
 
 
-class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
+class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
     def __init__(self, parent=None, debug=False):
         super(MyMainWindow, self).__init__(parent)
         self.setFixedSize(730, 850)
@@ -191,11 +196,13 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.update_equipment_address_on_combobox()
         self.update_equipment_type_on_combobox()
 
-        # set auto load init.json during startup
-        self.path = os.path.dirname(os.path.abspath(__file__))
-        self.path_file_list = list()
-        self.path_file_list.append(self.path+"\init.json")
-        self.load_config_from_filename(self.path_file_list)
+        # auto load init.json during startup - for packaged .exe, init.json in same folder as .exe will be used, if it exists - otherwise default init.json.
+        self.configfile_list = list()
+        if os.path.isfile("./init.json"):
+            self.configfile_list.append("./init.json")
+        else:
+            self.configfile_list.append(f"{basedir}/init.json")
+        self.load_config_from_filename(self.configfile_list)
 
         # functionGen
         self.radioButton.toggled.connect(self.update_GUI_then_send_to_function_gen_on)
@@ -209,12 +216,15 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.set_progress_bar(0)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev.2024.02.09"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-02-16"
 
         # set icon
         app_icon = QIcon()
-        app_icon.addFile("./resource/load slammer.ico")
+        app_icon.addFile(f"{basedir}/resource/load_slammer.ico")
         self.setWindowIcon(app_icon)
+        
+        # set IFX logo
+        self.label_10.setPixmap(QPixmap(f"{basedir}/resource/IFX_LOGO_RGB.jpg"))
 
         self.set_window_title_with_debug_mode()
 
@@ -317,7 +327,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.get_filename(filetype="Excel Files (*.xls; *.xlsx)")
             filename = self.filenames[0]
         if self.debug == True:
-            print(filename)
+            self.push_msg_to_GUI(f"opening 3D plot {filename}")
         pandas_report.plt_vmax(filename, autosave)
 
     def update_GUI_then_send_to_function_gen_on(self):
@@ -372,7 +382,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.comboBox_7.addItems(list(myvisa.function_gen_types.keys()))
     
     def get_visa_resource(self):
-
         self.resource_list = myvisa.get_visa_resource_list(
             not self.debug)
         if self.debug == True:
@@ -436,7 +445,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def get_filename(self, filetype='JSON Files (*.json);;XLS Files (*.xls);;All Files (*)'):
         try:
             dlg = QFileDialog(self, 'Open File', '.', filetype)
-            if dlg.exec_():
+            if dlg.exec():
                 self.filenames = dlg.selectedFiles()
                 if self.debug == True:
                     self.push_msg_to_GUI(self.filenames)
@@ -540,7 +549,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def about_the_gui(self):
         QMessageBox.about(
-            self, "About the GUI", 'Powered by PySide2, <a href=https://github.com/a9202507/ifx_loadslammer>Github</a>')
+            self, "About the GUI", 'Powered by PySide6, <a href=https://github.com/a9202507/ifx_gui_for_core_power_validation>Github</a>')
 
 
 if __name__ == "__main__":
@@ -550,4 +559,4 @@ if __name__ == "__main__":
 
     myWin.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

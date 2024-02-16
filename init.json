@@ -27,7 +27,7 @@
     "parameter_main_ton_duration_time_sec": 5.0,
     "parameter_main_toff_duration_time_sec": 3.0,
     "parameter_main_roll_up_down_enable": false,
-    "parameter_setting_scope_resource_type": "Tektronix MSO5000 / DPO5000 / DPO7000",
+    "parameter_setting_scope_resource_type": "Tektronix MSO4x / MSO5x / MSO6x",
     "parameter_setting_scope_resource_address": "",
     "parameter_setting_function_gen_resource_type": "Tektronix AFG3000",
     "parameter_setting_function_gen_resource_address": "",
