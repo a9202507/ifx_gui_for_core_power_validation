@@ -37,6 +37,7 @@
     "parameter_setting_screenshot_save_scope": true,
     "parameter_setting_screenshot_save_pc": true,
     "parameter_setting_filename_include_timestamp": true,
+    "parameter_setting_autocreate_3d_plot": true,
     "parameter_setting_scope_vout_channel": "1",
     "parameter_setting_scope_iout_channel": "2",
     "parameter_setting_function_gen_channel": "1"

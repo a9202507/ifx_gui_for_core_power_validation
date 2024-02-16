@@ -460,7 +460,7 @@
         <x>10</x>
         <y>260</y>
         <width>471</width>
-        <height>226</height>
+        <height>241</height>
        </rect>
       </property>
       <property name="title">
@@ -639,6 +639,22 @@
         <string>Set output folder (PC)</string>
        </property>
       </widget>
+      <widget class="QCheckBox" name="checkBox_6">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>200</y>
+         <width>201</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Automatically create 3D plot</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_5">
       <property name="geometry">
@@ -788,7 +804,7 @@
         <x>500</x>
         <y>260</y>
         <width>181</width>
-        <height>81</height>
+        <height>91</height>
        </rect>
       </property>
       <property name="title">
@@ -804,6 +820,12 @@
        </item>
        <item>
         <widget class="QComboBox" name="comboBox_5">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <item>
           <property name="text">
            <string>1</string>

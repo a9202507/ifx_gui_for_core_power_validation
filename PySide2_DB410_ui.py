@@ -291,7 +291,7 @@ class Ui_MainWindow(object):
 
         self.groupBox_4 = QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(u"groupBox_4")
-        self.groupBox_4.setGeometry(QRect(10, 260, 471, 226))
+        self.groupBox_4.setGeometry(QRect(10, 260, 471, 241))
         self.checkBox_4 = QCheckBox(self.groupBox_4)
         self.checkBox_4.setObjectName(u"checkBox_4")
         self.checkBox_4.setEnabled(True)
@@ -335,6 +335,10 @@ class Ui_MainWindow(object):
         self.pushButton_11.setObjectName(u"pushButton_11")
         self.pushButton_11.setEnabled(True)
         self.pushButton_11.setGeometry(QRect(320, 130, 141, 28))
+        self.checkBox_6 = QCheckBox(self.groupBox_4)
+        self.checkBox_6.setObjectName(u"checkBox_6")
+        self.checkBox_6.setGeometry(QRect(10, 200, 201, 31))
+        self.checkBox_6.setChecked(True)
         self.groupBox_5 = QGroupBox(self.tab_2)
         self.groupBox_5.setObjectName(u"groupBox_5")
         self.groupBox_5.setGeometry(QRect(500, 10, 181, 71))
@@ -389,7 +393,7 @@ class Ui_MainWindow(object):
 
         self.groupBox_9 = QGroupBox(self.tab_2)
         self.groupBox_9.setObjectName(u"groupBox_9")
-        self.groupBox_9.setGeometry(QRect(500, 260, 181, 81))
+        self.groupBox_9.setGeometry(QRect(500, 260, 181, 91))
         self.verticalLayout_3 = QVBoxLayout(self.groupBox_9)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.label_21 = QLabel(self.groupBox_9)
@@ -401,6 +405,7 @@ class Ui_MainWindow(object):
         self.comboBox_5.addItem("")
         self.comboBox_5.addItem("")
         self.comboBox_5.setObjectName(u"comboBox_5")
+        self.comboBox_5.setMinimumSize(QSize(0, 0))
 
         self.verticalLayout_3.addWidget(self.comboBox_5)
 
@@ -502,6 +507,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Output folder in scope", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Output folder in PC", None))
         self.pushButton_11.setText(QCoreApplication.translate("MainWindow", u"Set output folder (PC)", None))
+        self.checkBox_6.setText(QCoreApplication.translate("MainWindow", u"Automatically create 3D plot", None))
         self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"Report", None))
         self.pushButton_9.setText(QCoreApplication.translate("MainWindow", u"Create 3D report", None))
         self.groupBox_8.setTitle(QCoreApplication.translate("MainWindow", u"Scope channel settings", None))

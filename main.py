@@ -141,7 +141,8 @@ class DB410_3d_thread(QThread):
         filename = f"{myWin.parameter_setting_local_folder}/{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report{timestamp_str}.xlsx"
         try:
             df.to_excel(filename)
-            self.DB410_open_3d_plot.emit(filename)
+            if myWin.parameter_setting_autocreate_3d_plot == True:
+                self.DB410_open_3d_plot.emit(filename)
         except:
             myWin.push_msg_to_GUI("Failed to save report to PC")
         self.DB410_msg.emit("==3D test finish==")
@@ -170,7 +171,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.comboBox_6.currentIndexChanged.connect(self.update_scope_address)
         self.comboBox_2.currentIndexChanged.connect(self.update_function_gen_address)
         self.comboBox_7.currentIndexChanged.connect(self.update_function_gen_address)
-        self.pushButton_9.clicked.connect(self.open_3d_report_max)
+        self.pushButton_9.clicked.connect(self.open_3d_plot)
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
         self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform("temp"))
@@ -203,7 +204,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.function_gen_3d = DB410_3d_thread()
         self.function_gen_3d.DB410_msg.connect(self.push_msg_to_GUI)
         self.function_gen_3d.DB410_progress_bar.connect(self.set_progress_bar)
-        self.function_gen_3d.DB410_open_3d_plot.connect(self.open_3d_plot)
+        self.function_gen_3d.DB410_open_3d_plot.connect(lambda filename: self.open_3d_plot(filename, autosave=True))
         self.set_progress_bar(0)
 
         # set windowTitle
@@ -310,8 +311,13 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
     def set_progress_bar(self, data):
         self.progressBar.setValue(data)
 
-    def open_3d_plot(self, filename):
-        pandas_report.plt_vmax(filename, autosave=True)
+    def open_3d_plot(self, filename="none", autosave=False):
+        if filename == "none":
+            self.get_filename(filetype="Excel Files (*.xls; *.xlsx)")
+            filename = self.filenames[0]
+        if self.debug == True:
+            print(filename)
+        pandas_report.plt_vmax(filename, autosave)
 
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
@@ -404,6 +410,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
                                "parameter_setting_screenshot_save_scope": self.parameter_setting_screenshot_save_scope,
                                "parameter_setting_screenshot_save_pc": self.parameter_setting_screenshot_save_pc,
                                "parameter_setting_filename_include_timestamp": self.parameter_setting_filename_include_timestamp,
+                               "parameter_setting_autocreate_3d_plot": self.parameter_setting_autocreate_3d_plot,
                                "parameter_setting_scope_vout_channel": self.parameter_setting_scope_vout_channel,
                                "parameter_setting_scope_iout_channel": self.parameter_setting_scope_iout_channel,
                                "parameter_setting_function_gen_channel": self.parameter_setting_function_gen_channel,
@@ -463,6 +470,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
             self.checkBox_4.setChecked(json_data["parameter_setting_screenshot_save_scope"])
             self.checkBox_5.setChecked(json_data["parameter_setting_screenshot_save_pc"])
             self.checkBox_2.setChecked(json_data["parameter_setting_filename_include_timestamp"])
+            self.checkBox_6.setChecked(json_data["parameter_setting_autocreate_3d_plot"])
             self.comboBox_3.setCurrentText(json_data["parameter_setting_scope_vout_channel"])
             self.comboBox_4.setCurrentText(json_data["parameter_setting_scope_iout_channel"])
             self.comboBox_5.setCurrentText(json_data["parameter_setting_function_gen_channel"])
@@ -501,6 +509,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.parameter_setting_screenshot_save_scope = self.checkBox_4.isChecked()
         self.parameter_setting_screenshot_save_pc = self.checkBox_5.isChecked()
         self.parameter_setting_filename_include_timestamp = self.checkBox_2.isChecked()
+        self.parameter_setting_autocreate_3d_plot = self.checkBox_6.isChecked()
         self.parameter_setting_scope_vout_channel = self.comboBox_3.currentText()
         self.parameter_setting_scope_iout_channel = self.comboBox_4.currentText()
         self.parameter_setting_function_gen_channel = self.comboBox_5.currentText()
@@ -522,13 +531,6 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def clear_message_box(self):
         self.textEdit.clear()
-
-    def open_3d_report_max(self):
-        self.get_filename(filetype="Excel Files (*.xls; *.xlsx)")
-
-        if self.debug == True:
-            print(self.filenames[0])
-        pandas_report.plt_vmax(self.filenames[0])
 
     def select_directory(self):
         self.dir_path = QFileDialog.getExistingDirectory(
