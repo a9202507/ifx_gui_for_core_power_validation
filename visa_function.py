@@ -46,43 +46,41 @@ class Tektronix_AFG3000(visa_equipment):
                            "square": "SQUare",
                            "dc": "DC"}
 
-    def on(self):
-        self.inst.write("OUTPut1:STATe ON")
+    def on(self, channel="1"):
+        self.inst.write(f"OUTPut{channel}:STATe ON")
 
-    def off(self):
-        self.inst.write("OUTPut1:STATe off")
+    def off(self, channel="1"):
+        self.inst.write(f"OUTPut{channel}:STATe off")
 
-    def set_freq(self, freq_khz):
-        self.inst.write("SOURce1:FREQuency:FIXed "+str(freq_khz)+"kHz")
+    def set_freq(self, freq_khz, channel="1"):
+        self.inst.write(f"SOURce{channel}:FREQuency:FIXed {freq_khz}kHz")
 
-    def set_duty(self, duty):
-        self.inst.write("SOURce1:PULSe:DCYCLe "+str(duty))
+    def set_duty(self, duty, channel="1"):
+        self.inst.write(f"SOURce{channel}:PULSe:DCYCLe {duty}")
 
-    def set_rise_time_ns(self, rise_time):
-        self.inst.write("SOURce1:PULSe:TRANsition:LEADing " +
-                        str(rise_time)+"ns")
+    def set_rise_time_ns(self, rise_time, channel="1"):
+        self.inst.write(f"SOURce{channel}:PULSe:TRANsition:LEADing {rise_time}ns")
 
-    def set_fall_time_ns(self, fall_time):
-        self.inst.write("SOURce1:PULSe:TRANsition:TRAiling " +
-                        str(fall_time)+"ns")
+    def set_fall_time_ns(self, fall_time, channel="1"):
+        self.inst.write(f"SOURce{channel}:PULSe:TRANsition:TRAiling {fall_time}ns")
 
-    def set_waveform_shape(self, shape="pulse"):
-        self.inst.write(f"SOURce1:FUNCtion:SHAPe {self.waveform_shape_dict[shape]}")
+    def set_waveform_shape(self, shape="pulse", channel="1"):
+        self.inst.write(f"SOURce{channel}:FUNCtion:SHAPe {self.waveform_shape_dict[shape]}")
 
-    def set_voltage_high(self, voltage=0):
-        self.inst.write("SOURce1:VOLTage:LEVel:IMMediate:High "+str(voltage))
+    def set_voltage_high(self, voltage=0, channel="1"):
+        self.inst.write(f"SOURce{channel}:VOLTage:LEVel:IMMediate:High {voltage}")
 
-    def set_voltage_low(self, voltage=0):
-        self.inst.write("SOURce1:VOLTage:LEVel:IMMediate:Low "+str(voltage))
+    def set_voltage_low(self, voltage=0, channel="1"):
+        self.inst.write(f"SOURce{channel}:VOLTage:LEVel:IMMediate:Low {voltage}")
 
-    def get_rise_time_ns(self):
-        return self.inst.query("SOURce1:PULSe:TRANsition:LEADing?")
+    def get_rise_time_ns(self, channel="1"):
+        return self.inst.query(f"SOURce{channel}:PULSe:TRANsition:LEADing?")
     
-    def set_output_impedance(self,impedance_value="HiZ"):
+    def set_output_impedance(self,impedance_value="HiZ", channel="1"):
         if impedance_value=="HiZ":
-            self.inst.write("OUTPut1:IMPedance INFinity")
+            self.inst.write(f"OUTPut{channel}:IMPedance INFinity")
         else:
-            self.inst.write(f"OUTPut1:IMPedance {impedance_value}")
+            self.inst.write(f"OUTPut{channel}:IMPedance {impedance_value}")
 
 
 
@@ -95,43 +93,43 @@ class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
                            "square": "SQUARE",
                            "dc": "DC"}
 
-    def on(self):
-        self.inst.write("C1:OUTPut ON")
+    def on(self, channel="1"):
+        self.inst.write(f"C{channel}:OUTPut ON")
 
-    def off(self):
-        self.inst.write("C1:OUTPut OFF")
+    def off(self, channel="1"):
+        self.inst.write(f"C{channel}:OUTPut OFF")
 
-    def set_freq(self, freq_khz):
-        self.inst.write(f"C1:BaSic_WaVe FRQ,{float(freq_khz)*1000}")
+    def set_freq(self, freq_khz, channel="1"):
+        self.inst.write(f"C{channel}:BaSic_WaVe FRQ,{float(freq_khz)*1000}")
 
-    def set_duty(self, duty):
-        self.inst.write(f"C1:BaSic_WaVe DUTY,{duty}")
+    def set_duty(self, duty, channel="1"):
+        self.inst.write(f"C{channel}:BaSic_WaVe DUTY,{duty}")
 
-    def set_rise_time_ns(self, rise_time):
-        self.inst.write(f"C1:BaSic_WaVe RISE,{float(rise_time)/1000000000}")
+    def set_rise_time_ns(self, rise_time, channel="1"):
+        self.inst.write(f"C{channel}:BaSic_WaVe RISE,{float(rise_time)/1000000000}")
 
-    def set_fall_time_ns(self, fall_time):
-        self.inst.write(f"C1:BaSic_WaVe FALL,{float(fall_time)/1000000000}")
+    def set_fall_time_ns(self, fall_time, channel="1"):
+        self.inst.write(f"C{channel}:BaSic_WaVe FALL,{float(fall_time)/1000000000}")
 
-    def set_waveform_shape(self, shape="pulse"):
-        self.inst.write(f"C1:BaSic_WaVe WVTP,{self.waveform_shape_dict[shape]}")
+    def set_waveform_shape(self, shape="pulse", channel="1"):
+        self.inst.write(f"C{channel}:BaSic_WaVe WVTP,{self.waveform_shape_dict[shape]}")
 
-    def set_voltage_high(self, voltage=0):
-        self.inst.write(f"C1:BaSic_WaVe HLEV,{voltage}")
+    def set_voltage_high(self, voltage=0, channel="1"):
+        self.inst.write(f"C{channel}:BaSic_WaVe HLEV,{voltage}")
 
-    def set_voltage_low(self, voltage=0):
-        self.inst.write(f"C1:BaSic_WaVe LLEV,{voltage}")
+    def set_voltage_low(self, voltage=0, channel="1"):
+        self.inst.write(f"C{channel}:BaSic_WaVe LLEV,{voltage}")
 
     def get_rise_time_ns(self):
         # This would return the complete waveform settings, needs to be parsed for the rise time. Not used, therefore not yet implemented.
-        #return self.inst.query("C1:BaSic_WaVe?")
+        #return self.inst.query(f"C{channel}:BaSic_WaVe?")
         pass
 
-    def set_output_impedance(self,impedance_value="HiZ"):
+    def set_output_impedance(self, impedance_value="HiZ", channel="1"):
         if impedance_value=="HiZ":
-            self.inst.write("C1:OUTPut LOAD,HZ")
+            self.inst.write(f"C{channel}:OUTPut LOAD,HZ")
         else:
-            self.inst.write(f"C1:OUTPut LOAD,{impedance_value}")
+            self.inst.write(f"C{channel}:OUTPut LOAD,{impedance_value}")
 
 
 

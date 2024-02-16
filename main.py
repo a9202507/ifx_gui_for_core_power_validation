@@ -125,7 +125,7 @@ class DB410_3d_thread(QThread):
                     myWin.push_msg_to_GUI("Failed to save waveform")
 
                 # send function generator off command
-                myWin.function_gen.off()
+                myWin.function_gen.off(myWin.parameter_setting_function_gen_channel)
 
                 # sleep for for transient off duration time
                 time.sleep(myWin.parameter_main_toff_duration_time_sec)
@@ -149,7 +149,7 @@ class DB410_3d_thread(QThread):
         self.DB410_msg.emit(" ")
 
     def stop(self):
-        myWin.function_gen.off()
+        myWin.function_gen.off(myWin.parameter_setting_function_gen_channel)
         self.DB410_msg.emit("==3D test stop==")
         self.DB410_msg.emit(" ")
         self.DB410_progress_bar.emit(0)
@@ -171,6 +171,7 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
         self.comboBox_6.currentIndexChanged.connect(self.update_scope_address)
         self.comboBox_2.currentIndexChanged.connect(self.update_function_gen_address)
         self.comboBox_7.currentIndexChanged.connect(self.update_function_gen_address)
+        self.comboBox_5.currentIndexChanged.connect(self.update_function_gen_address) # init function gen if channel is changed to set output impedance and waveform
         self.pushButton_9.clicked.connect(self.open_3d_plot)
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
@@ -262,8 +263,8 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def init_function_gen(self):
         self.function_gen = myvisa.function_gen_types[self.parameter_setting_function_gen_resource_type](self.parameter_setting_function_gen_resource_address)
-        self.function_gen.set_output_impedance("HiZ")
-        self.function_gen.set_waveform_shape("pulse")
+        self.function_gen.set_output_impedance("HiZ", self.parameter_setting_function_gen_channel)
+        self.function_gen.set_waveform_shape("pulse", self.parameter_setting_function_gen_channel)
  
     def update_GUI_then_save_waveform(self, filename="temp"):
         self.update_GUI()
@@ -340,17 +341,17 @@ class MyMainWindow(QMainWindow, PySide2_DB410_ui.Ui_MainWindow):
 
     def send_function_gen_command_one_time(self, freq, duty, on_off=False):
         if on_off == False:
-            self.function_gen.off()
-        self.function_gen.set_freq(freq)
-        self.function_gen.set_duty(duty)
+            self.function_gen.off(self.parameter_setting_function_gen_channel)
+        self.function_gen.set_freq(freq, self.parameter_setting_function_gen_channel)
+        self.function_gen.set_duty(duty, self.parameter_setting_function_gen_channel)
         high_voltage_value = float(self.parameter_main_high_current) * float(self.parameter_main_gain) / 1000
         low_voltage_value = float(self.parameter_main_low_current) * float(self.parameter_main_gain) / 1000
-        self.function_gen.set_voltage_high(str(high_voltage_value))
-        self.function_gen.set_voltage_low(str(low_voltage_value))
-        self.function_gen.set_rise_time_ns(self.parameter_main_rise_time_nsec)
-        self.function_gen.set_fall_time_ns(self.parameter_main_fall_time_nsec)
+        self.function_gen.set_voltage_high(str(high_voltage_value), self.parameter_setting_function_gen_channel)
+        self.function_gen.set_voltage_low(str(low_voltage_value), self.parameter_setting_function_gen_channel)
+        self.function_gen.set_rise_time_ns(self.parameter_main_rise_time_nsec, self.parameter_setting_function_gen_channel)
+        self.function_gen.set_fall_time_ns(self.parameter_main_fall_time_nsec, self.parameter_setting_function_gen_channel)
         if on_off == True:
-            self.function_gen.on()
+            self.function_gen.on(self.parameter_setting_function_gen_channel)
 
     def update_equipment_address_on_combobox(self):
         self.get_visa_resource()
