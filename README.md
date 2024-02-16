@@ -2,17 +2,17 @@
 
 Users can use this GUI to control a scope and a function generator to do 3D transient validation.
 
-Designed with Pyside6 and Python3.12.2
+Designed with Pyside6 and Python 3.12.2
 
 # Equipment list
 
 ### Scopes
-_ Tektronix MSO4x / MSO5x / MSO6x (Win10 based)
-_ Tektronix MSO5000 / DPO5000 / DPO7000 (Win7 based)
-_ Siglent SDS1000X-E / SDS2000X-E
+- Tektronix MSO4x / MSO5x / MSO6x (Win10 based)
+- Tektronix MSO5000 / DPO5000 / DPO7000 (Win7 based)
+- Siglent SDS1000X-E / SDS2000X-E
 ### Function generators
-_ Tektronix AFG3000
-_ Siglent SDG1000X / SDG2000X / SDG6000X
+- Tektronix AFG3000
+- Siglent SDG1000X / SDG2000X / SDG6000X
 
 # Software requirements
 
