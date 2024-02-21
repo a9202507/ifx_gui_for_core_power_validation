@@ -82,6 +82,9 @@ class Tektronix_AFG3000(visa_equipment):
         else:
             self.inst.write(f"OUTPut{channel}:IMPedance {impedance_value}")
 
+    def info(self):
+        return 0
+
 
 
 class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
@@ -130,6 +133,60 @@ class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
             self.inst.write(f"C{channel}:OUTPut LOAD,HZ")
         else:
             self.inst.write(f"C{channel}:OUTPut LOAD,{impedance_value}")
+
+    def info(self):
+        return 0
+
+
+
+class Keysight_332x0A(visa_equipment):
+    def __init__(self, visa_resource_name):
+        visa_equipment.__init__(self, visa_resource_name)
+
+    waveform_shape_dict = {"pulse": "PULSe",
+                           "sine": "SINusoid",
+                           "square": "SQUare",
+                           "dc": "DC"}
+
+    def on(self, channel="1"):
+        self.inst.write(f"OUTPut:STATe ON")
+
+    def off(self, channel="1"):
+        self.inst.write(f"OUTPut:STATe off")
+
+    def set_freq(self, freq_khz, channel="1"):
+        self.inst.write(f"SOURce:FREQuency {freq_khz}kHz")
+
+    def set_duty(self, duty, channel="1"):
+        self.inst.write(f"SOURce:FUNCtion:PULSe:DCYCLe {duty}")
+
+    def set_rise_time_ns(self, rise_time, channel="1"):
+        self.inst.write(f"SOURce:FUNCtion:PULSe:TRANsition {rise_time}ns")
+
+    def set_fall_time_ns(self, fall_time, channel="1"):
+        # rise time and fall time will be the same for this function generator
+        pass
+
+    def set_waveform_shape(self, shape="pulse", channel="1"):
+        self.inst.write(f"SOURce:FUNCtion {self.waveform_shape_dict[shape]}")
+
+    def set_voltage_high(self, voltage=0, channel="1"):
+        self.inst.write(f"SOURce:VOLTage:HIGH {voltage}")
+
+    def set_voltage_low(self, voltage=0, channel="1"):
+        self.inst.write(f"SOURce:VOLTage:LOW {voltage}")
+
+    def get_rise_time_ns(self, channel="1"):
+        return self.inst.query(f"SOURce:PULSe:TRANsition?")
+
+    def set_output_impedance(self,impedance_value="HiZ", channel="1"):
+        if impedance_value=="HiZ":
+            self.inst.write(f"OUTPut:LOAD INFinity")
+        else:
+            self.inst.write(f"OUTPut:LOAD {impedance_value}")
+
+    def info(self):
+        return "WARNING Keysight_332x0A:\n- Rise time value is used for both rise and fall time\n- Supported range for rise/fall time:\n   20ns - 100ns (33210A)\n   5ns - 100ns (33220A)"
 
 
 
@@ -231,6 +288,9 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
             self.inst.write("TRIGger:A SETLevel")
         else:
             self.inst.write(f"TRIGger:A:LEVel:CH{channel} {level}")
+
+    def info(self):
+        return 0
 
 
 
@@ -340,6 +400,9 @@ class Tektronix_MSO5000_DPO5000_DPO7000(visa_equipment):
         else:
             self.inst.write(f"TRIGger:A:LEVel:CH{channel} {level}")
 
+    def info(self):
+        return 0
+
 
 
 class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
@@ -446,6 +509,9 @@ class Siglent_SDS1000XE_SDS2000XE(visa_equipment):
         else:
             self.inst.write(f"C{channel}:TRIG_LEVEL {level}")
 
+    def info(self):
+        return "INFO Siglent SDS1000X-E / SDS2000X-E:\nSaving screenshots on scope is not supported"
+
 
 
 '''
@@ -482,7 +548,8 @@ scope_types = {        "Tektronix MSO4x / MSO5x / MSO6x": Tektronix_MSO4x_MSO5x_
                        "Tektronix MSO5000 / DPO5000 / DPO7000": Tektronix_MSO5000_DPO5000_DPO7000,
                        "Siglent SDS1000X-E / SDS2000X-E": Siglent_SDS1000XE_SDS2000XE}
 function_gen_types = { "Tektronix AFG3000": Tektronix_AFG3000,
-                       "Siglent SDG1000X / SDG2000X / SDG6000X": Siglent_SDG1000X_SDG2000X_SDG6000X}
+                       "Siglent SDG1000X / SDG2000X / SDG6000X": Siglent_SDG1000X_SDG2000X_SDG6000X,
+                       "Keysight 332x0A": Keysight_332x0A}
 
 
 

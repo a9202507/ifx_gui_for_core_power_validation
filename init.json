@@ -34,7 +34,7 @@
     "parameter_setting_scope_folder": "C:/Temp",
     "parameter_setting_local_folder": "./report",
     "parameter_setting_filename": "IFX_",
-    "parameter_setting_screenshot_save_scope": true,
+    "parameter_setting_screenshot_save_scope": false,
     "parameter_setting_screenshot_save_pc": true,
     "parameter_setting_filename_include_timestamp": true,
     "parameter_setting_autocreate_3d_plot": true,

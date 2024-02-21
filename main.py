@@ -1,4 +1,4 @@
-# Rev. 2024-02-16 for beta release
+# Rev. 2024-02-21 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
@@ -21,7 +21,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240216'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240221'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -216,7 +216,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.set_progress_bar(0)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-02-16"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-02-21"
 
         # set icon
         app_icon = QIcon()
@@ -309,8 +309,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         # self.push_msg_to_GUI("run function gen 3d")
         self.update_GUI()
         if self.comboBox_2.currentText() == "" or self.comboBox.currentText() == "":
-            QMessageBox.about(
-                self, "error", "please check equipment setting on Setting page")
+            QMessageBox.about(self, "Error", "Please check equipment setting on Settings page")
         else:
             self.function_gen_3d.start()
         # self.myprogpressbar.start()
@@ -332,8 +331,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
-            QMessageBox.about(
-                self, "error", "please select function gen on Setting page first")
+            QMessageBox.about(self, "Error", "Please select function generator on Settings page first")
         else:
             # only execute if on button is checked (otherwise, command will be sent twice)
             if self.radioButton.isChecked() == True:
@@ -451,7 +449,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
                     self.push_msg_to_GUI(self.filenames)
 
         except:
-            QMessageBox.about(self, "Warning", "the filename isn't work")
+            QMessageBox.about(self, "Warning", "The file could not be opened")
 
     def load_config_from_filename(self, filenames):
 
@@ -526,15 +524,29 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         
     def update_scope_address(self):
         if self.comboBox.currentText() != "":
-            self.update_GUI()
-            self.init_scope()
-            self.lineEdit_28.setText(self.scope.get_equipment_name())
+            try:
+                self.update_GUI()
+                self.init_scope()
+                self.lineEdit_28.setText(self.scope.get_equipment_name())
+                info = self.scope.info()
+                if info != 0:
+                    self.push_msg_to_GUI(info)
+            except:
+                QMessageBox.about(self, "Error", "Connection to scope not successful")
+                self.comboBox.setCurrentIndex(0)
 
     def update_function_gen_address(self):
         if self.comboBox_2.currentText() != "":
-            self.update_GUI()
-            self.init_function_gen()
-            self.lineEdit_29.setText(self.function_gen.get_equipment_name())
+            try:
+                self.update_GUI()
+                self.init_function_gen()
+                self.lineEdit_29.setText(self.function_gen.get_equipment_name())
+                info = self.function_gen.info()
+                if info != 0:
+                    self.push_msg_to_GUI(info)
+            except:
+                QMessageBox.about(self, "Error", "Connection to function generator not successful")
+                self.comboBox_2.setCurrentIndex(0)
 
     def set_horizontal_scale_in_scope(self, scale_value="1e-6"):
         self.scope.set_horizontal_scale(scale_value)
@@ -548,8 +560,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_27.setText(self.dir_path)
 
     def about_the_gui(self):
-        QMessageBox.about(
-            self, "About the GUI", 'Powered by PySide6, <a href=https://github.com/a9202507/ifx_gui_for_core_power_validation>Github</a>')
+        QMessageBox.about(self, "About the GUI", 'Powered by PySide6, <a href=https://github.com/a9202507/ifx_gui_for_core_power_validation>Github</a>')
 
 
 if __name__ == "__main__":
