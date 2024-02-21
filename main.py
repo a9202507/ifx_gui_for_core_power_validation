@@ -534,6 +534,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             except:
                 QMessageBox.about(self, "Error", "Connection to scope not successful")
                 self.comboBox.setCurrentIndex(0)
+                self.lineEdit_28.setText("")
 
     def update_function_gen_address(self):
         if self.comboBox_2.currentText() != "":
@@ -547,6 +548,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             except:
                 QMessageBox.about(self, "Error", "Connection to function generator not successful")
                 self.comboBox_2.setCurrentIndex(0)
+                self.lineEdit_29.setText("")
 
     def set_horizontal_scale_in_scope(self, scale_value="1e-6"):
         self.scope.set_horizontal_scale(scale_value)
