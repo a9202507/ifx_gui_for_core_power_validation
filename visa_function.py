@@ -255,7 +255,7 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
                 file = open(f"{local_folder}/{filename}.png", "wb")
                 file.write(imgData)
                 file.close()
-                self.inst.write(f"FileSystem:READFile 'C:/temp.png'")
+                self.inst.write(f"FileSystem:DELEte 'C:/temp.png'")
 
     def read_file_in_inst(self, scope_folder, filename):
         self.inst.write(f"FILESystem:READFile '{scope_folder}/{filename}'")

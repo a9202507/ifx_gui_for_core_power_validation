@@ -13,6 +13,7 @@ Designed with Pyside6 and Python 3.12.2
 ### Function generators
 - Tektronix AFG3000
 - Siglent SDG1000X / SDG2000X / SDG6000X
+- Keysight 332x0A (WARNING: this instrument has limitations in rise / fall time settings)
 
 # Software requirements
 
