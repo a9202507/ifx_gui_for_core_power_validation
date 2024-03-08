@@ -179,8 +179,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.pushButton_9.clicked.connect(self.open_3d_plot)
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
-        self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform("temp"))
-        self.pushButton_7.setEnabled(False)
+        self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform(f"{self.parameter_setting_filename}test"))
+        #self.pushButton_7.setEnabled(False)
 
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
@@ -260,7 +260,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             self.push_msg_to_GUI(f"debug is {self.debug}")
         else:
             self.set_debug_mode_enable(False)
-        self.pushButton_7.setEnabled(True)
+        #self.pushButton_7.setEnabled(True)
 
     def set_debug_mode_enable(self, mode=False):
         self.debug = mode
@@ -275,7 +275,10 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
  
     def update_GUI_then_save_waveform(self, filename="temp"):
         self.update_GUI()
-        self.save_waveform_in_scope_and_pc(filename)
+        if self.comboBox.currentText() == "":
+            QMessageBox.about(self, "Error", "Please check equipment setting on Settings page")
+        else:
+            self.save_waveform_in_scope_and_pc(filename)
 
     def save_waveform_in_scope_and_pc(self, filename="temp"):
         if self.debug == True:
@@ -487,6 +490,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             self.checkBox_5.setChecked(json_data["parameter_setting_screenshot_save_pc"])
             self.checkBox_2.setChecked(json_data["parameter_setting_filename_include_timestamp"])
             self.checkBox_6.setChecked(json_data["parameter_setting_autocreate_3d_plot"])
+        self.update_GUI()
             
     def update_GUI(self):
         # get GUI import

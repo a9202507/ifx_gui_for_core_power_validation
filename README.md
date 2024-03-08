@@ -2,7 +2,7 @@
 
 Users can use this GUI to control a scope and a function generator to do 3D transient validation.
 
-Designed with Pyside6 and Python 3.12.2/64bits, (32bits isn't workable due to PySide6 library requirements)
+Designed with Pyside6 and Python 3.12.2/64bits, (32bits doesn't work due to PySide6 library requirements)
 
 # Equipment list
 
@@ -17,10 +17,10 @@ Designed with Pyside6 and Python 3.12.2/64bits, (32bits isn't workable due to Py
 
 # Software requirements
 
-Windows 10 64bits
-Python 3.12.2 64bits
-Pyside6 for UI
-GPIB driver, check with your GPIB cable vendor if you have to use GIPB cable.
+- Windows 10 64bits
+- Python 3.12.2 64bits
+- Pyside6 for UI
+- GPIB driver, check with your GPIB cable vendor if you have to use GIPB cable.
 
 # Before start-up
 

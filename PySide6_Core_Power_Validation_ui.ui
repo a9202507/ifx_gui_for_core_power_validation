@@ -539,7 +539,7 @@ select or enter value</string>
         </rect>
        </property>
        <property name="text">
-        <string>Screenshot filename</string>
+        <string>Screenshot prefix</string>
        </property>
       </widget>
       <widget class="QCheckBox" name="checkBox_2">
@@ -571,7 +571,7 @@ select or enter value</string>
         </rect>
        </property>
        <property name="text">
-        <string>Save screenshot once</string>
+        <string>Test Screenshot</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="lineEdit_27">
