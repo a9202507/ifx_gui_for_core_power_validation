@@ -76,7 +76,7 @@ class Tektronix_AFG3000(visa_equipment):
     def get_rise_time_ns(self, channel="1"):
         return self.inst.query(f"SOURce{channel}:PULSe:TRANsition:LEADing?")
     
-    def set_output_impedance(self,impedance_value="HiZ", channel="1"):
+    def set_load_impedance(self,impedance_value="HiZ", channel="1"):
         if impedance_value=="HiZ":
             self.inst.write(f"OUTPut{channel}:IMPedance INFinity")
         else:
@@ -128,7 +128,7 @@ class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
         #return self.inst.query(f"C{channel}:BaSic_WaVe?")
         pass
 
-    def set_output_impedance(self, impedance_value="HiZ", channel="1"):
+    def set_load_impedance(self, impedance_value="HiZ", channel="1"):
         if impedance_value=="HiZ":
             self.inst.write(f"C{channel}:OUTPut LOAD,HZ")
         else:
@@ -179,7 +179,7 @@ class Keysight_332x0A(visa_equipment):
     def get_rise_time_ns(self, channel="1"):
         return self.inst.query(f"SOURce:PULSe:TRANsition?")
 
-    def set_output_impedance(self,impedance_value="HiZ", channel="1"):
+    def set_load_impedance(self,impedance_value="HiZ", channel="1"):
         if impedance_value=="HiZ":
             self.inst.write(f"OUTPut:LOAD INFinity")
         else:
@@ -235,7 +235,7 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
             self.inst.write(command_code)
             if debug == True:
                 print(command_code)
-            #time.sleep(1)
+            time.sleep(0.5)
         if local_folder != "none":
             if debug == True:
                 print(f"save waveform: {local_folder}/{filename}.png")
@@ -249,7 +249,7 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
             else:
                 # save in temp file in scope and copy to PC
                 self.inst.write(f"SAVE:IMAGe 'C:/temp.png'")
-                #time.sleep(1)
+                time.sleep(0.5) #not sure if needed
                 self.inst.write(f"FileSystem:READFile 'C:/temp.png'")
                 imgData = self.inst.read_raw(1024*1024)
                 file = open(f"{local_folder}/{filename}.png", "wb")

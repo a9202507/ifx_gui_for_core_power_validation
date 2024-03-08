@@ -1,4 +1,4 @@
-# Rev. 2024-02-21 for beta release
+# Rev. 2024-03-08 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
@@ -21,7 +21,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240221'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240308'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -176,7 +176,6 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.comboBox_6.currentIndexChanged.connect(self.update_scope_address)
         self.comboBox_2.currentIndexChanged.connect(self.update_function_gen_address)
         self.comboBox_7.currentIndexChanged.connect(self.update_function_gen_address)
-        self.comboBox_5.currentIndexChanged.connect(self.update_function_gen_address) # init function gen if channel is changed to set output impedance and waveform
         self.pushButton_9.clicked.connect(self.open_3d_plot)
         self.pushButton_10.clicked.connect(self.check_debug_mode)
 
@@ -216,7 +215,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.set_progress_bar(0)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-02-21"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-03-08"
 
         # set icon
         app_icon = QIcon()
@@ -273,8 +272,6 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
     def init_function_gen(self):
         self.function_gen = myvisa.function_gen_types[self.parameter_setting_function_gen_resource_type](self.parameter_setting_function_gen_resource_address)
-        self.function_gen.set_output_impedance("HiZ", self.parameter_setting_function_gen_channel)
-        self.function_gen.set_waveform_shape("pulse", self.parameter_setting_function_gen_channel)
  
     def update_GUI_then_save_waveform(self, filename="temp"):
         self.update_GUI()
@@ -350,6 +347,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
     def send_function_gen_command_one_time(self, freq, duty, on_off=False):
         if on_off == False:
             self.function_gen.off(self.parameter_setting_function_gen_channel)
+        self.function_gen.set_load_impedance(self.parameter_main_load_impedance, self.parameter_setting_function_gen_channel)
+        self.function_gen.set_waveform_shape("pulse", self.parameter_setting_function_gen_channel)
         self.function_gen.set_freq(freq, self.parameter_setting_function_gen_channel)
         self.function_gen.set_duty(duty, self.parameter_setting_function_gen_channel)
         high_voltage_value = float(self.parameter_main_high_current) * float(self.parameter_main_gain) / 1000
@@ -394,9 +393,10 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
     def save_config(self):
         self.update_GUI()
-        self.parameter_dict = {"parameter_main_high_current": self.parameter_main_high_current,
-                               "parameter_main_low_current": self.parameter_main_low_current,
+        self.parameter_dict = {"parameter_main_load_impedance": self.parameter_main_load_impedance,
                                "parameter_main_gain": self.parameter_main_gain,
+                               "parameter_main_high_current": self.parameter_main_high_current,
+                               "parameter_main_low_current": self.parameter_main_low_current,
                                "parameter_main_rise_time_nsec": self.parameter_main_rise_time_nsec,
                                "parameter_main_fall_time_nsec": self.parameter_main_fall_time_nsec,
                                "parameter_main_duty": self.parameter_main_duty,
@@ -410,8 +410,11 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
                                # ===========================================================
                                "parameter_setting_scope_resource_type": self.parameter_setting_scope_resource_type,
                                "parameter_setting_scope_resource_address": self.parameter_setting_scope_resource_address,
+                               "parameter_setting_scope_vout_channel": self.parameter_setting_scope_vout_channel,
+                               "parameter_setting_scope_iout_channel": self.parameter_setting_scope_iout_channel,
                                "parameter_setting_function_gen_resource_type": self.parameter_setting_function_gen_resource_type,
                                "parameter_setting_function_gen_resource_address": self.parameter_setting_function_gen_resource_address,
+                               "parameter_setting_function_gen_channel": self.parameter_setting_function_gen_channel,
                                "parameter_setting_scope_folder": self.parameter_setting_scope_folder,
                                "parameter_setting_local_folder": self.parameter_setting_local_folder,
                                "parameter_setting_filename": self.parameter_setting_filename,
@@ -419,9 +422,6 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
                                "parameter_setting_screenshot_save_pc": self.parameter_setting_screenshot_save_pc,
                                "parameter_setting_filename_include_timestamp": self.parameter_setting_filename_include_timestamp,
                                "parameter_setting_autocreate_3d_plot": self.parameter_setting_autocreate_3d_plot,
-                               "parameter_setting_scope_vout_channel": self.parameter_setting_scope_vout_channel,
-                               "parameter_setting_scope_iout_channel": self.parameter_setting_scope_iout_channel,
-                               "parameter_setting_function_gen_channel": self.parameter_setting_function_gen_channel,
                                }
         filename_with_path = QFileDialog.getSaveFileName(
             self, 'Save File', '.', 'JSON Files (*.json)')
@@ -458,9 +458,10 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             if self.debug == True:
                 self.push_msg_to_GUI(str(json_data))
 
+            self.comboBox_8.setCurrentText(json_data["parameter_main_load_impedance"])
+            self.lineEdit_17.setText(str(json_data["parameter_main_gain"]))
             self.lineEdit_16.setText(str(json_data["parameter_main_high_current"]))
             self.lineEdit.setText(str(json_data["parameter_main_low_current"]))
-            self.lineEdit_17.setText(str(json_data["parameter_main_gain"]))
             self.lineEdit_6.setText(str(json_data["parameter_main_rise_time_nsec"]))
             self.lineEdit_4.setText(str(json_data["parameter_main_fall_time_nsec"]))
             self.lineEdit_5.setText(str(json_data["parameter_main_duty"]))
@@ -472,6 +473,13 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             self.lineEdit_22.setText(str(json_data["parameter_main_toff_duration_time_sec"]))
             self.checkBox_3.setChecked(json_data["parameter_main_roll_up_down_enable"])
             # ==================================
+            self.comboBox_6.setCurrentText(json_data["parameter_setting_scope_resource_type"])
+            self.comboBox.setCurrentText(json_data["parameter_setting_scope_resource_address"])
+            self.comboBox_3.setCurrentText(json_data["parameter_setting_scope_vout_channel"])
+            self.comboBox_4.setCurrentText(json_data["parameter_setting_scope_iout_channel"])
+            self.comboBox_7.setCurrentText(json_data["parameter_setting_function_gen_resource_type"])
+            self.comboBox_2.setCurrentText(json_data["parameter_setting_function_gen_resource_address"])
+            self.comboBox_5.setCurrentText(json_data["parameter_setting_function_gen_channel"])
             self.lineEdit_26.setText(json_data["parameter_setting_scope_folder"])
             self.lineEdit_27.setText(json_data["parameter_setting_local_folder"])
             self.lineEdit_7.setText(str(json_data["parameter_setting_filename"]))
@@ -479,20 +487,14 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             self.checkBox_5.setChecked(json_data["parameter_setting_screenshot_save_pc"])
             self.checkBox_2.setChecked(json_data["parameter_setting_filename_include_timestamp"])
             self.checkBox_6.setChecked(json_data["parameter_setting_autocreate_3d_plot"])
-            self.comboBox_3.setCurrentText(json_data["parameter_setting_scope_vout_channel"])
-            self.comboBox_4.setCurrentText(json_data["parameter_setting_scope_iout_channel"])
-            self.comboBox_5.setCurrentText(json_data["parameter_setting_function_gen_channel"])
-            self.comboBox_6.setCurrentText(json_data["parameter_setting_scope_resource_type"])
-            self.comboBox.setCurrentText(json_data["parameter_setting_scope_resource_address"])
-            self.comboBox_7.setCurrentText(json_data["parameter_setting_function_gen_resource_type"])
-            self.comboBox_2.setCurrentText(json_data["parameter_setting_function_gen_resource_address"])
             
     def update_GUI(self):
         # get GUI import
         # main page
+        self.parameter_main_load_impedance = self.comboBox_8.currentText()
+        self.parameter_main_gain = float(self.lineEdit_17.text())
         self.parameter_main_high_current = float(self.lineEdit_16.text())
         self.parameter_main_low_current = float(self.lineEdit.text())
-        self.parameter_main_gain = float(self.lineEdit_17.text())
         self.parameter_main_rise_time_nsec = float(self.lineEdit_6.text())
         self.parameter_main_fall_time_nsec = float(self.lineEdit_4.text())
         self.parameter_main_duty = float(self.lineEdit_5.text())
@@ -500,17 +502,19 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
         # ======
         self.parameter_main_duty_list = eval("["+str(self.lineEdit_13.text())+"]")
-
         self.parameter_main_freq_list = eval("["+str(self.lineEdit_15.text())+"]")
         self.parameter_main_ton_duration_time_sec = float(self.lineEdit_21.text())
         self.parameter_main_toff_duration_time_sec = float(self.lineEdit_22.text())
         self.parameter_main_roll_up_down_enable = self.checkBox_3.isChecked()
 
         # setting page
-        self.parameter_setting_function_gen_resource_type = self.comboBox_7.currentText()
-        self.parameter_setting_function_gen_resource_address = self.comboBox_2.currentText()
         self.parameter_setting_scope_resource_type = self.comboBox_6.currentText()
         self.parameter_setting_scope_resource_address = self.comboBox.currentText()
+        self.parameter_setting_scope_vout_channel = self.comboBox_3.currentText()
+        self.parameter_setting_scope_iout_channel = self.comboBox_4.currentText()
+        self.parameter_setting_function_gen_resource_type = self.comboBox_7.currentText()
+        self.parameter_setting_function_gen_resource_address = self.comboBox_2.currentText()
+        self.parameter_setting_function_gen_channel = self.comboBox_5.currentText()
         self.parameter_setting_scope_folder = self.lineEdit_26.text()
         self.parameter_setting_local_folder = self.lineEdit_27.text()
         self.parameter_setting_filename = self.lineEdit_7.text()
@@ -518,10 +522,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.parameter_setting_screenshot_save_pc = self.checkBox_5.isChecked()
         self.parameter_setting_filename_include_timestamp = self.checkBox_2.isChecked()
         self.parameter_setting_autocreate_3d_plot = self.checkBox_6.isChecked()
-        self.parameter_setting_scope_vout_channel = self.comboBox_3.currentText()
-        self.parameter_setting_scope_iout_channel = self.comboBox_4.currentText()
-        self.parameter_setting_function_gen_channel = self.comboBox_5.currentText()
-        
+         
     def update_scope_address(self):
         if self.comboBox.currentText() != "":
             try:

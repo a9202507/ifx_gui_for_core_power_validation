@@ -76,9 +76,9 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>320</y>
+        <y>350</y>
         <width>351</width>
-        <height>221</height>
+        <height>211</height>
        </rect>
       </property>
       <property name="title">
@@ -172,49 +172,92 @@
         <x>20</x>
         <y>10</y>
         <width>351</width>
-        <height>301</height>
+        <height>331</height>
        </rect>
       </property>
       <property name="title">
        <string>Function Generator settings</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>Gain (mV/A)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
+       <item row="3" column="1">
         <widget class="QLineEdit" name="lineEdit">
          <property name="text">
           <string>10</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_6">
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Rise time (ns)</string>
+          <string>Frequency (kHz)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_18">
+         <property name="text">
+          <string>High current (A)</string>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_17">
+        <widget class="QLineEdit" name="lineEdit_16">
+         <property name="text">
+          <string>20</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Fall time (ns)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Toggle</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Low current (A)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_25">
+         <property name="text">
+          <string>Load Imp. (Ohm)
+select or enter value</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLineEdit" name="lineEdit_8">
          <property name="text">
           <string>10</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit_4">
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="lineEdit_6">
          <property name="text">
-          <string>10</string>
+          <string>765</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Duty cycle (%)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
         <widget class="QGroupBox" name="groupBox_6">
          <property name="title">
           <string/>
@@ -237,74 +280,56 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Low current (A)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_16">
-         <property name="text">
-          <string>20</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
+       <item row="7" column="1">
         <widget class="QLineEdit" name="lineEdit_5">
          <property name="text">
           <string>9</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit_6">
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_6">
          <property name="text">
-          <string>765</string>
+          <string>Rise time (ns)</string>
          </property>
         </widget>
        </item>
        <item row="6" column="1">
-        <widget class="QLineEdit" name="lineEdit_8">
+        <widget class="QLineEdit" name="lineEdit_4">
          <property name="text">
           <string>10</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_18">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>High current (A)</string>
+          <string>Gain (mV/A)</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_7">
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEdit_17">
          <property name="text">
-          <string>Frequency (kHz)</string>
+          <string>10</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Duty cycle (%)</string>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="comboBox_8">
+         <property name="editable">
+          <bool>true</bool>
          </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Fall time (ns)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_12">
-         <property name="text">
-          <string>Toggle</string>
-         </property>
+         <item>
+          <property name="text">
+           <string>50</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HiZ</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -315,7 +340,7 @@
         <x>380</x>
         <y>20</y>
         <width>301</width>
-        <height>521</height>
+        <height>541</height>
        </rect>
       </property>
      </widget>
@@ -323,9 +348,9 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>553</y>
+        <y>573</y>
         <width>661</width>
-        <height>71</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="title">

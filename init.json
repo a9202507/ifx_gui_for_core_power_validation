@@ -1,7 +1,8 @@
 {
+    "parameter_main_load_impedance": "HiZ",
+    "parameter_main_gain": 5.0,
     "parameter_main_high_current": 30.0,
     "parameter_main_low_current": 10.0,
-    "parameter_main_gain": 5.0,
     "parameter_main_rise_time_nsec": 1200.0,
     "parameter_main_fall_time_nsec": 1200.0,
     "parameter_main_duty": 40.0,
@@ -29,16 +30,16 @@
     "parameter_main_roll_up_down_enable": false,
     "parameter_setting_scope_resource_type": "Tektronix MSO4x / MSO5x / MSO6x",
     "parameter_setting_scope_resource_address": "",
+    "parameter_setting_scope_vout_channel": "1",
+    "parameter_setting_scope_iout_channel": "2",
     "parameter_setting_function_gen_resource_type": "Tektronix AFG3000",
     "parameter_setting_function_gen_resource_address": "",
+    "parameter_setting_function_gen_channel": "1",
     "parameter_setting_scope_folder": "C:/Temp",
     "parameter_setting_local_folder": "./report",
     "parameter_setting_filename": "IFX_",
     "parameter_setting_screenshot_save_scope": false,
     "parameter_setting_screenshot_save_pc": true,
     "parameter_setting_filename_include_timestamp": true,
-    "parameter_setting_autocreate_3d_plot": true,
-    "parameter_setting_scope_vout_channel": "1",
-    "parameter_setting_scope_iout_channel": "2",
-    "parameter_setting_function_gen_channel": "1"
+    "parameter_setting_autocreate_3d_plot": true
 }
