@@ -1,5 +1,5 @@
 {
-    "parameter_main_load_impedance": "HiZ",
+    "parameter_main_load_impedance": "50",
     "parameter_main_gain": 5.0,
     "parameter_main_high_current": 30.0,
     "parameter_main_low_current": 10.0,
