@@ -1,4 +1,4 @@
-# Rev. 2024-03-08 for beta release
+# Rev. 2024-03-14 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
@@ -21,7 +21,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240308'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240314'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -178,6 +178,10 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.comboBox_7.currentIndexChanged.connect(self.update_function_gen_address)
         self.pushButton_9.clicked.connect(self.open_3d_plot)
         self.pushButton_10.clicked.connect(self.check_debug_mode)
+        self.lineEdit.editingFinished.connect(self.update_GUI)
+        self.lineEdit_16.editingFinished.connect(self.update_GUI)
+        self.lineEdit_6.editingFinished.connect(self.update_GUI)
+        self.lineEdit_4.editingFinished.connect(self.update_GUI)
 
         self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform(f"{self.parameter_setting_filename}test"))
         #self.pushButton_7.setEnabled(False)
@@ -215,7 +219,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.set_progress_bar(0)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-03-08"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-03-14"
 
         # set icon
         app_icon = QIcon()
@@ -358,8 +362,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         low_voltage_value = float(self.parameter_main_low_current) * float(self.parameter_main_gain) / 1000
         self.function_gen.set_voltage_high(str(high_voltage_value), self.parameter_setting_function_gen_channel)
         self.function_gen.set_voltage_low(str(low_voltage_value), self.parameter_setting_function_gen_channel)
-        self.function_gen.set_rise_time_ns(self.parameter_main_rise_time_nsec, self.parameter_setting_function_gen_channel)
-        self.function_gen.set_fall_time_ns(self.parameter_main_fall_time_nsec, self.parameter_setting_function_gen_channel)
+        self.function_gen.set_rise_time_ns(self.rise_time_nsec, self.parameter_setting_function_gen_channel)
+        self.function_gen.set_fall_time_ns(self.fall_time_nsec, self.parameter_setting_function_gen_channel)
         if on_off == True:
             self.function_gen.on(self.parameter_setting_function_gen_channel)
 
@@ -400,8 +404,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
                                "parameter_main_gain": self.parameter_main_gain,
                                "parameter_main_high_current": self.parameter_main_high_current,
                                "parameter_main_low_current": self.parameter_main_low_current,
-                               "parameter_main_rise_time_nsec": self.parameter_main_rise_time_nsec,
-                               "parameter_main_fall_time_nsec": self.parameter_main_fall_time_nsec,
+                               "parameter_main_slew_rate_rise": self.parameter_main_slew_rate_rise,
+                               "parameter_main_slew_rate_fall": self.parameter_main_slew_rate_fall,
                                "parameter_main_duty": self.parameter_main_duty,
                                "parameter_main_frequency": self.parameter_main_frequency,
                                # ===========================================================
@@ -465,8 +469,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             self.lineEdit_17.setText(str(json_data["parameter_main_gain"]))
             self.lineEdit_16.setText(str(json_data["parameter_main_high_current"]))
             self.lineEdit.setText(str(json_data["parameter_main_low_current"]))
-            self.lineEdit_6.setText(str(json_data["parameter_main_rise_time_nsec"]))
-            self.lineEdit_4.setText(str(json_data["parameter_main_fall_time_nsec"]))
+            self.lineEdit_6.setText(str(json_data["parameter_main_slew_rate_rise"]))
+            self.lineEdit_4.setText(str(json_data["parameter_main_slew_rate_fall"]))
             self.lineEdit_5.setText(str(json_data["parameter_main_duty"]))
             self.lineEdit_8.setText(str(json_data["parameter_main_frequency"]))
             # =============================
@@ -499,10 +503,11 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.parameter_main_gain = float(self.lineEdit_17.text())
         self.parameter_main_high_current = float(self.lineEdit_16.text())
         self.parameter_main_low_current = float(self.lineEdit.text())
-        self.parameter_main_rise_time_nsec = float(self.lineEdit_6.text())
-        self.parameter_main_fall_time_nsec = float(self.lineEdit_4.text())
+        self.parameter_main_slew_rate_rise = float(self.lineEdit_6.text())
+        self.parameter_main_slew_rate_fall = float(self.lineEdit_4.text())
         self.parameter_main_duty = float(self.lineEdit_5.text())
         self.parameter_main_frequency = float(self.lineEdit_8.text())
+        self.update_rise_and_fall_time()
 
         # ======
         self.parameter_main_duty_list = eval("["+str(self.lineEdit_13.text())+"]")
@@ -558,6 +563,28 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
     def set_horizontal_scale_in_scope(self, scale_value="1e-6"):
         self.scope.set_horizontal_scale(scale_value)
 
+    def update_rise_and_fall_time(self):
+        if self.parameter_main_high_current < self.parameter_main_low_current:
+            QMessageBox.about(self, "Error", "Low current needs to be set <= High current!")
+            self.lineEdit.setText(self.lineEdit_16.text())
+            self.parameter_main_high_current = float(self.lineEdit_16.text())
+            self.parameter_main_low_current = float(self.lineEdit.text())
+            return None
+        if self.parameter_main_slew_rate_rise <= 0:
+            QMessageBox.about(self, "Error", "Slew rate (rise) may not be <= 0!")
+            self.lineEdit_6.setText("50.0")
+            self.parameter_main_slew_rate_rise = float(self.lineEdit_6.text())
+            return None
+        if self.parameter_main_slew_rate_fall <= 0:
+            QMessageBox.about(self, "Error", "Slew rate (fall) may not be <= 0!")
+            self.lineEdit_4.setText("50.0")
+            self.parameter_main_slew_rate_fall = float(self.lineEdit_4.text())
+            return None
+        self.rise_time_nsec=round( (self.parameter_main_high_current - self.parameter_main_low_current) / self.parameter_main_slew_rate_rise *1000)
+        self.label_26.setText(f"Rise time: {self.rise_time_nsec} ns")
+        self.fall_time_nsec=round( (self.parameter_main_high_current - self.parameter_main_low_current) / self.parameter_main_slew_rate_fall *1000)
+        self.label_27.setText(f"Fall time: {self.fall_time_nsec} ns")
+    
     def clear_message_box(self):
         self.textEdit.clear()
 

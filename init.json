@@ -3,8 +3,8 @@
     "parameter_main_gain": 5.0,
     "parameter_main_high_current": 30.0,
     "parameter_main_low_current": 10.0,
-    "parameter_main_rise_time_nsec": 1200.0,
-    "parameter_main_fall_time_nsec": 1200.0,
+    "parameter_main_slew_rate_rise": 50.0,
+    "parameter_main_slew_rate_fall": 50.0,
     "parameter_main_duty": 40.0,
     "parameter_main_frequency": 1.0,
     "parameter_main_duty_list": [
