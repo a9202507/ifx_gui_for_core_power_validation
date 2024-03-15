@@ -234,6 +234,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.set_components_order()
 
     def set_components_order(self):
+        pass
+    '''
         self.setTabOrder(self.lineEdit_16, self.lineEdit)
         self.setTabOrder(self.lineEdit, self.lineEdit_17)
         self.setTabOrder(self.lineEdit_17, self.lineEdit_6)
@@ -247,7 +249,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.setTabOrder(self.lineEdit_15, self.lineEdit_21)
         self.setTabOrder(self.lineEdit_21, self.lineEdit_22)
         #self.setTabOrder(self.lineEdit_22, self.lineEdit_16)
-
+    '''
     def set_window_title_with_debug_mode(self):
         if self.debug == True:
             self.setWindowTitle(self.Window_title+"_Debug mode")
