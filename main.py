@@ -1,9 +1,9 @@
-# Rev. 2024-03-15 for beta release
+# Rev. 2024-03-19 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
 import sys
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import QThread, Signal, Slot,Qt,QEvent
 from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
 from PySide6.QtGui import QIcon, QPixmap
 import PySide6_Core_Power_Validation_ui
@@ -218,8 +218,16 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.function_gen_3d.DB410_open_3d_plot.connect(lambda filename: self.open_3d_plot(filename, autosave=True))
         self.set_progress_bar(0)
 
+        # slew rate and rise time/fall time calculation
+        self.lineEdit_16.editingFinished.connect(self.update_GUI)
+        self.lineEdit.editingFinished.connect(self.update_GUI)
+        self.lineEdit_6.editingFinished.connect(self.update_rise_time)
+        self.lineEdit_9.editingFinished.connect(self.update_rise_slew_rate)
+        self.lineEdit_4.editingFinished.connect(self.update_fall_time)
+        self.lineEdit_10.editingFinished.connect(self.update_fall_slew_rate)
+
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-03-15"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-03-19"
 
         # set icon
         app_icon = QIcon()
@@ -232,6 +240,45 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.set_window_title_with_debug_mode()
 
         self.set_components_order()
+    @Slot()
+    def update_rise_time(self):
+        high_current=float(self.lineEdit_16.text())
+        low_current=float(self.lineEdit.text())
+        current_step=high_current-low_current
+        value=float(self.lineEdit_6.text())
+        rise_time=(current_step/value)*1000
+        self.lineEdit_9.setText(str(rise_time))
+        #self.push_msg_to_GUI(f"1 rise_time={rise_time},slew_rate={value}")
+
+    @Slot()
+    def update_rise_slew_rate(self):
+        high_current=float(self.lineEdit_16.text())
+        low_current=float(self.lineEdit.text())
+        current_step=high_current-low_current
+        value=float(self.lineEdit_9.text())
+        slew_rate=(current_step/value)*1000
+        self.lineEdit_6.setText(str(slew_rate))
+        #self.push_msg_to_GUI(f"2 rise_time={value} slew_ret={slew_rate},")
+
+    @Slot()
+    def update_fall_time(self):
+        high_current=float(self.lineEdit_16.text())
+        low_current=float(self.lineEdit.text())
+        current_step=high_current-low_current
+        value=float(self.lineEdit_4.text())
+        rise_time=(current_step/value)*1000
+        self.lineEdit_10.setText(str(rise_time))
+        #self.push_msg_to_GUI(f"1 rise_time={rise_time},slew_rate={value}")
+
+    @Slot()
+    def update_fall_slew_rate(self):
+        high_current=float(self.lineEdit_16.text())
+        low_current=float(self.lineEdit.text())
+        current_step=high_current-low_current
+        value=float(self.lineEdit_10.text())
+        slew_rate=(current_step/value)*1000
+        self.lineEdit_4.setText(str(slew_rate))
+        #self.push_msg_to_GUI(f"2 rise_time={value} slew_ret={slew_rate},")
 
     def set_components_order(self):
         pass
@@ -582,10 +629,17 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             self.lineEdit_4.setText("50.0")
             self.parameter_main_slew_rate_fall = float(self.lineEdit_4.text())
             return None
-        self.rise_time_nsec=round( (self.parameter_main_high_current - self.parameter_main_low_current) / self.parameter_main_slew_rate_rise *1000)
-        self.label_26.setText(f"Rise time: {self.rise_time_nsec} ns")
-        self.fall_time_nsec=round( (self.parameter_main_high_current - self.parameter_main_low_current) / self.parameter_main_slew_rate_fall *1000)
-        self.label_27.setText(f"Fall time: {self.fall_time_nsec} ns")
+        self.update_rise_time()
+        self.update_fall_time()
+        self.update_rise_slew_rate()
+        self.update_fall_slew_rate()
+        
+        self.rise_time_nsec=float(self.lineEdit_9.text())
+        self.fall_time_nsec=float(self.lineEdit_10.text())
+        #self.label_26.setText(f"Rise time: {self.rise_time_nsec} ns")
+        #self.fall_time_nsec=round( (self.parameter_main_high_current - self.parameter_main_low_current) / self.parameter_main_slew_rate_fall *1000)
+        #self.label_27.setText(f"Fall time: {self.fall_time_nsec} ns")
+        
     
     def clear_message_box(self):
         self.textEdit.clear()
