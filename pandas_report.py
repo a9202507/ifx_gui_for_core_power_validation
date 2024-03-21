@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def dict_to_df(dict):
@@ -38,6 +39,11 @@ def plt_vmax(filename, autosave=False):
     ax.zaxis.set_major_locator(plt.LinearLocator(10))
     ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
 
+    # add notice for Vmax point
+    highest_point_index = np.argmax(Z)
+    highest_point = (X[highest_point_index], Y[highest_point_index], Z[highest_point_index])
+    ax.text(X[highest_point_index], Y[highest_point_index], Z[highest_point_index], f'Highest: {highest_point[0]}Khz,{highest_point[1]}Duty,{highest_point[2]} Vol', color='red')
+
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical', pad=0.2)
 
@@ -52,7 +58,7 @@ def plt_vmax(filename, autosave=False):
     surf = ax.plot_trisurf(X, Y, Z, cmap=plt.cm.coolwarm,
                            linewidth=0, antialiased=False)
 
-    # Customize the z axis.
+    # Customize the z axis.    
     #ax.set_zlim(1.75, 1.85)
     ax.set_xlabel("Frequency")
     ax.set_ylabel("Duty-Cycle")
@@ -60,6 +66,12 @@ def plt_vmax(filename, autosave=False):
 
     ax.zaxis.set_major_locator(plt.LinearLocator(10))
     ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
+
+
+    # add notice for Vmin point
+    lowest_point_index = np.argmin(Z)
+    lowest_point = (X[lowest_point_index], Y[lowest_point_index], Z[lowest_point_index])
+    ax.text(X[lowest_point_index], Y[lowest_point_index], Z[lowest_point_index], f'Lowest: {lowest_point[0]}Khz,{lowest_point[1]}Duty,{lowest_point[2]} Vol', color='red',zorder=1)
 
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical', pad=0.2)
