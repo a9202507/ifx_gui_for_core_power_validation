@@ -13,6 +13,8 @@ import visa_function as myvisa
 import pandas as pd
 import DB410_3d_function
 import time
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import pandas_report
 import datetime
 
