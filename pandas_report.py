@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 def dict_to_df(dict):
@@ -14,72 +16,37 @@ def plt_vmax(filename, autosave=False):
 
     df = pd.read_excel(filename, sheet_name="Sheet1")
 
-    matplotlib.use('pdf') # needed for pyinstaller to collect the pdf backend
-    matplotlib.use('qtagg') # needed for pyinstaller to collect the qtagg backend
-    plt.rcParams.update({'font.size': 8})
-    plt.ion()
-    fig = plt.figure(figsize=(6.5,10))
+    # Get the unique values and counts
+    unique_freqs = df['Freq'].unique()
+    unique_duties = df['duty'].unique()
+    n_freqs = len(unique_freqs)
+    n_duties = len(unique_duties)
 
-    #ax = fig.gca(projection='3d')
-    ax = fig.add_subplot(2, 1, 1, projection='3d')
-    # Make data.
-    X = pd.Series(df['Freq'])
-    Y = pd.Series(df['duty'])
-    Z = pd.Series(df['Vmax'])
-    # Plot the surface.
-    surf = ax.plot_trisurf(X, Y, Z, cmap=plt.cm.coolwarm,
-                           linewidth=0, antialiased=False)
+    # Reshape Vmax and Vmin into 2D arrays
+    vmax_2d = df['Vmax'].values.reshape(n_freqs, n_duties)
+    vmin_2d = df['Vmin'].values.reshape(n_freqs, n_duties)
 
-    # Customize the z axis.
-    #ax.set_zlim(1.75, 1.85)
-    ax.set_xlabel("Frequency")
-    ax.set_ylabel("Duty-Cycle")
-    ax.set_zlabel("Vmax", rotation=90)
+    # Create a figure with two 3D surface plots side by side
+    fig = make_subplots(rows=1, cols=2, specs=[[{'type': 'surface'}, {'type': 'surface'}]])
 
-    ax.zaxis.set_major_locator(plt.LinearLocator(10))
-    ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
+    # Add the first surface plot (freq/vmax/duty)
+    fig.add_trace(go.Surface(z=vmax_2d, x=unique_freqs, y=unique_duties), row=1, col=1)
+    fig.update_scenes(xaxis_title='Frequency', yaxis_title='Duty Cycle', zaxis_title='Vmax', row=1, col=1)
 
-    # add notice for Vmax point
-    highest_point_index = np.argmax(Z)
-    highest_point = (X[highest_point_index], Y[highest_point_index], Z[highest_point_index])
-    ax.text(X[highest_point_index], Y[highest_point_index], Z[highest_point_index], f'Highest: {highest_point[0]}Khz,{highest_point[1]}Duty,{highest_point[2]} Vol', color='red')
+    # Add the second surface plot (freq/vmin/duty)
+    fig.add_trace(go.Surface(z=vmin_2d, x=unique_freqs, y=unique_duties), row=1, col=2)
+    fig.update_scenes(xaxis_title='Frequency', yaxis_title='Duty Cycle', zaxis_title='Vmin', row=1, col=2)
 
-    # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical', pad=0.2)
+    # Customize plot layout
+    fig.update_layout(
+        title='Interactive 3D Surface Plots',
+        margin=dict(l=65, r=50, b=65, t=90),
+        scene_camera=dict(eye=dict(x=1.5, y=1.5, z=1.5))  # Adjust the camera view
+    )
 
-    plt.title("Vmax vs Frequency/Duty-Cycle")
+    # Display the plot
+    fig.show()
 
-    ax = fig.add_subplot(2, 1, 2, projection='3d')
-    # Make data.
-    X = pd.Series(df['Freq'])
-    Y = pd.Series(df['duty'])
-    Z = pd.Series(df['Vmin'])
-    # Plot the surface.
-    surf = ax.plot_trisurf(X, Y, Z, cmap=plt.cm.coolwarm,
-                           linewidth=0, antialiased=False)
-
-    # Customize the z axis.    
-    #ax.set_zlim(1.75, 1.85)
-    ax.set_xlabel("Frequency")
-    ax.set_ylabel("Duty-Cycle")
-    ax.set_zlabel("Vmin", rotation=90)
-
-    ax.zaxis.set_major_locator(plt.LinearLocator(10))
-    ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
-
-
-    # add notice for Vmin point
-    lowest_point_index = np.argmin(Z)
-    lowest_point = (X[lowest_point_index], Y[lowest_point_index], Z[lowest_point_index])
-    ax.text(X[lowest_point_index], Y[lowest_point_index], Z[lowest_point_index], f'Lowest: {lowest_point[0]}Khz,{lowest_point[1]}Duty,{lowest_point[2]} Vol', color='red',zorder=1)
-
-    # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5, orientation='vertical', pad=0.2)
-    plt.title("Vmin vs Frequency/Duty-Cycle")
-
-    if autosave == True:
-        plt.savefig(filename.replace(".xlsx", ".pdf").replace(".xls", ".pdf"), bbox_inches='tight')
-    plt.show()
 
 
 def plt_vmin(filename):
