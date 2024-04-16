@@ -23,7 +23,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240323'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240411'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -167,7 +167,7 @@ class DB410_3d_thread(QThread):
 class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
     def __init__(self, parent=None, debug=False):
         super(MyMainWindow, self).__init__(parent)
-        self.setFixedSize(730, 850)
+        self.setFixedSize(730, 700)
         self.setupUi(self)
 
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
@@ -187,6 +187,10 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
         self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform(f"{self.parameter_setting_filename}test"))
         #self.pushButton_7.setEnabled(False)
+
+        # generate 1K to 1000K step 2K frequency list for user.
+        self.pushButton_12.clicked.connect(self.update_frequency_list_on_gui)
+
 
         self.actionLoad_config.triggered.connect(self.load_config)
         self.actionSave_config.triggered.connect(self.save_config)
@@ -229,7 +233,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_10.editingFinished.connect(self.update_fall_slew_rate)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-03-23"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-04-11"
 
         # set icon
         app_icon = QIcon()
@@ -625,7 +629,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             QMessageBox.about(self, "Error", "Slew rate (rise) may not be <= 0!")
             self.lineEdit_6.setText("50.0")
             self.parameter_main_slew_rate_rise = float(self.lineEdit_6.text())
-            return None
+            return None        
         if self.parameter_main_slew_rate_fall <= 0:
             QMessageBox.about(self, "Error", "Slew rate (fall) may not be <= 0!")
             self.lineEdit_4.setText("50.0")
@@ -653,6 +657,20 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
     def about_the_gui(self):
         QMessageBox.about(self, "About the GUI", 'Powered by PySide6, <a href=https://github.com/a9202507/ifx_gui_for_core_power_validation>Github</a>')
+
+    def update_frequency_list_on_gui(self):
+        startfreq=int(self.lineEdit_11.text())
+        endfreq=int(self.lineEdit_12.text())
+        stepfreq=int(self.lineEdit_14.text())
+        frequency_list=[]
+        for freq in range(startfreq,endfreq+1,stepfreq):
+            frequency_list.append(freq)
+        string_list = [str(element) for element in frequency_list]
+        delimiter = ", "
+        result_string = delimiter.join(string_list)
+        
+        
+        self.lineEdit_15.setText(result_string)
 
 
 if __name__ == "__main__":

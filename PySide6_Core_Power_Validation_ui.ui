@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>725</width>
-    <height>868</height>
+    <width>737</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,11 +62,11 @@
       <x>10</x>
       <y>90</y>
       <width>701</width>
-      <height>711</height>
+      <height>571</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -75,73 +75,96 @@
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>330</y>
-        <width>381</width>
-        <height>231</height>
+        <x>380</x>
+        <y>10</y>
+        <width>301</width>
+        <height>311</height>
        </rect>
       </property>
       <property name="title">
        <string>Transient-3D</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_16">
-         <property name="text">
-          <string>T_on duration time (s)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_13">
-         <property name="text">
-          <string>10,20,30</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_17">
-         <property name="text">
-          <string>T_off duration time (s)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_15">
-         <property name="text">
-          <string>Frequency list (kHz)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
+       <item row="8" column="1">
         <widget class="QLineEdit" name="lineEdit_21">
          <property name="text">
           <string>1</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_15">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_28">
          <property name="text">
-          <string>10,20,30,100,200,300</string>
+          <string>StarFreq(Khz)</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_16">
+         <property name="text">
+          <string>T_on duration time (s)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="lineEdit_14">
+         <property name="text">
+          <string>2</string>
+         </property>
+         <property name="maxLength">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="lineEdit_11">
+         <property name="text">
+          <string>1</string>
+         </property>
+         <property name="maxLength">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_29">
+         <property name="text">
+          <string>EndFreq(Khz)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QPushButton" name="pushButton_12">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Apply to Freqlist</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
         <widget class="QLabel" name="label_13">
          <property name="text">
           <string>Duty cycle list (%)</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineEdit_22">
+       <item row="7" column="1">
+        <widget class="QLineEdit" name="lineEdit_13">
          <property name="text">
-          <string>1</string>
+          <string>10,20,30</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>T_off duration time (s)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
         <widget class="QCheckBox" name="checkBox_3">
          <property name="enabled">
           <bool>false</bool>
@@ -151,14 +174,52 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_30">
+         <property name="text">
+          <string>StepFreq(Khz)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="lineEdit_12">
+         <property name="text">
+          <string>1000</string>
+         </property>
+         <property name="maxLength">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLineEdit" name="lineEdit_22">
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_15">
+         <property name="text">
+          <string>Frequency list (kHz)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="lineEdit_15">
+         <property name="text">
+          <string>10,20,30,100,200,300</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QProgressBar" name="progressBar">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>640</y>
-        <width>661</width>
+        <y>500</y>
+        <width>671</width>
         <height>23</height>
        </rect>
       </property>
@@ -171,7 +232,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>381</width>
+        <width>351</width>
         <height>311</height>
        </rect>
       </property>
@@ -382,58 +443,13 @@ select or enter value</string>
        </item>
       </layout>
      </widget>
-     <widget class="QGroupBox" name="groupBox_7">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>573</y>
-        <width>661</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="title">
-       <string/>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="pushButton_5">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Clear log</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_4">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Abort 3D test</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="pushButton_8">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Start 3D  test</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QGroupBox" name="groupBox_11">
       <property name="geometry">
        <rect>
-        <x>410</x>
-        <y>10</y>
-        <width>261</width>
-        <height>551</height>
+        <x>10</x>
+        <y>330</y>
+        <width>351</width>
+        <height>161</height>
        </rect>
       </property>
       <property name="title">
@@ -444,9 +460,70 @@ select or enter value</string>
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>241</width>
-         <height>521</height>
+         <width>331</width>
+         <height>121</height>
         </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_7">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>330</y>
+        <width>301</width>
+        <height>161</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Go</string>
+      </property>
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>150</x>
+         <y>20</y>
+         <width>141</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Abort 3D test</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_8">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>281</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Start 3D  test</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_5">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>131</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Clear log</string>
        </property>
       </widget>
      </widget>
@@ -959,8 +1036,8 @@ select or enter value</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>725</width>
-     <height>22</height>
+     <width>737</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuabout">
@@ -1005,15 +1082,19 @@ select or enter value</string>
   <tabstop>lineEdit_8</tabstop>
   <tabstop>radioButton_2</tabstop>
   <tabstop>radioButton</tabstop>
-  <tabstop>lineEdit_13</tabstop>
+  <tabstop>textEdit</tabstop>
+  <tabstop>lineEdit_11</tabstop>
+  <tabstop>lineEdit_12</tabstop>
+  <tabstop>lineEdit_14</tabstop>
+  <tabstop>pushButton_12</tabstop>
   <tabstop>lineEdit_15</tabstop>
+  <tabstop>lineEdit_13</tabstop>
   <tabstop>lineEdit_21</tabstop>
   <tabstop>lineEdit_22</tabstop>
   <tabstop>checkBox_3</tabstop>
   <tabstop>pushButton_5</tabstop>
   <tabstop>pushButton_4</tabstop>
   <tabstop>pushButton_8</tabstop>
-  <tabstop>textEdit</tabstop>
   <tabstop>comboBox_6</tabstop>
   <tabstop>comboBox</tabstop>
   <tabstop>lineEdit_28</tabstop>
