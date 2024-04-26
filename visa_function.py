@@ -50,7 +50,7 @@ class Tektronix_AFG3000(visa_equipment):
         self.inst.write(f"OUTPut{channel}:STATe ON")
 
     def off(self, channel="1"):
-        self.inst.write(f"OUTPut{channel}:STATe off")
+        self.inst.write(f"OUTPut{channel}:STATe OFF")
 
     def set_freq(self, freq_khz, channel="1"):
         self.inst.write(f"SOURce{channel}:FREQuency:FIXed {freq_khz}kHz")
@@ -133,6 +133,56 @@ class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
             self.inst.write(f"C{channel}:OUTPut LOAD,HZ")
         else:
             self.inst.write(f"C{channel}:OUTPut LOAD,{impedance_value}")
+
+    def info(self):
+        return 0
+
+
+
+class Rigol_DG1000Z(visa_equipment):
+    def __init__(self, visa_resource_name):
+        visa_equipment.__init__(self, visa_resource_name)
+
+    waveform_shape_dict = {"pulse": "PULSe",
+                           "sine": "SINusoid",
+                           "square": "SQUare",
+                           "dc": "DC"}
+
+    def on(self, channel="1"):
+        self.inst.write(f":OUTPut{channel}:STATe ON")
+
+    def off(self, channel="1"):
+        self.inst.write(f":OUTPut{channel}:STATe OFF")
+
+    def set_freq(self, freq_khz, channel="1"):
+        self.inst.write(f":SOURce{channel}:FREQuency:FIXed {float(freq_khz)*1000}")
+
+    def set_duty(self, duty, channel="1"):
+        self.inst.write(f":SOURce{channel}:PULSe:DCYCLe {duty}")
+
+    def set_rise_time_ns(self, rise_time, channel="1"):
+        self.inst.write(f":SOURce{channel}:PULSe:TRANsition:LEADing {float(rise_time)/1000000000}")
+
+    def set_fall_time_ns(self, fall_time, channel="1"):
+        self.inst.write(f":SOURce{channel}:PULSe:TRANsition:TRAiling {float(fall_time)/1000000000}")
+
+    def set_waveform_shape(self, shape="pulse", channel="1"):
+        self.inst.write(f":SOURce{channel}:FUNCtion:SHAPe {self.waveform_shape_dict[shape]}")
+
+    def set_voltage_high(self, voltage=0, channel="1"):
+        self.inst.write(f":SOURce{channel}:VOLTage:HIGH {voltage}")
+
+    def set_voltage_low(self, voltage=0, channel="1"):
+        self.inst.write(f":SOURce{channel}:VOLTage:LOW {voltage}")
+
+    def get_rise_time_ns(self, channel="1"):
+        return self.inst.query(f":SOURce{channel}:PULSe:TRANsition:LEADing?")
+    
+    def set_load_impedance(self,impedance_value="HiZ", channel="1"):
+        if impedance_value=="HiZ":
+            self.inst.write(f":OUTPut{channel}:IMPedance INFinity")
+        else:
+            self.inst.write(f":OUTPut{channel}:IMPedance {impedance_value}")
 
     def info(self):
         return 0
@@ -549,6 +599,7 @@ scope_types = {        "Tektronix MSO4x / MSO5x / MSO6x": Tektronix_MSO4x_MSO5x_
                        "Siglent SDS1000X-E / SDS2000X-E": Siglent_SDS1000XE_SDS2000XE}
 function_gen_types = { "Tektronix AFG3000": Tektronix_AFG3000,
                        "Siglent SDG1000X / SDG2000X / SDG6000X": Siglent_SDG1000X_SDG2000X_SDG6000X,
+                       "Rigol DG1000Z Series": Rigol_DG1000Z,
                        "Keysight 332x0A": Keysight_332x0A}
 
 

@@ -1,4 +1,4 @@
-# Rev. 2024-03-23 for beta release
+# Rev. 2024-04-26 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
@@ -23,7 +23,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240411'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240426'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -233,7 +233,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_10.editingFinished.connect(self.update_fall_slew_rate)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-04-11"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-04-26"
 
         # set icon
         app_icon = QIcon()
