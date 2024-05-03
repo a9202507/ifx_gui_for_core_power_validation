@@ -1,6 +1,4 @@
 import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -47,36 +45,6 @@ def plt_vmax(filename, autosave=False):
     # Display the plot
     fig.show()
 
-
-
-def plt_vmin(filename):
-
-    df = pd.read_excel(filename, sheet_name="Sheet1")
-
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-
-    # Make data.
-    X = pd.Series(df['Freq'])
-    Y = pd.Series(df['duty'])
-    Z = pd.Series(df['Vmin'])
-    # Plot the surface.
-    surf = ax.plot_trisurf(X, Y, Z, cmap=plt.cm.coolwarm,
-                           linewidth=0, antialiased=False)
-
-    # Customize the z axis.
-    #ax.set_zlim(1.75, 1.85)
-    ax.set_xlabel("Freq")
-    ax.set_ylabel("duty")
-    ax.set_zlabel("Vmin")
-
-    ax.zaxis.set_major_locator(plt.LinearLocator(10))
-    ax.zaxis.set_major_formatter(plt.FormatStrFormatter('%.02f'))
-
-    # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-
-    plt.show()
 
 
 if __name__ == "__main__":
