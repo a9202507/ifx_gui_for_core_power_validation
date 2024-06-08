@@ -233,12 +233,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_10.editingFinished.connect(self.update_fall_slew_rate)
 
         # set windowTitle
-<<<<<<< HEAD
-
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-04-26"
-=======
         self.Window_title = "Infineon GUI for core power validation, Rev. 2024-05-13"
->>>>>>> bf0ecbe48f13cf890cff579e02554cf1d9eeec51
 
         # set icon
         app_icon = QIcon()
