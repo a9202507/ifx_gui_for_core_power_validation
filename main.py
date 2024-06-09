@@ -253,7 +253,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
                                      QMessageBox.Yes | QMessageBox.No)
         
         if reply == QMessageBox.Yes:
-            # 執行其他操作...
+            # do something before close GUI
             print("turn off afg")
             event.accept()
         else:
