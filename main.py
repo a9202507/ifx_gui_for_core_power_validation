@@ -1,4 +1,4 @@
-# Rev. 2024-05-13 for beta release
+# Rev. 2024-06-13 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
@@ -23,7 +23,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240513'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240613'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -40,7 +40,7 @@ class DB410_3d_thread(QThread):
         # self.DB410_msg = Signal(str)
 
     def __del__(self):
-        self.wait()
+        self.wait()    
 
     def run(self):
         self.DB410_msg.emit("== start to run 3D test==")
@@ -233,7 +233,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_10.editingFinished.connect(self.update_fall_slew_rate)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-05-13"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-06-13"
 
         # set icon
         app_icon = QIcon()
@@ -246,6 +246,18 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.set_window_title_with_debug_mode()
 
         self.set_components_order()
+
+    def closeEvent(self, event):
+        reply = QMessageBox.question(self, 'Confirmation', 
+                                     'Are you sure you want to quit?',
+                                     QMessageBox.Yes | QMessageBox.No)
+        
+        if reply == QMessageBox.Yes:
+            # 執行其他操作...
+            print("turn off afg")
+            event.accept()
+        else:
+            event.ignore()
     @Slot()
     def update_rise_time(self):
         high_current=float(self.lineEdit_16.text())
@@ -386,7 +398,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             filename = self.filenames[0]
         if self.debug == True:
             self.push_msg_to_GUI(f"opening 3D plot {filename}")
-        pandas_report.plt_vmax(filename, autosave)
+        pandas_report.plt_3d(filename, autosave)
 
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
@@ -455,7 +467,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
     def save_config(self):
         self.update_GUI()
-        self.parameter_dict = {"parameter_main_load_impedance": self.parameter_main_load_impedance,
+        self.parameter_dict = {"GUI version":myappid,
+                                "parameter_main_load_impedance": self.parameter_main_load_impedance,
                                "parameter_main_gain": self.parameter_main_gain,
                                "parameter_main_high_current": self.parameter_main_high_current,
                                "parameter_main_low_current": self.parameter_main_low_current,
