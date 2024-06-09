@@ -147,7 +147,9 @@ class DB410_3d_thread(QThread):
             timestamp_str = ""
         filename = f"{myWin.parameter_setting_local_folder}/{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report{timestamp_str}.xlsx"
         try:
-            df.to_excel(filename)
+            df.to_excel(filename,sheet_name="ROW") # save to ROW sheet without sort
+            df.sort_values(by='Vmax',ascending=False).to_excel(filename,sheet_name="Vmax") # sort by Vmax and save to Vmax sheet
+            df.sort_values(by="Vmin").to_excel(filename,sheet_name="Vmin") # sort by Vmin and save to Vmin sheet.
             if myWin.parameter_setting_autocreate_3d_plot == True:
                 self.DB410_open_3d_plot.emit(filename)
         except:
