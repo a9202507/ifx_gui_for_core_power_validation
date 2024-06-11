@@ -148,7 +148,6 @@ class DB410_3d_thread(QThread):
         filename = f"{myWin.parameter_setting_local_folder}/{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report{timestamp_str}.xlsx"
         try:
             with pd.ExcelWriter(filename, mode="w") as writer:
-                print("to_excel")
                 df.to_excel(writer,sheet_name="row")
                 df.sort_values(by='Vmax',ascending=False).to_excel(writer, sheet_name="Vmax")
                 df.sort_values(by='Vmin').to_excel(writer, sheet_name="Vmin")
@@ -260,8 +259,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
                                      QMessageBox.Yes | QMessageBox.No)
         
         if reply == QMessageBox.Yes:
-            # do something before close GUI
-            print("turn off afg")
+            # turn off AFG before close GUI.
+            self.update_GUI_then_send_to_function_gen(function_output_enable=False)
             event.accept()
         else:
             event.ignore()
