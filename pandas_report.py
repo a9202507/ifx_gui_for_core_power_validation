@@ -46,9 +46,9 @@ def plt_vmax(filename, autosave=False):
     fig.show()
 
 
-def plt_3d(filename, autosave=False):
+def plt_3d(filename, autosave=False,sheet_name="row"):
     # Load the data
-    df = pd.read_excel(filename, sheet_name="Sheet1")
+    df = pd.read_excel(filename,sheet_name=sheet_name)
 
     # Assume there are corresponding 'Vmax' and 'Vmin' values for each pair of 'Freq' and 'duty'
     # Transform the data into a 2D matrix form, assuming df has been gridified by (Freq, duty)

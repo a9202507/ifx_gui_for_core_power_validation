@@ -147,11 +147,16 @@ class DB410_3d_thread(QThread):
             timestamp_str = ""
         filename = f"{myWin.parameter_setting_local_folder}/{myWin.parameter_setting_filename}{myWin.parameter_main_high_current}A_{myWin.parameter_main_low_current}A_report{timestamp_str}.xlsx"
         try:
-            df.to_excel(filename,sheet_name="ROW") # save to ROW sheet without sort
-            df.sort_values(by='Vmax',ascending=False).to_excel(filename,sheet_name="Vmax") # sort by Vmax and save to Vmax sheet
-            df.sort_values(by="Vmin").to_excel(filename,sheet_name="Vmin") # sort by Vmin and save to Vmin sheet.
-            if myWin.parameter_setting_autocreate_3d_plot == True:
-                self.DB410_open_3d_plot.emit(filename)
+            with pd.ExcelWriter(filename, mode="w") as writer:
+                print("to_excel")
+                df.to_excel(writer,sheet_name="row")
+                df.sort_values(by='Vmax',ascending=False).to_excel(writer, sheet_name="Vmax")
+                df.sort_values(by='Vmin').to_excel(writer, sheet_name="Vmin")
+                #df.to_excel(filename,sheet_name="ROW") # save to ROW sheet without sort
+                #df.sort_values(by='Vmax',ascending=False).to_excel(filename,sheet_name="Vmax") # sort by Vmax and save to Vmax sheet
+                #df.sort_values(by="Vmin").to_excel(filename,sheet_name="Vmin") # sort by Vmin and save to Vmin sheet.
+                if myWin.parameter_setting_autocreate_3d_plot == True:
+                    self.DB410_open_3d_plot.emit(filename)
         except:
             myWin.push_msg_to_GUI("Failed to save report to PC")
         self.DB410_msg.emit("==3D test finish==")
@@ -400,7 +405,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             filename = self.filenames[0]
         if self.debug == True:
             self.push_msg_to_GUI(f"opening 3D plot {filename}")
-        pandas_report.plt_3d(filename, autosave)
+        pandas_report.plt_3d(filename,autosave,sheet_name="row")
 
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
