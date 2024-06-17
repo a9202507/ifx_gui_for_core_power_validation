@@ -1,11 +1,11 @@
-# Rev. 2024-06-13 for beta release
+# Rev. 2024-06-21 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
 import sys
 from PySide6.QtCore import QThread, Signal, Slot,Qt,QEvent
 from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtGui import QIcon, QPixmap,QPalette, QColor
 import PySide6_Core_Power_Validation_ui
 import json
 import os
@@ -17,13 +17,14 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas_report
 import datetime
+import webbrowser
 
 basedir = os.path.dirname(__file__)
 
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240613'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240621'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -185,11 +186,20 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.comboBox_2.currentIndexChanged.connect(self.update_function_gen_address)
         self.comboBox_7.currentIndexChanged.connect(self.update_function_gen_address)
         self.pushButton_9.clicked.connect(self.open_3d_plot)
-        self.pushButton_10.clicked.connect(self.check_debug_mode)
+        self.pushButton_10.clicked.connect(self.set_debug_mode_enable)
         self.lineEdit.editingFinished.connect(self.update_GUI)
         self.lineEdit_16.editingFinished.connect(self.update_GUI)
         self.lineEdit_6.editingFinished.connect(self.update_GUI)
         self.lineEdit_4.editingFinished.connect(self.update_GUI)
+
+        # auto on/off function generator when paramters chagned.
+        self.lineEdit_16.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
+        self.lineEdit_17.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
+        self.lineEdit.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
+        self.lineEdit_6.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
+        self.lineEdit_4.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
+        self.lineEdit_5.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
+        self.lineEdit_8.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
 
         self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform(f"{self.parameter_setting_filename}test"))
         #self.pushButton_7.setEnabled(False)
@@ -239,7 +249,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_10.editingFinished.connect(self.update_fall_slew_rate)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-06-13"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-06-21"
 
         # set icon
         app_icon = QIcon()
@@ -249,9 +259,17 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         # set IFX logo
         self.label_10.setPixmap(QPixmap(f"{basedir}/resource/IFX_LOGO_RGB.jpg"))
 
+        # click logo then open brower.
+        self.label_10.setCursor(Qt.PointingHandCursor)
+        self.label_10.mousePressEvent = self.label_click_event
+
         self.set_window_title_with_debug_mode()
 
         self.set_components_order()
+
+    def label_click_event(self, event):
+        if event.button() == Qt.LeftButton:
+            webbrowser.open('https://softwaretools.infineon.com/tools/com.ifx.tb.tool.infineonguiforcorepowervalidation')
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Confirmation', 
@@ -321,16 +339,35 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.setTabOrder(self.lineEdit_21, self.lineEdit_22)
         #self.setTabOrder(self.lineEdit_22, self.lineEdit_16)
     '''
+    
     def set_window_title_with_debug_mode(self):
         if self.debug == True:
             self.setWindowTitle(self.Window_title+"_Debug mode")
+            # Create a QPalette object
+            palette = self.palette()
+            
+            # Set window background color to light blue
+            palette.setColor(QPalette.Window, QColor(173, 216, 230))
+            
+            # Apply the modified palette to the window
+            self.setPalette(palette)
         else:
             self.setWindowTitle(self.Window_title)
+
+            # Create a QPalette object
+            palette = self.palette()
+            
+            # Set window background color to light gray
+            palette.setColor(QPalette.Window, QColor(240, 240, 240))
+            
+            # Apply the modified palette to the window
+            self.setPalette(palette)
+
 
     def check_debug_mode(self):
         self.update_GUI()
         self.init_scope()
-        self.set_window_title_with_debug_mode()
+        #self.set_window_title_with_debug_mode()
 
         if self.lineEdit_7.text() == "53523962":
             self.set_debug_mode_enable(True)
@@ -339,8 +376,10 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             self.set_debug_mode_enable(False)
         #self.pushButton_7.setEnabled(True)
 
-    def set_debug_mode_enable(self, mode=False):
-        self.debug = mode
+    def set_debug_mode_enable(self):
+        self.debug = not self.debug
+        #self.set_window_title_with_debug_mode()
+        self.push_msg_to_GUI(f"debug mode is {self.debug}")
         self.set_window_title_with_debug_mode()
 
 
@@ -471,6 +510,15 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         else:
             pass
 
+    def auto_on_off_function_gen_when_parameters_changed(self):
+        if self.radioButton_2.isChecked():
+            self.update_GUI_then_send_to_function_gen_off()
+            if self.debug:
+                self.push_msg_to_GUI("update functon gen and turn it OFF")   
+        else:
+            self.update_GUI_then_send_to_function_gen_on()
+            if self.debug:
+                self.push_msg_to_GUI("update functon gen and turn it ON")
     def save_config(self):
         self.update_GUI()
         self.parameter_dict = {"GUI version":myappid,
