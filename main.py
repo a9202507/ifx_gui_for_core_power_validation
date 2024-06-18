@@ -174,7 +174,7 @@ class DB410_3d_thread(QThread):
 class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
     def __init__(self, parent=None, debug=False):
         super(MyMainWindow, self).__init__(parent)
-        self.setFixedSize(730, 700)
+        self.setFixedSize(1050, 700)
         self.setupUi(self)
 
         self.pushButton_8.clicked.connect(self.run_function_gen_3d_thread)
@@ -247,6 +247,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_9.editingFinished.connect(self.update_rise_slew_rate)
         self.lineEdit_4.editingFinished.connect(self.update_fall_time)
         self.lineEdit_10.editingFinished.connect(self.update_fall_slew_rate)
+        self.horizontalSlider.valueChanged.connect(self.slider_update_to_lineedit)
 
         # set windowTitle
         self.Window_title = "Infineon GUI for core power validation, Rev. 2024-06-21"
@@ -265,7 +266,23 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
         self.set_window_title_with_debug_mode()
 
+
+        # 創建自定義滑塊
+        
+        self.horizontalSlider.setMinimum(1)
+        self.horizontalSlider.setMaximum(1000)
+        self.horizontalSlider.setValue(1)
+
+
         self.set_components_order()
+
+    
+
+    def slider_update_to_lineedit(self,value):
+        if self.debug:
+            self.push_msg_to_GUI(f"freq={value}Khz")
+        self.lineEdit_8.setText(str(value))
+        self.auto_on_off_function_gen_when_parameters_changed()
 
     def label_click_event(self, event):
         if event.button() == Qt.LeftButton:
