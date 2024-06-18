@@ -237,7 +237,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.function_gen_3d = DB410_3d_thread()
         self.function_gen_3d.DB410_msg.connect(self.push_msg_to_GUI)
         self.function_gen_3d.DB410_progress_bar.connect(self.set_progress_bar)
-        self.function_gen_3d.DB410_open_3d_plot.connect(lambda filename: self.open_3d_plot(filename, autosave=True))
+        self.function_gen_3d.DB410_open_3d_plot.connect(lambda filename: self.open_3d_plot(filename))
         self.set_progress_bar(0)
 
         # slew rate and rise time/fall time calculation
