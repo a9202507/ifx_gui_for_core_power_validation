@@ -1,4 +1,4 @@
-# Rev. 2024-06-21 for beta release
+# Rev. 2024-06-22 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
@@ -24,7 +24,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240621'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240622'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -251,7 +251,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.horizontalSlider.valueChanged.connect(self.slider_update_to_lineedit)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-06-21"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-06-22"
 
         # set icon
         app_icon = QIcon()
@@ -342,21 +342,6 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
     def set_components_order(self):
         pass
-    '''
-        self.setTabOrder(self.lineEdit_16, self.lineEdit)
-        self.setTabOrder(self.lineEdit, self.lineEdit_17)
-        self.setTabOrder(self.lineEdit_17, self.lineEdit_6)
-        self.setTabOrder(self.lineEdit_6, self.lineEdit_4)
-        self.setTabOrder(self.lineEdit_4, self.lineEdit_5)
-        self.setTabOrder(self.lineEdit_5, self.lineEdit_8)
-        self.setTabOrder(self.lineEdit_8, self.radioButton_2)
-        self.setTabOrder(self.radioButton_2, self.radioButton)
-        self.setTabOrder(self.radioButton, self.lineEdit_13)
-        self.setTabOrder(self.lineEdit_13, self.lineEdit_15)
-        self.setTabOrder(self.lineEdit_15, self.lineEdit_21)
-        self.setTabOrder(self.lineEdit_21, self.lineEdit_22)
-        #self.setTabOrder(self.lineEdit_22, self.lineEdit_16)
-    '''
     
     def set_window_title_with_debug_mode(self):
         if self.debug == True:

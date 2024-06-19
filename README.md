@@ -7,13 +7,17 @@ Designed with Pyside6 and Python 3.12.2/64bits, (32bits doesn't work due to PySi
 # Equipment list
 
 ### Scopes
+
 - Tektronix MSO4x / MSO5x / MSO6x (Win10 based)
 - Tektronix MSO5000 / DPO5000 / DPO7000 (Win7 based)
 - Siglent SDS1000X-E / SDS2000X-E
+
 ### Function generators
+
 - Tektronix AFG3000
 - Siglent SDG1000X / SDG2000X / SDG6000X
 - Keysight 332x0A (WARNING: this instrument has limitations in rise / fall time settings)
+- Rigol DG1000Z series
 
 # Software requirements
 
