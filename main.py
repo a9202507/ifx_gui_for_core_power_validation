@@ -77,9 +77,10 @@ class DB410_3d_thread(QThread):
 
                 # scope start acquisition, set trigger and horizontal scale, reset statistics
                 myWin.scope.acq_run()
-                time.sleep(0.5)
-                myWin.scope.set_trigger(iout_channel, "auto", "DC")
+                time.sleep(0.25)
+                #myWin.scope.set_trigger(iout_channel, "auto", "DC")
                 myWin.set_horizontal_scale_in_scope(str(1/(freq*1000)))
+                time.sleep(0.25)
                 myWin.scope.reset_statistics()
 
                 # sleep for transient on duration time
