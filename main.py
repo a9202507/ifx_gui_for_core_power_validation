@@ -1,4 +1,4 @@
-# Rev. 2024-06-22 for beta release
+# Rev. 2024-07-04 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
@@ -24,7 +24,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240622'
+    myappid = 'com.infineon.GUI.corepowervalidation.20240704'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -132,6 +132,15 @@ class DB410_3d_thread(QThread):
                     myWin.save_waveform_in_scope_and_pc(filename)
                 except:
                     myWin.push_msg_to_GUI("Failed to save waveform")
+                
+                if myWin.checkBox_7.isChecked():
+                    if myWin.debug==True:
+                        myWin.push_msg_to_GUI("save Tek session file to scope")
+                        myWin.push_msg_to_GUI(f"filename:{filename}.tss")
+                    try:
+                        myWin.scope.save_session(scope_folder='C:/temp/',filename=filename)
+                    except:
+                        myWin.push_msg_to_GUI("failed to save session")
 
                 # send function generator off command
                 myWin.function_gen.off(myWin.parameter_setting_function_gen_channel)
@@ -251,7 +260,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.horizontalSlider.valueChanged.connect(self.slider_update_to_lineedit)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-06-22"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-07-04"
 
         # set icon
         app_icon = QIcon()

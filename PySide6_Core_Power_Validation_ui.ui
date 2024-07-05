@@ -798,6 +798,28 @@ select or enter value</string>
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QCheckBox" name="checkBox_7">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>200</y>
+         <width>171</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>save .tss file on MSO scope</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_5">
       <property name="geometry">

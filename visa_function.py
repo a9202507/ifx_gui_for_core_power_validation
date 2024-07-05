@@ -278,6 +278,10 @@ class Tektronix_MSO4x_MSO5x_MSO6x(visa_equipment):
         # not supported? probably not needed, setting the horizontal scale probably also resets statistics...
         pass
 
+    ## to save Tek MSO socpe .tss file
+    def save_session(self, scope_folder, filename="temp", local_folder="./report", debug=False):
+        self.inst.write(f"SAVE:SESsion '{scope_folder}/{filename}.tss'")
+
     def save_waveform(self, scope_folder, filename="temp", local_folder="./report", debug=False):
         if scope_folder != "none":
             # save in scope_folder
