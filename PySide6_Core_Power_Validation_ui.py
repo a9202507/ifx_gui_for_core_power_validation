@@ -23,6 +23,29 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QGridLayout,
     QStatusBar, QTabWidget, QTextEdit, QVBoxLayout,
     QWidget)
 
+class NumberLineEdit(QLineEdit):
+    def __init__(self):
+        super().__init__()
+        self.setAlignment(Qt.AlignLeft)
+        self.setText("0")  # 預設值
+        self.min_value = 0  # 設定最小值
+    def keyPressEvent(self, event):
+        try:
+            current_value = int(self.text())
+            
+            if event.key() == Qt.Key_Up:
+                self.setText(str(current_value + 1))
+            elif event.key() == Qt.Key_Down:
+                new_value = max(self.min_value, current_value - 1)
+                self.setText(str(new_value))
+            else:
+                super().keyPressEvent(event)
+                
+        except ValueError:
+            # 如果轉換為整數失敗，保持原值
+            self.setText("0")
+
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -246,7 +269,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.label_18, 3, 0, 1, 1)
 
-        self.lineEdit_8 = QLineEdit(self.groupBox)
+        self.lineEdit_8 = NumberLineEdit()
         self.lineEdit_8.setObjectName(u"lineEdit_8")
 
         self.gridLayout_2.addWidget(self.lineEdit_8, 8, 1, 1, 2)
