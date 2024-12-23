@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import plotly.offline as pyo
 from plotly.subplots import make_subplots
 
 
@@ -45,6 +46,108 @@ def plt_vmax(filename, autosave=False):
     # Display the plot
     fig.show()
 
+def plt_2d(filename, autosave=False,sheet_name="row",vmin_spec=0,vmax_spec=1.5):
+    # Read the data
+    df = pd.read_excel(filename,sheet_name=sheet_name)
+
+    # Create figure
+    fig = go.Figure()
+
+    # Get unique duty cycles
+    duty_cycles = sorted(df['duty'].unique())
+
+    # Color scale
+    colors = [
+        '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+        '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
+    ]
+
+    # Add traces for each duty cycle
+    for i, duty in enumerate(duty_cycles):
+        mask = df['duty'] == duty
+        # Add Vmax (solid line)
+        fig.add_trace(
+            go.Scatter(
+                x=df[mask]['Freq'],
+                y=df[mask]['Vmax'],
+                name=f'Duty {duty}% (Vmax)',
+                mode='lines+markers',
+                line=dict(
+                    color=colors[i % len(colors)],
+                    dash='solid'
+                ),
+                marker=dict(
+                    size=6,
+                    symbol='circle'
+                ),
+                legendgroup=f'duty_{duty}'
+            )
+        )
+        
+        # Add Vmin (dashed line)
+        fig.add_trace(
+            go.Scatter(
+                x=df[mask]['Freq'],
+                y=df[mask]['Vmin'],
+                name=f'Duty {duty}% (Vmin)',
+                mode='lines+markers',
+                line=dict(
+                    color=colors[i % len(colors)],
+                    dash='dash'
+                ),
+                marker=dict(
+                    size=6,
+                    symbol='square'
+                ),
+                legendgroup=f'duty_{duty}'
+            )
+        )
+
+    # Add horizontal lines for Vmax_spec and Vmin_spec
+    fig.add_shape(
+        type='line',
+        x0=df['Freq'].min(), 
+        x1=df['Freq'].max(), 
+        y0=vmax_spec, 
+        y1=vmax_spec,
+        line=dict(
+            color='Green',
+            width=2,
+            dash='dashdot'
+        ),
+        name='Vmax_spec'
+    )
+
+    fig.add_shape(
+        type='line',
+        x0=df['Freq'].min(), 
+        x1=df['Freq'].max(), 
+        y0=vmin_spec, 
+        y1=vmin_spec,
+        line=dict(
+            color='Red',
+            width=2,
+            dash='dashdot'
+        ),
+        name='Vmin_spec'
+    )
+
+    # Update layout
+    fig.update_layout(
+        title='Voltage vs Frequency for Different Duty Cycles',
+        xaxis_title='Frequency (KHz)',
+        yaxis_title='Voltage (V)',
+        hovermode='x unified',
+        showlegend=True,        
+        legend=dict(
+            groupclick="toggleitem"
+        )
+    )
+
+    # Display the plot
+    #fig.show()
+    # Display the plot using offline mode
+    pyo.plot(fig, filename='voltage_vs_frequency.html')
 
 def plt_3d(filename, autosave=False,sheet_name="row"):
     # Load the data
@@ -123,8 +226,8 @@ def plt_3d(filename, autosave=False,sheet_name="row"):
     )
 
     # Display the plot
-    fig.show()
-
+    #fig.show()
+    pyo.plot(fig, filename='voltage_vs_frequency_3D.html')
 
 
 if __name__ == "__main__":

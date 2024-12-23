@@ -1,11 +1,10 @@
-# Rev. 2024-07-04 for beta release
 # a9202507@gmail.com
 # christian.berger@infineon.com
 
 import sys
 from PySide6.QtCore import QThread, Signal, Slot,Qt,QEvent
-from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
-from PySide6.QtGui import QIcon, QPixmap,QPalette, QColor
+from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox,QLineEdit,QVBoxLayout,QPushButton,QDialog
+from PySide6.QtGui import QIcon, QPixmap,QPalette, QColor,QDoubleValidator
 import PySide6_Core_Power_Validation_ui
 import json
 import os
@@ -24,7 +23,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20240704'
+    myappid = 'com.infineon.GUI.corepowervalidation.20241224'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -202,6 +201,9 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_6.editingFinished.connect(self.update_GUI)
         self.lineEdit_4.editingFinished.connect(self.update_GUI)
 
+        self.label_7.setText("Freq(Khz)(up/down)")
+        self.label_12.setText("Toggle (Q)/(Space)")
+
         # auto on/off function generator when paramters chagned.
         self.lineEdit_16.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
         self.lineEdit_17.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
@@ -260,7 +262,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.horizontalSlider.valueChanged.connect(self.slider_update_to_lineedit)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-07-04"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-12-24"
 
         # set icon
         app_icon = QIcon()
@@ -455,7 +457,16 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
             filename = self.filenames[0]
         if self.debug == True:
             self.push_msg_to_GUI(f"opening 3D plot {filename}")
+        vmax_spec,vmin_spec=self.open_dialog()
+        pandas_report.plt_2d(filename,autosave,sheet_name="row",vmax_spec=vmax_spec,vmin_spec=vmin_spec)
         pandas_report.plt_3d(filename,autosave,sheet_name="row")
+
+    def open_dialog(self):
+        dialog = InputDialog(self)
+        if dialog.exec():
+            number1,number2 = dialog.get_input()
+            #QMessageBox.information(self, "Input Received", f"You entered: {number1},{number2}")
+        return number1,number2
 
     def update_GUI_then_send_to_function_gen_on(self):
         if self.comboBox_2.currentText() == "":
@@ -750,6 +761,49 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         
         
         self.lineEdit_15.setText(result_string)
+
+    # short key for operation     
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Q:
+            self.radioButton_2.setChecked(True)
+        elif event.key() == Qt.Key_Space:
+            self.radioButton.setChecked(True)
+        else:
+            super().keyPressEvent(event)
+
+class InputDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Input spec for 2D curve")
+        
+        self.layout = QVBoxLayout()
+        validator = QDoubleValidator(0, 2.5, 3)
+        validator.setNotation(QDoubleValidator.StandardNotation)
+        self.line_edit = QLineEdit(self)
+        self.line_edit.setValidator(validator)
+        self.line_edit.setPlaceholderText("Enter a number for Vmax spec")
+        self.layout.addWidget(self.line_edit)
+
+        self.line_edit_2 = QLineEdit(self)
+        self.line_edit_2.setValidator(validator)
+        self.line_edit_2.setPlaceholderText("Enter a number for Vmin spec")
+        self.layout.addWidget(self.line_edit_2)
+        
+        self.button = QPushButton("Submit", self)
+        self.button.clicked.connect(self.handle_submit)
+        self.layout.addWidget(self.button)
+        
+        self.setLayout(self.layout)
+    
+    def handle_submit(self):
+        input_text = float(self.line_edit.text())
+        if isinstance(input_text,float):
+            self.accept()
+        else:
+            QMessageBox.warning(self, "Invalid Input", "Please enter a valid number.")
+    
+    def get_input(self):
+        return self.line_edit.text(),self.line_edit_2.text()
 
 
 if __name__ == "__main__":
