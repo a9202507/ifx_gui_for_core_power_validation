@@ -23,7 +23,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20241224'
+    myappid = 'com.infineon.GUI.corepowervalidation.20241227'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -212,8 +212,11 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.lineEdit_4.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
         self.lineEdit_5.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
         self.lineEdit_8.editingFinished.connect(self.auto_on_off_function_gen_when_parameters_changed)
+        self.lineEdit_8.textChanged.connect(self.lineedit_update_to_slider)
+        
 
-        self.pushButton_7.clicked.connect(lambda: self.update_GUI_then_save_waveform(f"{self.parameter_setting_filename}test"))
+
+        self.pushButton_7.clicked.connect(self.update_GUI_then_save_waveform_once_time)
         #self.pushButton_7.setEnabled(False)
 
         # generate 1K to 1000K step 2K frequency list for user.
@@ -262,7 +265,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.horizontalSlider.valueChanged.connect(self.slider_update_to_lineedit)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-12-24"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-12-27"
 
         # set icon
         app_icon = QIcon()
@@ -288,7 +291,8 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
 
         self.set_components_order()
 
-    
+    def lineedit_update_to_slider(self,value):
+        self.horizontalSlider.setValue(int(self.lineEdit_8.text()))
 
     def slider_update_to_lineedit(self,value):
         if self.debug:
@@ -403,6 +407,19 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
     def init_function_gen(self):
         self.function_gen = myvisa.function_gen_types[self.parameter_setting_function_gen_resource_type](self.parameter_setting_function_gen_resource_address)
  
+    def update_GUI_then_save_waveform_once_time(self):
+        the_filename=f"{self.lineEdit_7.text()}test"
+
+        try:
+            self.update_GUI_then_save_waveform(filename=the_filename)
+        
+            
+            os.startfile(f"{self.lineEdit_27.text()}\\{the_filename}.png")
+            QMessageBox.information(self, "Success", "Successfully saved on your PC")
+
+        except:
+            QMessageBox.about(self, "Warning", "can't save it on yoru PC")
+    
     def update_GUI_then_save_waveform(self, filename="temp"):
         self.update_GUI()
         if self.comboBox.currentText() == "":
