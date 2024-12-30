@@ -85,7 +85,53 @@ class Tektronix_AFG3000(visa_equipment):
     def info(self):
         return 0
 
+class Tektronix_AFG31000(visa_equipment):
+    def __init__(self, visa_resource_name):
+        visa_equipment.__init__(self, visa_resource_name)
 
+    waveform_shape_dict = {"pulse": "PULSe",
+                           "sine": "SINusoid",
+                           "square": "SQUare",
+                           "dc": "DC"}
+
+    def on(self, channel="1"):
+        self.inst.write(f"OUTPut{channel}:STATe ON")
+
+    def off(self, channel="1"):
+        self.inst.write(f"OUTPut{channel}:STATe OFF")
+
+    def set_freq(self, freq_khz, channel="1"):
+        self.inst.write(f"SOURce{channel}:FREQuency:FIXed {freq_khz}kHz")
+
+    def set_duty(self, duty, channel="1"):
+        self.inst.write(f"SOURce{channel}:PULSe:DCYCLe {duty}")
+
+    def set_rise_time_ns(self, rise_time, channel="1"):
+        self.inst.write(f"SOURce{channel}:PULSe:TRANsition:LEADing {rise_time}ns")
+
+    def set_fall_time_ns(self, fall_time, channel="1"):
+        self.inst.write(f"SOURce{channel}:PULSe:TRANsition:TRAiling {fall_time}ns")
+
+    def set_waveform_shape(self, shape="pulse", channel="1"):
+        self.inst.write(f"SOURce{channel}:FUNCtion:SHAPe {self.waveform_shape_dict[shape]}")
+
+    def set_voltage_high(self, voltage=0, channel="1"):
+        self.inst.write(f"SOURce{channel}:VOLTage:LEVel:IMMediate:High {voltage}")
+
+    def set_voltage_low(self, voltage=0, channel="1"):
+        self.inst.write(f"SOURce{channel}:VOLTage:LEVel:IMMediate:Low {voltage}")
+
+    def get_rise_time_ns(self, channel="1"):
+        return self.inst.query(f"SOURce{channel}:PULSe:TRANsition:LEADing?")
+    
+    def set_load_impedance(self,impedance_value="HiZ", channel="1"):
+        if impedance_value=="HiZ":
+            self.inst.write(f"OUTPut{channel}:IMPedance INFinity")
+        else:
+            self.inst.write(f"OUTPut{channel}:IMPedance {impedance_value}")
+
+    def info(self):
+        return 0
 
 class Siglent_SDG1000X_SDG2000X_SDG6000X(visa_equipment):
     def __init__(self, visa_resource_name):
@@ -602,9 +648,11 @@ scope_types = {        "Tektronix MSO4x / MSO5x / MSO6x": Tektronix_MSO4x_MSO5x_
                        "Tektronix MSO5000 / DPO5000 / DPO7000": Tektronix_MSO5000_DPO5000_DPO7000,
                        "Siglent SDS1000X-E / SDS2000X-E": Siglent_SDS1000XE_SDS2000XE}
 function_gen_types = { "Tektronix AFG3000": Tektronix_AFG3000,
+                      "Tektronix AFG31000":Tektronix_AFG31000,
                        "Siglent SDG1000X / SDG2000X / SDG6000X": Siglent_SDG1000X_SDG2000X_SDG6000X,
                        "Rigol DG1000Z Series": Rigol_DG1000Z,
-                       "Keysight 332x0A": Keysight_332x0A}
+                       "Keysight 332x0A": Keysight_332x0A,
+                       }
 
 
 
