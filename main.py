@@ -23,7 +23,7 @@ basedir = os.path.dirname(__file__)
 # set icon to taskbar (only exists on windows)
 try:
     from ctypes import windll
-    myappid = 'com.infineon.GUI.corepowervalidation.20241230'
+    myappid = 'com.infineon.GUI.corepowervalidation.20250320'
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
@@ -265,7 +265,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
         self.horizontalSlider.valueChanged.connect(self.slider_update_to_lineedit)
 
         # set windowTitle
-        self.Window_title = "Infineon GUI for core power validation, Rev. 2024-12-30"
+        self.Window_title = "Infineon GUI for core power validation, Rev. 2025-03-20"
 
         # set icon
         app_icon = QIcon()
@@ -455,6 +455,7 @@ class MyMainWindow(QMainWindow, PySide6_Core_Power_Validation_ui.Ui_MainWindow):
     def run_function_gen_3d_thread(self):
         # self.push_msg_to_GUI("run function gen 3d")
         self.update_GUI()
+        QMessageBox.information(self, "Soft reminder", "Please make sure:\n1.Bouner tool has been installed on interposer board.\n2.Make sure the Bouncer tool is installed and 12V suppy is ON")
         if self.comboBox_2.currentText() == "" or self.comboBox.currentText() == "":
             QMessageBox.about(self, "Error", "Please check equipment setting on Settings page")
         else:
